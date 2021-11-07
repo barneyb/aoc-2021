@@ -7,10 +7,26 @@ import com.github.ajalt.mordant.table.table
 import com.github.ajalt.mordant.terminal.Terminal
 import java.io.File
 
-fun getInput() = File("input.txt")
-    .canonicalFile
-    .readText()
-    .trimEnd('\n')
+fun getInput(): String {
+    val ctxFile = File("input.txt")
+    if (ctxFile.exists()) {
+        return ctxFile
+            .readText()
+            .trimEnd('\n')
+    }
+    return getInput(
+        Class.forName("sun.launcher.LauncherHelper")
+            .getMethod("getApplicationClass")
+            .invoke(null) as Class<*>
+    )
+}
+
+fun getInput(clazz: Class<*>): String {
+    return clazz.classLoader
+        .getResource(clazz.packageName.replace('.', '/') + "/input.txt")!!
+        .readText()
+        .trimEnd('\n')
+}
 
 private var answerCount = 0
 private fun nextAnswerLabel() = when (++answerCount) {
