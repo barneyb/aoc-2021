@@ -6,6 +6,7 @@ import aoc2015.day04_adventcoin.main as day04_adventcoin
 import aoc2018.day00_measure_up.main as day00_measure_up
 import aoc2018.day01_chronal_calibration.main as day01_chronal_calibration
 import aoc2018.day02_inventory_management.main as day02_inventory_management
+import aoc2019.day22_slam_shuffle.main as day22_slam_shuffle
 import aoc2019.day01_rocket_equation.main as day01_rocket_equation
 import aoc2019.day03_crossed_wires.main as day03_crossed_wires
 
@@ -21,6 +22,7 @@ private val days = listOf(
     ::day00_measure_up,
     ::day01_almost_lisp,
     ::day02_wrap_presents,
+    //::day22_slam_shuffle,
     ::day01_rocket_equation,
     ::day03_crossed_wires,
     ::day03_spherical_houses,
