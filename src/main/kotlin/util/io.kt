@@ -1,6 +1,7 @@
 package util
 
 import com.github.ajalt.mordant.rendering.TextColors
+import com.github.ajalt.mordant.rendering.TextStyle
 import com.github.ajalt.mordant.rendering.TextStyles
 import com.github.ajalt.mordant.table.table
 import com.github.ajalt.mordant.terminal.Terminal
@@ -11,28 +12,6 @@ fun getInput() = File("input.txt")
     .readText()
     .trimEnd('\n')
 
-fun answer(ans: Any) {
-    inBox(
-        TextColors.brightGreen("Answer " + nextAnswerLabel()) + ": " +
-                TextStyles.bold(ans.toString())
-    )
-}
-
-fun answer(ans: Any, elapsed: Long) {
-    inBox(
-        TextColors.brightGreen("Answer " + nextAnswerLabel()) + " " +
-                TextColors.gray("(%,d ms)".format(elapsed)) + ": " +
-                TextStyles.bold(ans.toString())
-    )
-}
-
-private fun inBox(text: String) {
-    Terminal().println(table {
-        borderTextStyle = TextColors.brightGreen
-        body { row(text) }
-    })
-}
-
 private var answerCount = 0
 private fun nextAnswerLabel() = when (++answerCount) {
     1 -> "One"
@@ -42,8 +21,39 @@ private fun nextAnswerLabel() = when (++answerCount) {
     else -> answerCount.toString()
 }
 
+fun <T : Any> solve(expected: T, solver: (String) -> T) {
+    val input = getInput()
+    val watch = Stopwatch()
+    val actual = solver.invoke(input)
+    val elapsed = watch.elapsed
+    val correct = expected == actual
+    val style = if (correct)
+        TextColors.brightGreen
+    else
+        TextColors.red
+    answer(actual, elapsed, style)
+    if (!correct) throw AssertionError("expected '$expected', but got '$actual'")
+}
+
 fun solve(solver: (String) -> Any) {
     val input = getInput()
     val watch = Stopwatch()
     answer(solver.invoke(input), watch.elapsed)
+}
+
+fun answer(
+    ans: Any,
+    elapsed: Long,
+    style: TextStyle = TextColors.brightBlue
+) {
+    Terminal().println(table {
+        borderTextStyle = style
+        body {
+            row(
+                style("Answer " + nextAnswerLabel()) + " " +
+                        TextColors.gray("(%,d ms)".format(elapsed)) + ": " +
+                        TextStyles.bold(ans.toString())
+            )
+        }
+    })
 }

@@ -3,8 +3,8 @@ package aoc2015.day01_almost_lisp
 import kotlin.streams.toList
 
 fun main() {
-    util.solve(::partOne)
-    util.solve(::partTwo)
+    util.solve(280, ::partOne)
+    util.solve(1797, ::partTwo)
 }
 
 private fun String.toDeltaStream() = this.chars()

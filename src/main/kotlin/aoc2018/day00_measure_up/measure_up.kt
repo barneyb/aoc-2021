@@ -1,9 +1,8 @@
 package aoc2018.day00_measure_up
 
 fun main() {
-    val input = util.getInput()
-    util.answer(partOne(input))
-    util.answer(partTwo(input))
+    util.solve(16, ::partOne)
+    util.solve(14, ::partTwo)
 }
 
 fun partOne(input: String) = input.length
