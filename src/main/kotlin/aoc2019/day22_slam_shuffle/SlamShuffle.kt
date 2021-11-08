@@ -3,7 +3,8 @@ package aoc2019.day22_slam_shuffle
 fun main() {
     util.solve(3036, ::partOne)
     util.solve(2019, ::partOneReverse)
-    util.solve(44714869199563, ::partTwo) // with the partial cutoff
+    util.solve(44714869199563, ::partTwo) // with partial cutoff
+    util.solve(72115501803291, ::partTwoReverse) // with partial cutoff
 }
 
 internal interface Op {
@@ -90,20 +91,59 @@ internal fun String.toOps(deckSize: Long): List<Op> =
         .filter(String::isNotBlank)
         .map { it.toOp(deckSize) }
 
-fun partOne(input: String) = input
-    .toOps(10007)
-    .trace(2019)
+const val DECK_SIZE_ONE: Long = 10007
+
+fun partOne(input: String) =
+    partOne(input, DECK_SIZE_ONE, 2019, 1)
+
+fun partOne(
+    input: String,
+    deckSize: Long,
+    card: Long,
+    iterations: Long
+): Long {
+    val ops = input.toOps(deckSize)
+    var c = card
+    for (i in 0 until if (iterations > 100000) iterations / 1000 / 60 / 60 / 24 else iterations) {
+        c = ops.trace(c)
+    }
+    return c
+}
 
 fun partOneReverse(input: String) = input
-    .toOps(10007)
+    .toOps(DECK_SIZE_ONE)
     .untrace(3036)
 
-fun partTwo(input: String): Long {
-    val ops = input
-        .toOps(119315717514047) // 119315717514047
-    var card = 2020L
-    for (i in 0 until (101741582076661 / 1000 / 60 / 60 / 24)) {
-        card = ops.untrace(card)
+const val DECK_SIZE_TWO: Long = 119_315_717_514_047
+
+const val ITERATIONS_TWO: Long = 101_741_582_076_661
+
+fun partTwo(input: String) =
+    partTwo(
+        input,
+        DECK_SIZE_TWO,
+        2020,
+        ITERATIONS_TWO
+    )
+
+internal fun partTwo(
+    input: String,
+    deckSize: Long,
+    card: Long,
+    iterations: Long
+): Long {
+    val ops = input.toOps(deckSize)
+    var c = card
+    for (i in 0 until if (iterations > 100000) iterations / 1000 / 60 / 60 / 24 else iterations) {
+        c = ops.untrace(c)
     }
-    return card
+    return c
 }
+
+fun partTwoReverse(input: String) =
+    partOne(
+        input,
+        DECK_SIZE_TWO,
+        2020,
+        DECK_SIZE_TWO - ITERATIONS_TWO - 1
+    )
