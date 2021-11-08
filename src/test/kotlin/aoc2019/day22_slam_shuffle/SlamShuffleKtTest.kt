@@ -50,6 +50,25 @@ internal class SlamShuffleKtTest {
         }
     }
 
+    @Test
+    fun itsARing() {
+        val input = """
+                cut 8
+                deal with increment 5
+                cut -5
+                deal with increment 2
+                deal into new stack
+                cut 1
+                deal with increment 3
+                cut -2
+            """
+        var forward = partOne(input, 11, 9, 5)
+        var reverse = partTwo(input, 11, 9, 11L - 5 - 1)
+        assertEquals(forward, reverse)
+
+        forward = partTwo(input, 11, 2, 7)
+        reverse = partOne(input, 11, 2, 11L - 7 - 1)
+        assertEquals(forward, reverse)
+    }
+
 }
-
-
