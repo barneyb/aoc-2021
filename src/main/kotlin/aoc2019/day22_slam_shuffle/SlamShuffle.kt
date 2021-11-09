@@ -8,29 +8,30 @@ fun main() {
 }
 
 internal interface Op {
-    fun trace(card: Long): Long
-    fun untrace(card: Long): Long
+    fun forward(card: Long): Long
+    fun reverse(card: Long): Long
 }
 
-internal data class Cut(val deckSize: Long, val n: Long) : Op {
+// Well, subtract. But whatever.
+internal data class Add(val deckSize: Long, val n: Long) : Op {
 
-    override fun trace(card: Long) = (card + deckSize - n) % deckSize
+    override fun forward(card: Long) = (card + deckSize - n) % deckSize
 
-    override fun untrace(card: Long) = (card + deckSize + n) % deckSize
-
-}
-
-internal data class Deal(val deckSize: Long, val n: Long) : Op {
-
-    private val inverse: Long by lazy { multInverseModN(n, deckSize) }
-
-    override fun trace(card: Long) = card * n % deckSize
-
-    override fun untrace(card: Long) = card * inverse % deckSize
+    override fun reverse(card: Long) = (card + deckSize + n) % deckSize
 
 }
 
-private fun multInverseModN(a: Long, n: Long): Long {
+internal data class Multiply(val deckSize: Long, val n: Long) : Op {
+
+    private val inverse: Long by lazy { multiplicativeInverseModN(n, deckSize) }
+
+    override fun forward(card: Long) = card * n % deckSize
+
+    override fun reverse(card: Long) = card * inverse % deckSize
+
+}
+
+private fun multiplicativeInverseModN(a: Long, n: Long): Long {
     var t = 0L
     var newt = 1L
     var r = n
@@ -52,35 +53,35 @@ private fun multInverseModN(a: Long, n: Long): Long {
     return t
 }
 
-internal class Reverse(val deckSize: Long) : Op {
+internal data class Negate(val deckSize: Long) : Op {
 
-    override fun trace(card: Long) = deckSize - card - 1
+    override fun forward(card: Long) = deckSize - card - 1
 
-    override fun untrace(card: Long) = deckSize - card - 1
+    override fun reverse(card: Long) = deckSize - card - 1
 
 }
 
 internal fun String.words() = this.split(" ")
 
-internal fun List<Op>.trace(card: Long) =
+internal fun List<Op>.forward(card: Long) =
     this.fold(card) { c, op ->
-        op.trace(c)
+        op.forward(c)
     }
 
-internal fun List<Op>.untrace(card: Long) =
+internal fun List<Op>.reverse(card: Long) =
     this.asReversed().fold(card) { c, op ->
-        op.untrace(c)
+        op.reverse(c)
     }
 
 internal fun String.toOp(deckSize: Long): Op {
     val s = this.trim()
     return when {
         s.startsWith("cut") ->
-            Cut(deckSize, s.words().last().toLong())
+            Add(deckSize, s.words().last().toLong())
         s.startsWith("deal with increment") ->
-            Deal(deckSize, s.words().last().toLong())
+            Multiply(deckSize, s.words().last().toLong())
         s == "deal into new stack" ->
-            Reverse(deckSize)
+            Negate(deckSize)
         else ->
             throw UnsupportedOperationException("Can't parse '$this' to an Op")
     }
@@ -105,14 +106,14 @@ fun partOne(
     val ops = input.toOps(deckSize)
     var c = card
     for (i in 0 until if (iterations > 100000) iterations / 1000 / 60 / 60 / 24 else iterations) {
-        c = ops.trace(c)
+        c = ops.forward(c)
     }
     return c
 }
 
 fun partOneReverse(input: String) = input
     .toOps(DECK_SIZE_ONE)
-    .untrace(3036)
+    .reverse(3036)
 
 const val DECK_SIZE_TWO: Long = 119_315_717_514_047
 
@@ -135,7 +136,7 @@ internal fun partTwo(
     val ops = input.toOps(deckSize)
     var c = card
     for (i in 0 until if (iterations > 100000) iterations / 1000 / 60 / 60 / 24 else iterations) {
-        c = ops.untrace(c)
+        c = ops.reverse(c)
     }
     return c
 }

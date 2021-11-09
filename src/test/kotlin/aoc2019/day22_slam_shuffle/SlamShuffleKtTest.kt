@@ -34,9 +34,9 @@ internal class SlamShuffleKtTest {
         val ops = """
             deal with increment 3
         """.toOps(10)
-        assertEquals(0, ops.trace(0))
-        assertEquals(1, ops.trace(7))
-        assertEquals(2, ops.trace(4))
+        assertEquals(0, ops.forward(0))
+        assertEquals(1, ops.forward(7))
+        assertEquals(2, ops.forward(4))
         assertAllPositions(ops, listOf(0, 7, 4, 1, 8, 5, 2, 9, 6, 3))
     }
 
@@ -44,7 +44,7 @@ internal class SlamShuffleKtTest {
         for (i in results.indices) {
             assertEquals(
                 i.toLong(),
-                ops.trace(results[i]),
+                ops.forward(results[i]),
                 "Expected ${results[i]} to end up at $i"
             )
         }
