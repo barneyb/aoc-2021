@@ -12,7 +12,7 @@ fun getInput(): String {
     if (ctxFile.exists()) {
         return ctxFile
             .readText()
-            .trimEnd('\n')
+            .cleanInput()
     }
     return getInput(
         Class.forName("sun.launcher.LauncherHelper")
@@ -25,8 +25,11 @@ fun getInput(clazz: Class<*>): String {
     return clazz.classLoader
         .getResource(clazz.packageName.replace('.', '/') + "/input.txt")!!
         .readText()
-        .trimEnd('\n')
+        .cleanInput()
 }
+
+fun String.cleanInput() =
+    this.trim('\n')
 
 private var answerCount = 0
 private fun nextAnswerLabel() = when (++answerCount) {
