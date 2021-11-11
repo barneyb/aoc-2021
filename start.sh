@@ -103,5 +103,5 @@ internal class ${CAMEL}KtTest {
 EOF
 
 git checkout -b "${DAY_DIR}" master
-git add src/main/$root/${DAY_DIR}/${CAMEL}.kt \
-    src/test/$root/${DAY_DIR}/${CAMEL}KtTest.kt
+git add .
+git commit -m "skeleton"
