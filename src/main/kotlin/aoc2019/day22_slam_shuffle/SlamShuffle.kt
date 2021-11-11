@@ -93,9 +93,11 @@ internal fun String.toOps(deckSize: Long): List<Op> =
         .map { it.toOp(deckSize) }
 
 const val DECK_SIZE_ONE: Long = 10007
+const val ITERATIONS_ONE: Long = 1
+const val SWITCH_TO_DAYS_ITERS: Long = 1_000_000
 
 fun partOne(input: String) =
-    partOne(input, DECK_SIZE_ONE, 2019, 1)
+    partOne(input, DECK_SIZE_ONE, 2019, ITERATIONS_ONE)
 
 fun partOne(
     input: String,
@@ -105,7 +107,7 @@ fun partOne(
 ): Long {
     val ops = input.toOps(deckSize)
     var c = card
-    for (i in 0 until if (iterations > 100000) iterations / 1000 / 60 / 60 / 24 else iterations) {
+    for (i in 0 until if (iterations > SWITCH_TO_DAYS_ITERS) iterations / 1000 / 60 / 60 / 24 else iterations) {
         c = ops.forward(c)
     }
     return c
@@ -116,7 +118,6 @@ fun partOneReverse(input: String) = input
     .reverse(3036)
 
 const val DECK_SIZE_TWO: Long = 119_315_717_514_047
-
 const val ITERATIONS_TWO: Long = 101_741_582_076_661
 
 fun partTwo(input: String) =
@@ -135,7 +136,7 @@ internal fun partTwo(
 ): Long {
     val ops = input.toOps(deckSize)
     var c = card
-    for (i in 0 until if (iterations > 100000) iterations / 1000 / 60 / 60 / 24 else iterations) {
+    for (i in 0 until if (iterations > SWITCH_TO_DAYS_ITERS) iterations / 1000 / 60 / 60 / 24 else iterations) {
         c = ops.reverse(c)
     }
     return c

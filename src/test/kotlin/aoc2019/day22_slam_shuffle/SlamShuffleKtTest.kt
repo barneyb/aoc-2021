@@ -71,4 +71,13 @@ internal class SlamShuffleKtTest {
         assertEquals(forward, reverse)
     }
 
+    @Test
+    fun itsARingForReal() {
+        val input = util.getInput(javaClass)
+        val forward = partOne(input, DECK_SIZE_ONE, 2019, 6789)
+        val reverse =
+            partTwo(input, DECK_SIZE_ONE, 2019, DECK_SIZE_ONE - 6789 - 1)
+        assertEquals(forward, reverse)
+    }
+
 }
