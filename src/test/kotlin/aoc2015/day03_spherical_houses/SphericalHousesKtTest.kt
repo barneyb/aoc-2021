@@ -7,13 +7,16 @@ internal class SphericalHousesKtTest {
 
     @Test
     fun partOne() {
-        assertEquals(-1, partOne("input"))
+        assertEquals(2, partOne(">"))
+        assertEquals(4, partOne("^>v<"))
+        assertEquals(2, partOne("^v^v^v^v^v"))
     }
 
-    @kotlin.test.Ignore // todo: reinstate when ready!
     @Test
     fun partTwo() {
-        assertEquals(-1, partTwo("input"))
+        assertEquals(3, partTwo("^v"))
+        assertEquals(3, partTwo("^>v<"))
+        assertEquals(11, partTwo("^v^v^v^v^v"))
     }
 
 }
