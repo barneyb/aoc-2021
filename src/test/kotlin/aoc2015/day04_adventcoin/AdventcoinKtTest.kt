@@ -7,13 +7,8 @@ internal class AdventcoinKtTest {
 
     @Test
     fun partOne() {
-        assertEquals(-1, partOne("input"))
-    }
-
-    @kotlin.test.Ignore // todo: reinstate when ready!
-    @Test
-    fun partTwo() {
-        assertEquals(-1, partTwo("input"))
+        assertEquals(609043, partOne("abcdef"))
+        assertEquals(1048970, partOne("pqrstuv"))
     }
 
 }
