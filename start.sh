@@ -65,8 +65,8 @@ cat > src/main/$root/${DAY_DIR}/${CAMEL}.kt << EOF
 package ${pkg}${DAY_DIR}
 
 fun main() {
-    util.solve(10, ::partOne)
-//    util.solve(6, ::partTwo)
+    util.solve(::partOne)
+//    util.solve(::partTwo)
 }
 
 fun partOne(input: String) = input.length
@@ -86,16 +86,13 @@ internal class ${CAMEL}KtTest {
 
     @Test
     fun partOne() {
-        assertEquals(1, partOne("a"))
-        assertEquals(3, partOne(" a "))
-        assertEquals(3, partOne("cat"))
+        assertEquals(-1, partOne("input"))
     }
 
+    @kotlin.test.Ignore // todo: reinstate when ready!
     @Test
     fun partTwo() {
-        assertEquals(1, partTwo("a"))
-        assertEquals(1, partTwo(" a "))
-        assertEquals(3, partTwo(" a b "))
+        assertEquals(-1, partTwo("input"))
     }
 
 }
