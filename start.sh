@@ -102,3 +102,7 @@ EOF
 git checkout -b "${DAY_DIR}" master
 git add .
 git commit -m "skeleton"
+
+if [[ $SCRIPT = .* ]]; then
+  rm $SCRIPT
+fi
