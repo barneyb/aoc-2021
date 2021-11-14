@@ -23,3 +23,7 @@ fi
 git checkout master
 git merge --no-ff ${BRANCH} -m "Merge branch '${BRANCH}'"
 git branch -d ${BRANCH}
+
+if [[ $SCRIPT = .* ]]; then
+  rm $SCRIPT
+fi

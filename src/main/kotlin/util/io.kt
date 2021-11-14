@@ -29,7 +29,7 @@ fun getInput(clazz: Class<*>): String {
 }
 
 fun String.cleanInput() =
-    this.trim('\n')
+    this.trimIndent().trim('\n')
 
 private var answerCount = 0
 private fun nextAnswerLabel() = when (++answerCount) {
