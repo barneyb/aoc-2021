@@ -1,38 +1,51 @@
 package aoc2015.day04_adventcoin
 
 import java.security.MessageDigest
+import kotlin.experimental.and
 
 fun main() {
     util.solve(346386, ::partOne)
-    // correct, but wastefully slow, so disabled
-//    util.solve(9958218, ::partTwo)
+    util.solve(9958218, ::partTwo)
 }
 
-fun ByteArray.toHex() = joinToString(separator = "") { byte ->
-    "%02x".format(byte)
-}
-
-fun MessageDigest.updateForHex(it: Any): String {
+fun MessageDigest.updateForBytes(it: Any): ByteArray {
     val digest = clone() as MessageDigest
     digest.update(it.toString().toByteArray())
-    return digest.digest().toHex()
+    return digest.digest()
 }
 
 fun partOne(input: String) =
-    firstCoinWithPrefix(input, "00000")
+    firstCoinWithZeros(input, 5)
 
-private fun firstCoinWithPrefix(input: String, prefix: String): Int {
+private fun firstCoinWithZeros(input: String, zeroCount: Int): Int {
     val inputDigest = MessageDigest.getInstance("MD5")
     inputDigest.update(input.toByteArray())
     generateSequence(0, Int::inc).forEach {
-        val str = inputDigest.updateForHex(it)
-        if (str.startsWith(prefix)) {
+        if (inputDigest.updateForBytes(it).startsWithHexZeros(zeroCount)) {
             return it
         }
     }
     throw IllegalStateException("what?!")
 }
 
+private const val ZERO = (0).toByte()
+private const val TOP_HALF = (0xf0).toByte()
+
+fun ByteArray.startsWithHexZeros(n: Int): Boolean {
+    // each hex digit represents half a byte
+    val end = n / 2
+    for (i in 0 until end) {
+        if (this[i] != ZERO) {
+            return false
+        }
+    }
+    if (n % 2 != 0) {
+        // and half the next byte
+        return this[end] and TOP_HALF == ZERO
+    }
+    return true
+}
+
 fun partTwo(input: String) =
-    firstCoinWithPrefix(input, "000000")
+    firstCoinWithZeros(input, 6)
 
