@@ -85,13 +85,13 @@ internal class ${CAMEL}KtTest {
 
     @Test
     fun partOne() {
-        assertEquals(-1, partOne("input"))
+        assertEquals(0, partOne("input"))
     }
 
     @kotlin.test.Ignore // todo: reinstate when ready!
     @Test
     fun partTwo() {
-        assertEquals(-1, partTwo("input"))
+        assertEquals(0, partTwo("input"))
     }
 
 }
