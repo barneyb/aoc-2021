@@ -16,6 +16,11 @@ fi
 THIS_YEAR="2021"
 THIS_DAY=`date +%d`
 
+# Past 8pm, assume I'm actually starting "tomorrow" (timezones! woo!)
+if [ `date +%H` -gt 20 ]; then
+    THIS_DAY=$(($THIS_DAY-1))
+fi
+
 read -r -p "Year (${THIS_YEAR}): " YEAR
 read -r -p "Day (${THIS_DAY}): " DAY
 read -r -p "Slug: " -a SLUG_PARTS
@@ -97,8 +102,12 @@ internal class ${CAMEL}KtTest {
 }
 EOF
 
+sed -e "s~/\*INJECT:IMPORT\*/~import ${pkg}${DAY_DIR}.main as ${DAY_DIR}\\n/*INJECT:IMPORT*/~" \
+    -e "s~/\*INJECT:REF\*/~::${DAY_DIR},\\n    /*INJECT:REF*/~" \
+    -i src/main/kotlin/main.kt
+
 git checkout -b "${DAY_DIR}" master
-git add .
+git add src/main/kotlin src/test
 git commit -m "skeleton"
 
 if [[ $SCRIPT = .* ]]; then
