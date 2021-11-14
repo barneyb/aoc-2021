@@ -7,6 +7,9 @@ import com.github.ajalt.mordant.table.table
 import com.github.ajalt.mordant.terminal.Terminal
 import java.io.File
 
+/**
+ * It's unlikely you want this one; use `getInput(Class)` passing "self class".
+ */
 fun getInput(): String {
     val ctxFile = File("input.txt")
     if (ctxFile.exists()) {
@@ -29,7 +32,7 @@ fun getInput(clazz: Class<*>): String {
 }
 
 fun String.cleanInput() =
-    this.trimIndent().trim('\n')
+    this.trim('\n')
 
 private var answerCount = 0
 private fun nextAnswerLabel() = when (++answerCount) {
@@ -41,7 +44,7 @@ private fun nextAnswerLabel() = when (++answerCount) {
 }
 
 fun <T : Any> solve(expected: T, solver: (String) -> T) {
-    val input = getInput()
+    val input = getInput(solver.javaClass)
     val watch = Stopwatch()
     val actual = solver.invoke(input)
     val elapsed = watch.elapsed
@@ -55,7 +58,7 @@ fun <T : Any> solve(expected: T, solver: (String) -> T) {
 }
 
 fun solve(solver: (String) -> Any) {
-    val input = getInput()
+    val input = getInput(solver.javaClass)
     val watch = Stopwatch()
     answer(solver.invoke(input), watch.elapsed)
 }

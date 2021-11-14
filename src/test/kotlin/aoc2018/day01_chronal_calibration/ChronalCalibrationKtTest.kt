@@ -2,14 +2,13 @@ package aoc2018.day01_chronal_calibration
 
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
-import util.cleanInput
 
 private val WORKED_INPUT = """
     +1
     -2
     +3
     +1
-""".cleanInput()
+""".trimIndent()
 
 internal class ChronalCalibrationKtTest {
 
