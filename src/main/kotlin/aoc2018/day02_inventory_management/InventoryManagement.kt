@@ -4,7 +4,7 @@ import util.hasCharWithExactOccurrences
 
 fun main() {
     util.solve(7776, ::partOne)
-    util.solve(::partTwo)
+    util.solve("wlkigsqyfecjqqmnxaktdrhbz", ::partTwo)
 }
 
 fun partOne(input: String): Int {
@@ -19,4 +19,23 @@ fun partOne(input: String): Int {
     return doubles * triples
 }
 
-fun partTwo(input: String) = input.trim().length
+fun partTwo(input: String): String {
+    val lines = input.lines()
+    lines.forEachIndexed { currIdx, src ->
+        lines.subList(0, currIdx).forEach { tgt ->
+            var idx = -1
+            for (i in 0 until tgt.length) {
+                if (src[i] != tgt[i]) {
+                    if (idx < 0) {
+                        idx = i
+                    } else {
+                        return@forEach // continue
+                    }
+                }
+            }
+            // woo!
+            return src.substring(0, idx) + src.substring(idx + 1)
+        }
+    }
+    throw IllegalStateException("huh?")
+}
