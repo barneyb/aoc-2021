@@ -2,12 +2,25 @@ package aoc2018.day02_inventory_management
 
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
+import util.cleanInput
 
 internal class InventoryManagementKtTest {
 
     @Test
     fun partOne() {
-        assertEquals(-1, partOne("input"))
+        assertEquals(
+            12, partOne(
+                """
+            abcdef
+            bababc
+            abbcde
+            abcccd
+            aabcdd
+            abcdee
+            ababab
+        """.cleanInput()
+            )
+        )
     }
 
     @kotlin.test.Ignore // todo: reinstate when ready!
@@ -17,4 +30,3 @@ internal class InventoryManagementKtTest {
     }
 
 }
-
