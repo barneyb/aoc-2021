@@ -72,7 +72,6 @@ fun main() {
 fun partOne(input: String) = input.length
 
 fun partTwo(input: String) = input.trim().length
-
 EOF
 
 mkdir -p src/test/$root/${DAY_DIR}
@@ -96,7 +95,6 @@ internal class ${CAMEL}KtTest {
     }
 
 }
-
 EOF
 
 git checkout -b "${DAY_DIR}" master
