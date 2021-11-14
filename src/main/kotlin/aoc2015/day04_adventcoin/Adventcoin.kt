@@ -1,5 +1,6 @@
 package aoc2015.day04_adventcoin
 
+import util.countForever
 import java.security.MessageDigest
 import kotlin.experimental.and
 
@@ -20,7 +21,7 @@ fun partOne(input: String) =
 private fun firstCoinWithZeros(input: String, zeroCount: Int): Int {
     val inputDigest = MessageDigest.getInstance("MD5")
     inputDigest.update(input.toByteArray())
-    generateSequence(0, Int::inc).forEach {
+    countForever().forEach {
         if (inputDigest.updateForBytes(it).startsWithHexZeros(zeroCount)) {
             return it
         }
