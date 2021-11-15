@@ -23,7 +23,7 @@ private fun charToDir(c: Int) = when (c.toChar()) {
 }
 
 fun partOne(input: String): Int {
-    val origin = Point(0, 0)
+    val origin = Point.ORIGIN
     val points = mutableSetOf(origin)
     input.toDirList()
         .fold(origin) { curr, dir ->
@@ -35,7 +35,7 @@ fun partOne(input: String): Int {
 }
 
 fun partTwo(input: String): Int {
-    val origin = Point(0, 0)
+    val origin = Point.ORIGIN
     val points = mutableSetOf(origin)
     input.toDirList()
         .foldIndexed(Pair(origin, origin)) { i, (s, rs), dir ->
