@@ -103,7 +103,7 @@ internal class ${CAMEL}KtTest {
 EOF
 
 sed -e "s~/\*INJECT:IMPORT\*/~import ${pkg}${DAY_DIR}.main as ${DAY_DIR}\\n/*INJECT:IMPORT*/~" \
-    -e "s~/\*INJECT:REF\*/~::${DAY_DIR},\\n    /*INJECT:REF*/~" \
+    -e "s~/\*INJECT:REF\*/~//::${DAY_DIR},\\n    /*INJECT:REF*/~" \
     -i src/main/kotlin/main.kt
 
 git checkout -b "${DAY_DIR}" master

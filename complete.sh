@@ -20,6 +20,10 @@ if [ "${BRANCH}" = "master" ]; then
     exit 1
 fi
 
+sed -e "s~//::${BRANCH},~::${BRANCH},~" \
+    -i src/main/kotlin/main.kt
+git commit -a -m "add to super-main"
+
 git checkout master
 git merge --no-ff ${BRANCH} -m "Merge branch '${BRANCH}'"
 git branch -d ${BRANCH}
