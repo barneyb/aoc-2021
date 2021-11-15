@@ -30,6 +30,14 @@ enum class Turn {
     LEFT, RIGHT, AROUND
 }
 
+fun Char.toDir() = when (this) {
+    '^', 'U' -> Dir.NORTH
+    '>', 'R' -> Dir.EAST
+    'v', 'D' -> Dir.SOUTH
+    '<', 'L' -> Dir.WEST
+    else -> throw IllegalArgumentException("Unknown '$this' direction")
+}
+
 enum class Dir {
     NORTH, EAST, SOUTH, WEST;
 

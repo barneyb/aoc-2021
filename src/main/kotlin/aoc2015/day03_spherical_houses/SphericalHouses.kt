@@ -1,7 +1,7 @@
 package aoc2015.day03_spherical_houses
 
-import geom2d.Dir
 import geom2d.Point
+import geom2d.toDir
 import kotlin.streams.toList
 
 fun main() {
@@ -11,16 +11,8 @@ fun main() {
 
 private fun String.toDirList() = this
     .chars()
-    .mapToObj(::charToDir)
+    .mapToObj { it.toChar().toDir() }
     .toList()
-
-private fun charToDir(c: Int) = when (c.toChar()) {
-    '^' -> Dir.NORTH
-    '>' -> Dir.EAST
-    'v' -> Dir.SOUTH
-    '<' -> Dir.WEST
-    else -> throw IllegalArgumentException("Unknown '$c' direction")
-}
 
 fun partOne(input: String): Int {
     val origin = Point.ORIGIN

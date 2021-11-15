@@ -1,8 +1,8 @@
 package aoc2019.day03_crossed_wires
 
-import geom2d.Dir
 import geom2d.Point
 import geom2d.Step
+import geom2d.toDir
 
 fun main() {
     util.solve(1084, ::partOne)
@@ -11,13 +11,7 @@ fun main() {
 
 private fun String.toStep() =
     Step(
-        when (this.first()) {
-            'U' -> Dir.NORTH
-            'R' -> Dir.EAST
-            'D' -> Dir.SOUTH
-            'L' -> Dir.WEST
-            else -> throw IllegalArgumentException("Unknown '${this.first()}' step direction")
-        },
+        this.first().toDir(),
         this.substring(1).toLong()
     )
 
