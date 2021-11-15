@@ -12,10 +12,9 @@ internal class NoTimeForTaxiKtTest {
         assertEquals(12, partOne("R5, L5, R5, R3"))
     }
 
-    @kotlin.test.Ignore // todo: reinstate when ready!
     @Test
     fun partTwo() {
-        assertEquals(0, partTwo("input"))
+        assertEquals(4, partTwo("R8, R4, R4, R8"))
     }
 
 }

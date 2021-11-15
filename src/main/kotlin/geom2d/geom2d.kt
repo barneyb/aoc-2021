@@ -60,9 +60,20 @@ data class Step(val dir: Dir, val n: Long)
 
 data class Heading(val location: Point, val dir: Dir) {
 
+    companion object {
+        val ORIGIN = Heading(Point.ORIGIN, Dir.NORTH)
+    }
+
     fun turn(turn: Turn) =
         copy(dir = dir.turn(turn))
 
     fun step(steps: Long = 1) =
         copy(location = location.step(dir, steps))
+
+    fun manhattanDistance() =
+        location.manhattanDistance()
+
+    fun manhattanDistance(p: Point) =
+        location.manhattanDistance(p)
+
 }
