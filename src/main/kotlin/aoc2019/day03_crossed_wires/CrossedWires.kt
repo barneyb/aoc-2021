@@ -32,7 +32,7 @@ private fun walkForPositionsAndDistance(steps: List<Step>): Map<Point, Long> {
     // cross, even though it isn't. So just ignore it here. Fingers crossed.
     val points = mutableMapOf<Point, Long>()
     var distance = 0L
-    steps.fold(Point(0, 0)) { base, s ->
+    steps.fold(Point.ORIGIN) { base, s ->
         (0 until s.n).fold(base) { curr, _ ->
             val next = curr.step(s.dir)
             points.putIfAbsent(next, ++distance)
@@ -48,7 +48,7 @@ fun partOne(input: String): Long {
         .map(String::toSteps)
         .map(::walkForPositionsAndDistance)
     return a.keys.intersect(b.keys)
-        .minOf(Point::mannDist)
+        .minOf(Point::manhattanDistance)
 }
 
 fun partTwo(input: String): Long {
