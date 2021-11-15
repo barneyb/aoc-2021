@@ -10,6 +10,7 @@ import aoc2019.day01_rocket_equation.main as day01_rocket_equation
 import aoc2019.day03_crossed_wires.main as day03_crossed_wires
 
 import aoc2016.day01_no_time_for_taxi.main as day01_no_time_for_taxi
+import aoc2016.day02_bathroom_security.main as day02_bathroom_security
 /*INJECT:IMPORT*/
 
 private val days = listOf(
@@ -23,6 +24,7 @@ private val days = listOf(
     ::day01_chronal_calibration,
     ::day02_inventory_management,
     ::day01_no_time_for_taxi,
+    //::day02_bathroom_security,
     /*INJECT:REF*/
 )
 
