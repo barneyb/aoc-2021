@@ -1,7 +1,7 @@
 package aoc2016.day01_no_time_for_taxi
 
 import geom2d.Heading
-import geom2d.Turn
+import geom2d.toTurn
 
 fun main() {
     util.solve(288, ::partOne)
@@ -19,11 +19,7 @@ private fun String.toPairs() = split(",")
     .map { it.trim() }
     .map {
         Pair(
-            when (it[0]) {
-                'R' -> Turn.RIGHT
-                'L' -> Turn.LEFT
-                else -> throw IllegalArgumentException("Unknown '${it[0]}' turn.")
-            },
+            it[0].toTurn(),
             it.substring(1, it.length).toLong()
         )
     }
