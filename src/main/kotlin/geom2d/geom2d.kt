@@ -26,28 +26,37 @@ data class Point(val x: Long, val y: Long) {
         abs(p.x - x) + abs(p.y - y)
 }
 
+fun Char.toTurn() = when (this) {
+    'S' -> Turn.STRAIGHT
+    'R' -> Turn.RIGHT
+    'A' -> Turn.AROUND
+    'L' -> Turn.LEFT
+    else -> throw IllegalArgumentException("Unknown '$this' turn")
+}
+
+/**
+ * The four 90-degree turns, starting with STRAIGHT, and moving clockwise
+ */
 enum class Turn {
-    LEFT, RIGHT, AROUND
+    STRAIGHT, RIGHT, AROUND, LEFT
 }
 
 fun Char.toDir() = when (this) {
-    '^', 'U' -> Dir.NORTH
-    '>', 'R' -> Dir.EAST
-    'v', 'D' -> Dir.SOUTH
-    '<', 'L' -> Dir.WEST
+    'N', '^', 'U' -> Dir.NORTH
+    'E', '>', 'R' -> Dir.EAST
+    'S', 'v', 'D' -> Dir.SOUTH
+    'W', '<', 'L' -> Dir.WEST
     else -> throw IllegalArgumentException("Unknown '$this' direction")
 }
 
+/**
+ * The four cardinal directions, starting at NORTH, and moving clockwise.
+ */
 enum class Dir {
     NORTH, EAST, SOUTH, WEST;
 
     fun turn(turn: Turn) = when (turn) {
-        Turn.LEFT -> when (this) {
-            NORTH -> WEST
-            EAST -> NORTH
-            SOUTH -> EAST
-            WEST -> SOUTH
-        }
+        Turn.STRAIGHT -> this
         Turn.RIGHT -> when (this) {
             NORTH -> EAST
             EAST -> SOUTH
@@ -59,6 +68,12 @@ enum class Dir {
             EAST -> WEST
             SOUTH -> NORTH
             WEST -> EAST
+        }
+        Turn.LEFT -> when (this) {
+            NORTH -> WEST
+            EAST -> NORTH
+            SOUTH -> EAST
+            WEST -> SOUTH
         }
     }
 

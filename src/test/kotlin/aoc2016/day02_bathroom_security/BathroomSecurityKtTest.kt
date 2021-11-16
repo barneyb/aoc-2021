@@ -1,6 +1,6 @@
 package aoc2016.day02_bathroom_security
 
-import geom2d.Point
+import org.junit.jupiter.api.Assertions.assertArrayEquals
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 
@@ -14,29 +14,37 @@ private val WORKED_EXAMPLE = """
 internal class BathroomSecurityKtTest {
 
     @Test
-    fun buttonToPoint() {
-        assertEquals(Point(0, 0), 1.toButton())
-        assertEquals(Point(1, 0), 2.toButton())
-        assertEquals(Point(2, 0), 3.toButton())
-        assertEquals(Point(0, 1), 4.toButton())
-        assertEquals(Point(1, 1), 5.toButton())
-        assertEquals(Point(2, 1), 6.toButton())
-        assertEquals(Point(0, 2), 7.toButton())
-        assertEquals(Point(1, 2), 8.toButton())
-        assertEquals(Point(2, 2), 9.toButton())
-    }
-
-    @Test
     fun partOne() {
         assertEquals("1", partOne("UL"))
         assertEquals("1", partOne("UULL"))
         assertEquals("1985", partOne(WORKED_EXAMPLE))
     }
 
-    @kotlin.test.Ignore // todo: reinstate when ready!
+    @Test
+    fun parseKeymap() {
+        assertArrayEquals(
+            arrayOf(
+                intArrayOf(), // no button zero
+                intArrayOf(1, 2, 4, 1),
+                intArrayOf(2, 3, 5, 1),
+                intArrayOf(3, 3, 6, 2),
+                intArrayOf(1, 5, 7, 4),
+                intArrayOf(2, 6, 8, 4),
+                intArrayOf(3, 6, 9, 5),
+                intArrayOf(4, 8, 7, 7),
+                intArrayOf(5, 9, 8, 7),
+                intArrayOf(6, 9, 9, 8),
+            ), """
+                1 2 3
+                4 5 6
+                7 8 9
+            """.asKeymap()
+        )
+    }
+
     @Test
     fun partTwo() {
-        assertEquals(0, partTwo("input"))
+        assertEquals("5DB3", partTwo(WORKED_EXAMPLE))
     }
 
 }
