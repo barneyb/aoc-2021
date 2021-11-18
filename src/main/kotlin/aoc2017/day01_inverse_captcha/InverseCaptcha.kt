@@ -18,12 +18,8 @@ fun partOne(input: String): Int {
 }
 
 fun partTwo(input: String): Int {
-    var sum = 0
     val halfLen = input.length / 2
-    for (i in 0 until halfLen) {
-        if (input[i] == input[i + halfLen]) {
-            sum += 2 * input[i].digitToInt()
-        }
-    }
-    return sum
+    return 2 * input.subSequence(0, halfLen)
+        .filterIndexed { i, c -> c == input[i + halfLen] }
+        .sumOf(Char::digitToInt)
 }
