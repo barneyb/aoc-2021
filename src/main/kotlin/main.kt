@@ -12,6 +12,7 @@ import aoc2019.day03_crossed_wires.main as day03_crossed_wires
 import aoc2016.day01_no_time_for_taxi.main as day01_no_time_for_taxi
 import aoc2016.day02_bathroom_security.main as day02_bathroom_security
 import aoc2017.day01_inverse_captcha.main as day01_inverse_captcha
+import aoc2017.day02_corruption_checksum.main as day02_corruption_checksum
 /*INJECT:IMPORT*/
 
 private val days = listOf(
@@ -27,6 +28,7 @@ private val days = listOf(
     ::day01_no_time_for_taxi,
     ::day02_bathroom_security,
     ::day01_inverse_captcha,
+    //::day02_corruption_checksum,
     /*INJECT:REF*/
 )
 
