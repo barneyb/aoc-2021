@@ -13,10 +13,13 @@ internal class InverseCaptchaKtTest {
         assertEquals(9, partOne("91212129"))
     }
 
-    @kotlin.test.Ignore // todo: reinstate when ready!
     @Test
     fun partTwo() {
-        assertEquals(0, partTwo("input"))
+        assertEquals(6, partTwo("1212"))
+        assertEquals(0, partTwo("1221"))
+        assertEquals(4, partTwo("123425"))
+        assertEquals(12, partTwo("123123"))
+        assertEquals(4, partTwo("12131415"))
     }
 
 }
