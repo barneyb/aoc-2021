@@ -26,7 +26,7 @@ private val days = listOf(
     ::day02_inventory_management,
     ::day01_no_time_for_taxi,
     ::day02_bathroom_security,
-    //::day01_inverse_captcha,
+    ::day01_inverse_captcha,
     /*INJECT:REF*/
 )
 
