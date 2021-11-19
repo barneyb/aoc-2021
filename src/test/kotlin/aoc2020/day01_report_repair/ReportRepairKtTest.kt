@@ -7,7 +7,18 @@ internal class ReportRepairKtTest {
 
     @Test
     fun partOne() {
-        assertEquals(0, partOne("input"))
+        assertEquals(
+            514579, partOne(
+                """
+            1721
+            979
+            366
+            299
+            675
+            1456
+        """.trimIndent()
+            )
+        )
     }
 
     @kotlin.test.Ignore // todo: reinstate when ready!
