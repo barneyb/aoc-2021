@@ -10,18 +10,25 @@ internal class CorruptionChecksumKtTest {
         assertEquals(
             18, partOne(
                 """
-            5 1 9 5
-            7 5 3
-            2 4 6 8
-        """.trimIndent()
+                5 1 9 5
+                7 5 3
+                2 4 6 8
+                """.trimIndent()
             )
         )
     }
 
-    @kotlin.test.Ignore // todo: reinstate when ready!
     @Test
     fun partTwo() {
-        assertEquals(0, partTwo("input"))
+        assertEquals(
+            9, partTwo(
+                """
+                5 9 2 8
+                9 4 7 3
+                3 8 6 5
+                """.trimIndent()
+            )
+        )
     }
 
 }
