@@ -3,28 +3,25 @@ package aoc2020.day01_report_repair
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 
+private val WORKED_EXAMPLE = """
+    1721
+    979
+    366
+    299
+    675
+    1456
+""".trimIndent()
+
 internal class ReportRepairKtTest {
 
     @Test
     fun partOne() {
-        assertEquals(
-            514579, partOne(
-                """
-            1721
-            979
-            366
-            299
-            675
-            1456
-        """.trimIndent()
-            )
-        )
+        assertEquals(514579, partOne(WORKED_EXAMPLE))
     }
 
-    @kotlin.test.Ignore // todo: reinstate when ready!
     @Test
     fun partTwo() {
-        assertEquals(0, partTwo("input"))
+        assertEquals(241861950, partTwo(WORKED_EXAMPLE))
     }
 
 }
