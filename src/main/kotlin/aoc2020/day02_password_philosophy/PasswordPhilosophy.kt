@@ -9,11 +9,11 @@ data class Policy(val a: Int, val b: Int, val char: Char)
 
 data class Record(val policy: Policy, val password: String)
 
-object RecordParser {
+object parseRecord {
 
     private val RE_RECORD = Regex("""(\d+)-(\d+) ([a-z]): *([a-z]+)""")
 
-    fun parse(it: String): Record = RE_RECORD
+    operator fun invoke(it: String): Record = RE_RECORD
         .find(it)
         ?.let { m ->
             Record(
@@ -29,7 +29,7 @@ object RecordParser {
 }
 
 private fun String.toRecords() = lines()
-    .map(RecordParser::parse)
+    .map { parseRecord(it) }
 
 fun partOne(input: String): Int {
     // adding an early-exit when max is exceeded to skip processing
