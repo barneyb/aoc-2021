@@ -2,15 +2,10 @@ package aoc2020.day02_password_philosophy
 
 fun main() {
     util.solve(424, ::partOne)
-    util.solve(::partTwo)
+    util.solve(747, ::partTwo)
 }
 
-data class Policy(val min: Int, val max: Int, val char: Char) {
-    // adding an early-exit when max is exceeded to skip processing the
-    // rest of the password makes it slower.
-    fun conforms(password: String) =
-        password.count { it == char } in min..max
-}
+data class Policy(val a: Int, val b: Int, val char: Char)
 
 data class Record(val policy: Policy, val password: String)
 
@@ -33,11 +28,32 @@ object RecordParser {
         ?: throw IllegalStateException("Unrecognized record: '$it'")
 }
 
-fun partOne(input: String) = input
-    .lines()
+private fun String.toRecords() = lines()
     .map(RecordParser::parse)
-    .count {
-        it.policy.conforms(it.password)
+
+fun partOne(input: String): Int {
+    // adding an early-exit when max is exceeded to skip processing
+    // the rest of the password makes it slower.
+    fun Policy.conforms(password: String) =
+        password.count { it == char } in a..b
+
+    return input
+        .toRecords()
+        .count {
+            it.policy.conforms(it.password)
+        }
+}
+
+fun partTwo(input: String): Int {
+    fun Policy.conforms(password: String): Boolean {
+        val atA = password[a - 1] == char
+        val atB = password[b - 1] == char
+        return if (atA) !atB else atB
     }
 
-fun partTwo(input: String) = input.trim().length
+    return input
+        .toRecords()
+        .count {
+            it.policy.conforms(it.password)
+        }
+}

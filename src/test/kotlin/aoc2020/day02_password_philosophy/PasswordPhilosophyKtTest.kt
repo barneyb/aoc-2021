@@ -16,10 +16,9 @@ internal class PasswordPhilosophyKtTest {
         assertEquals(2, partOne(WORKED_EXAMPLE))
     }
 
-    @kotlin.test.Ignore // todo: reinstate when ready!
     @Test
     fun partTwo() {
-        assertEquals(0, partTwo("input"))
+        assertEquals(1, partTwo(WORKED_EXAMPLE))
     }
 
 }
