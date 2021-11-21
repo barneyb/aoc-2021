@@ -52,6 +52,8 @@ fi
 
 DAY_DIR="day${DAY}_${SLUG}"
 
+git checkout -b "${DAY_DIR}" master
+
 root="kotlin"
 res_root="resources"
 pkg=""
@@ -110,7 +112,6 @@ sed -e "s~/\*INJECT:IMPORT\*/~import ${pkg}${DAY_DIR}.main as ${DAY_DIR}\\n/*INJ
     -e "s~/\*INJECT:REF\*/~//::${DAY_DIR},\\n    /*INJECT:REF*/~" \
     -i src/main/kotlin/main.kt
 
-git checkout -b "${DAY_DIR}" master
 git add src/main/kotlin src/test
 git commit -m "skeleton"
 
