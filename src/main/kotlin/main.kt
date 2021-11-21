@@ -32,7 +32,7 @@ private val days = listOf(
     ::day01_inverse_captcha,
     ::day02_corruption_checksum,
     ::day01_report_repair,
-    //::day02_password_philosophy,
+    ::day02_password_philosophy,
     /*INJECT:REF*/
 )
 
