@@ -81,6 +81,7 @@ fun solve(solver: (String) -> Any) {
     answer(actual, elapsed)
 }
 
+@Suppress("EXPERIMENTAL_IS_NOT_ENABLED")
 @OptIn(ExperimentalTime::class)
 fun answer(
     ans: Any,
