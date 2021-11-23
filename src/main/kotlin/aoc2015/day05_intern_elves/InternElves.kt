@@ -2,7 +2,7 @@ package aoc2015.day05_intern_elves
 
 fun main() {
     util.solve(236, ::partOne)
-    util.solve(::partTwo)
+    util.solve(51, ::partTwo)
 }
 
 private fun String.isNice(): Boolean {
@@ -29,4 +29,11 @@ fun partOne(input: String) = input
     .lines()
     .count { it.isNice() }
 
-fun partTwo(input: String) = input.trim().length
+private var RE_REPEATED_PAIR = Regex(".*(..).*\\1.*")
+private var RE_SEPARATED_REPEAT = Regex(".*(.).\\1.*")
+
+fun partTwo(input: String) = input
+    .lines()
+    .count {
+        RE_REPEATED_PAIR.matches(it) && RE_SEPARATED_REPEAT.matches(it)
+    }

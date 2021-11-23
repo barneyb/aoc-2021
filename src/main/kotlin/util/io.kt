@@ -6,6 +6,9 @@ import com.github.ajalt.mordant.rendering.TextStyles
 import com.github.ajalt.mordant.table.table
 import com.github.ajalt.mordant.terminal.Terminal
 import java.io.File
+import java.time.Duration
+import kotlin.time.ExperimentalTime
+import kotlin.time.toKotlinDuration
 
 /**
  * It's unlikely you want this one; use `getInput(Class)` passing "self class".
@@ -45,24 +48,40 @@ private fun nextAnswerLabel() = when (++answerCount) {
 
 fun <T : Any> solve(expected: T, solver: (String) -> T) {
     val input = getInput(solver.javaClass)
-    val watch = Stopwatch()
-    val actual = solver.invoke(input)
-    val elapsed = watch.elapsed
+    val (actual: T, elapsed: Long) = solveAndTime(solver, input)
     val correct = expected == actual
-    val style = if (correct)
-        TextColors.brightGreen
-    else
-        TextColors.red
+    val style = if (correct) TextColors.brightGreen else TextColors.red
     answer(actual, elapsed, style)
     if (!correct) throw AssertionError("expected '$expected', but got '$actual'")
 }
 
-fun solve(solver: (String) -> Any) {
-    val input = getInput(solver.javaClass)
-    val watch = Stopwatch()
-    answer(solver.invoke(input), watch.elapsed)
+private fun <T : Any> solveAndTime(
+    solver: (String) -> T,
+    input: String
+): Pair<T, Long> {
+    var actual: T
+    var elapsed: Long
+    var repeat = 0
+    while (true) {
+        val watch = Stopwatch()
+        actual = solver.invoke(input)
+        elapsed = watch.elapsed
+        if (repeat > 0 || elapsed > 500) break
+        if (repeat > 1 || elapsed > 200) break
+        if (repeat > 2 || elapsed > 100) break
+        if (repeat > 3 || elapsed > 50) break
+        ++repeat
+    }
+    return Pair(actual, elapsed)
 }
 
+fun solve(solver: (String) -> Any) {
+    val input = getInput(solver.javaClass)
+    val (actual: Any, elapsed: Long) = solveAndTime(solver, input)
+    answer(actual, elapsed)
+}
+
+@OptIn(ExperimentalTime::class)
 fun answer(
     ans: Any,
     elapsed: Long,
@@ -73,7 +92,10 @@ fun answer(
         body {
             row(
                 style("Answer " + nextAnswerLabel()) + " " +
-                        TextColors.gray("(%,d ms)".format(elapsed)) + ": " +
+                        TextColors.gray(
+                            "(" + Duration.ofMillis(elapsed).toKotlinDuration()
+                                .toString()
+                        ) + "): " +
                         TextStyles.bold(ans.toString())
             )
         }
