@@ -4,14 +4,18 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 
 private val WORKED_EXAMPLE = """
-    input
+    ugknbfddgicrmopn
+    aaa
+    jchzalrnumimnmhp
+    haegwjzuvuyypxyu
+    dvszwmarrgswjxmb
 """.trimIndent()
 
 internal class InternElvesKtTest {
 
     @Test
     fun partOne() {
-        assertEquals(0, partOne(WORKED_EXAMPLE))
+        assertEquals(2, partOne(WORKED_EXAMPLE))
     }
 
     @kotlin.test.Ignore // todo: reinstate when ready!
