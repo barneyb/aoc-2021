@@ -11,7 +11,7 @@ import kotlin.time.ExperimentalTime
 import kotlin.time.toKotlinDuration
 
 /**
- * It's unlikely you want this one; use `getInput(Class)` passing "self class".
+ * It's unlikely you want this one; use [getInput] passing "self class".
  */
 fun getInput(): String {
     val ctxFile = File("input.txt")
