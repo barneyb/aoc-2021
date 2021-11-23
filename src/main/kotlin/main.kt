@@ -15,6 +15,7 @@ import aoc2017.day01_inverse_captcha.main as day01_inverse_captcha
 import aoc2017.day02_corruption_checksum.main as day02_corruption_checksum
 import aoc2020.day01_report_repair.main as day01_report_repair
 import aoc2020.day02_password_philosophy.main as day02_password_philosophy
+import aoc2015.day05_intern_elves.main as day05_intern_elves
 /*INJECT:IMPORT*/
 
 private val days = listOf(
@@ -33,6 +34,7 @@ private val days = listOf(
     ::day02_corruption_checksum,
     ::day01_report_repair,
     ::day02_password_philosophy,
+    //::day05_intern_elves,
     /*INJECT:REF*/
 )
 
