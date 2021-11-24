@@ -11,7 +11,18 @@ internal class FireHazardKtTest {
 
     @Test
     fun partOne() {
-        assertEquals(0, partOne(WORKED_EXAMPLE))
+        assertEquals(1_000_000, partOne("turn on 0,0 through 999,999"))
+        assertEquals(1_000, partOne("toggle 0,0 through 999,0"))
+        assertEquals(0, partOne("turn off 499,499 through 500,500"))
+        assertEquals(
+            1_000_000 - 1_000 - 4, partOne(
+                """
+                turn on 0,0 through 999,999
+                toggle 0,0 through 999,0
+                turn off 499,499 through 500,500
+                """.trimIndent()
+            )
+        )
     }
 
     @kotlin.test.Ignore // todo: reinstate when ready!
