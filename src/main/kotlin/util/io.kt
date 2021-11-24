@@ -66,10 +66,11 @@ private fun <T : Any> solveAndTime(
         val watch = Stopwatch()
         actual = solver.invoke(input)
         elapsed = watch.elapsed
-        if (repeat > 0 || elapsed > 500) break
-        if (repeat > 1 || elapsed > 200) break
-        if (repeat > 2 || elapsed > 100) break
-        if (repeat > 3 || elapsed > 50) break
+        if (repeat > 0 && elapsed > 400) break
+        if (repeat > 1 && elapsed > 200) break
+        if (repeat > 2 && elapsed > 100) break
+        if (repeat > 3 && elapsed > 50) break
+        if (repeat > 4) break
         ++repeat
     }
     return Pair(actual, elapsed)
