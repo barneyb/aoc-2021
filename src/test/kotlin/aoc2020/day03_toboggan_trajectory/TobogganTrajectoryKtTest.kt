@@ -24,10 +24,30 @@ internal class TobogganTrajectoryKtTest {
         assertEquals(7, partOne(WORKED_EXAMPLE))
     }
 
-    @kotlin.test.Ignore // todo: reinstate when ready!
     @Test
     fun partTwo() {
-        assertEquals(0, partTwo(WORKED_EXAMPLE))
+        assertEquals(336, partTwo(WORKED_EXAMPLE))
+    }
+
+    @Test
+    fun simple() {
+        assertEquals(
+            10 * 3 * 2 * 1 * 5, partTwo(
+                """
+                ...........
+                .#.#.#.#...
+                .##...#...#
+                ...#.....#.
+                ..#.#......
+                .....#.....
+                ...#..#....
+                .......#...
+                ....#...#..
+                .........#.
+                .....#....#
+                """.trimIndent()
+            )
+        )
     }
 
 }
