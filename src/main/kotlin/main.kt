@@ -18,6 +18,7 @@ import aoc2020.day02_password_philosophy.main as day02_password_philosophy
 import aoc2015.day05_intern_elves.main as day05_intern_elves
 import aoc2015.day06_fire_hazard.main as day06_fire_hazard
 import aoc2020.day03_toboggan_trajectory.main as day03_toboggan_trajectory
+import aoc2020.day04_passport_processing.main as day04_passport_processing
 /*INJECT:IMPORT*/
 
 private val days = listOf(
@@ -39,6 +40,7 @@ private val days = listOf(
     ::day05_intern_elves,
     ::day06_fire_hazard,
     ::day03_toboggan_trajectory,
+    //::day04_passport_processing,
     /*INJECT:REF*/
 )
 
