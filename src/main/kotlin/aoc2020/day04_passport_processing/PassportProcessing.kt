@@ -15,8 +15,7 @@ private fun String.toKeyMap() =
                 .associate { (a, b) -> Pair(a, b) }
         }
 
-private val EYE_COLORS =
-    hashSetOf("amb", "blu", "brn", "gry", "grn", "hzl", "oth")
+private val RE_EYE_COLOR = "amb|blu|brn|gry|grn|hzl|oth".toRegex()
 private val RE_HEX_COLOR = "^#[0-9a-f]{6}$".toRegex()
 private val RE_PASSPORT_ID = "^[0-9]{9}$".toRegex()
 
@@ -32,7 +31,7 @@ private val validators = mapOf<String, (String) -> Boolean>(
         }
     },
     "hcl" to { RE_HEX_COLOR.matches(it) },
-    "ecl" to { it in EYE_COLORS },
+    "ecl" to { RE_EYE_COLOR.matches(it) },
     "pid" to { RE_PASSPORT_ID.matches(it) },
 )
 
