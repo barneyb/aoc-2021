@@ -2,7 +2,7 @@ package aoc2020.day05_binary_boarding
 
 fun main() {
     util.solve(842, ::partOne)
-    util.solve(::partTwo)
+    util.solve(617, ::partTwo)
 }
 
 private val IntRange.size
@@ -27,4 +27,15 @@ fun partOne(input: String) =
         .lines()
         .maxOf(::seatId)
 
-fun partTwo(input: String) = input.trim().length
+fun partTwo(input: String): Int {
+    val ids = input
+        .lines()
+        .map(::seatId)
+        .toSortedSet()
+    for (id in ids.first()..ids.last()) {
+        if (!ids.contains(id)) {
+            return id
+        }
+    }
+    throw IllegalStateException("No empty seat found?!")
+}
