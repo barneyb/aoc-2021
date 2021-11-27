@@ -44,3 +44,24 @@ fun String.hasCharWithExactOccurrences(n: Int) = when {
         hist.any { (_, count) -> count == n }
     }
 }
+
+fun String.paragraphs(): List<String> {
+    val paragraphs = mutableListOf<String>()
+    val sb = StringBuilder()
+    fun endOfParagraph() {
+        if (sb.isNotEmpty()) {
+            paragraphs.add(sb.toString())
+            sb.clear()
+        }
+    }
+    lines().forEach {
+        if (it.isBlank()) {
+            endOfParagraph()
+        } else {
+            if (sb.isNotEmpty()) sb.append(' ')
+            sb.append(it)
+        }
+    }
+    endOfParagraph()
+    return paragraphs
+}
