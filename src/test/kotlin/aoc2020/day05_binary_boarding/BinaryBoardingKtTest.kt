@@ -10,8 +10,25 @@ private val WORKED_EXAMPLE = """
 internal class BinaryBoardingKtTest {
 
     @Test
+    fun seatId() {
+        assertEquals(357, seatId("FBFBBFFRLR"))
+        assertEquals(567, seatId("BFFFBBFRRR"))
+        assertEquals(119, seatId("FFFBBBFRRR"))
+        assertEquals(820, seatId("BBFFBBFRLL"))
+    }
+
+    @Test
     fun partOne() {
-        assertEquals(0, partOne(WORKED_EXAMPLE))
+        assertEquals(
+            820, partOne(
+                """
+            FBFBBFFRLR
+            BFFFBBFRRR
+            FFFBBBFRRR
+            BBFFBBFRLL
+        """.trimIndent()
+            )
+        )
     }
 
     @kotlin.test.Ignore // todo: reinstate when ready!
