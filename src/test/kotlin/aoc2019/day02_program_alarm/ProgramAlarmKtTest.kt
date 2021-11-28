@@ -3,10 +3,6 @@ package aoc2019.day02_program_alarm
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 
-private val WORKED_EXAMPLE = """
-    input
-""".trimIndent()
-
 internal class ProgramAlarmKtTest {
 
     @Test
@@ -23,12 +19,6 @@ internal class ProgramAlarmKtTest {
         assertEquals(6, evaluateForPosition("2,3,0,3,99", 3))
         assertEquals(9801, evaluateForPosition("2,4,4,5,99,0", 5))
         assertEquals(30, evaluateForPosition("1,1,1,4,99,5,6,0,99", 0))
-    }
-
-    @kotlin.test.Ignore // todo: reinstate when ready!
-    @Test
-    fun partTwo() {
-        assertEquals(0, partTwo(WORKED_EXAMPLE))
     }
 
 }

@@ -2,7 +2,7 @@ package aoc2019.day02_program_alarm
 
 fun main() {
     util.solve(4090689, ::partOne)
-    util.solve(::partTwo)
+    util.solve(7733, ::partTwo)
 }
 
 private fun String.compile() =
@@ -44,4 +44,17 @@ internal fun evaluateForPosition(program: IntArray, position: Int): Int {
     }
 }
 
-fun partTwo(input: String) = input.trim().length
+fun partTwo(input: String): Int {
+    val baseCodes = input.compile()
+    for (noun in 0..99) {
+        for (verb in 0..99) {
+            val codes = baseCodes.clone()
+            codes[1] = noun
+            codes[2] = verb
+            if (evaluateForPosition(codes, 0) == 19690720) {
+                return noun * 100 + verb
+            }
+        }
+    }
+    throw IllegalStateException("No noun:verb pair found?!")
+}
