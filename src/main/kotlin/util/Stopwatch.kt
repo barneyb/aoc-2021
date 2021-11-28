@@ -1,8 +1,13 @@
 package util
 
-class Stopwatch(private val startedAt: Long = System.currentTimeMillis()) {
+import kotlin.time.Duration
+import kotlin.time.DurationUnit
+import kotlin.time.toDuration
 
-    val elapsed: Long
-        get() = System.currentTimeMillis() - startedAt
+class Stopwatch(private val startedAt: Long = System.nanoTime()) {
+
+    val elapsed: Duration
+        get() = (System.nanoTime() - startedAt)
+            .toDuration(DurationUnit.NANOSECONDS)
 
 }
