@@ -30,10 +30,11 @@ fun partOne(input: String) =
 fun partTwo(input: String): Int {
     val ids = input
         .lines()
+        .asSequence()
         .map(::seatId)
-        .toSortedSet()
-    for (id in ids.first()..ids.last()) {
-        if (!ids.contains(id)) {
+        .toSet()
+    for (id in 842 downTo 0) {
+        if (!ids.contains(id) && ids.contains(id + 1) && ids.contains(id - 1)) {
             return id
         }
     }
