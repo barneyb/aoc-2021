@@ -8,8 +8,9 @@ import com.github.ajalt.mordant.table.Borders
 import com.github.ajalt.mordant.table.table
 import com.github.ajalt.mordant.terminal.Terminal
 import java.io.File
-import java.util.*
-import kotlin.math.*
+import kotlin.math.ceil
+import kotlin.math.pow
+import kotlin.math.sqrt
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.nanoseconds
 import kotlin.time.DurationUnit
@@ -165,21 +166,22 @@ fun <T : Any> benchmark(expected: T, solver: (String) -> T) {
         }
     })
 
-    val range = samples
-        .fold(mean.toLong()..mean.toLong()) { r, s ->
-            val nanos = s.inWholeNanoseconds
-            (min(r.first, nanos)..max(r.last, nanos))
-        }
-    val width = (range.last - range.first) / 15
-    val hist = samples
-        .map {
-            (it.inWholeNanoseconds - range.first) / width * width + range.first
-        }
-        .fold(TreeMap<Long, Int>()) { map, b ->
-            map.merge(b, 1, Int::plus)
-            map
-        }
-    val maxVal = hist.values.maxOf { it }
+    barChart(
+        continuousHistogram(
+            samples,
+            keySelector = Duration::inWholeNanoseconds
+        ),
+        labelSelector = { it.nanoseconds.toString() }
+    )
+}
+
+private val ZERO_GRAY = TextColors.gray(fraction = 0.667)
+
+fun <V> barChart(
+    data: Map<V, Int>,
+    labelSelector: (V) -> String = { it.toString() },
+) {
+    val maxVal = data.values.maxOf { it }
     Terminal().println(table {
         borderTextStyle = TextColors.gray
         borders = Borders.LEFT_RIGHT
@@ -187,16 +189,21 @@ fun <T : Any> benchmark(expected: T, solver: (String) -> T) {
             align = TextAlign.RIGHT
         }
         body {
-            for (b in range step width) {
-                val n = hist.getOrDefault(b, 0)
+            data.keys.forEach { b ->
+                val n = data.getOrDefault(b, 0)
                 val bar = "█".repeat(ceil(n * 50.0 / maxVal).toInt())
                 row(
-                    b.nanoseconds.toString(),
-                    if (mean > b && mean < b + width)
-                        TextColors.blue(bar)
+                    labelSelector(b).let {
+                        if (n == 0)
+                            ZERO_GRAY(it)
+                        else
+                            it
+                    },
+                    TextColors.brightBlue(bar),
+                    if (n == 0)
+                        ""
                     else
-                        TextColors.brightBlue(bar),
-                    n.toString()
+                        n.toString()
                 )
             }
         }
