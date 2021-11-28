@@ -180,8 +180,6 @@ fun <T : Any> benchmark(expected: T, solver: (String) -> T) {
             map
         }
     val maxVal = hist.values.maxOf { it }
-    val labels = (range step width)
-        .associateWith { it.nanoseconds.toString() }
     Terminal().println(table {
         borderTextStyle = TextColors.gray
         borders = Borders.LEFT_RIGHT
@@ -191,14 +189,14 @@ fun <T : Any> benchmark(expected: T, solver: (String) -> T) {
         body {
             for (b in range step width) {
                 val n = hist.getOrDefault(b, 0)
-                val bar = "█".repeat(ceil(n * 55.0 / maxVal).toInt())
+                val bar = "█".repeat(ceil(n * 50.0 / maxVal).toInt())
                 row(
-                    labels[b],
+                    b.nanoseconds.toString(),
                     if (mean > b && mean < b + width)
                         TextColors.blue(bar)
                     else
                         TextColors.brightBlue(bar),
-                    n
+                    n.toString()
                 )
             }
         }
