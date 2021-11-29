@@ -7,11 +7,21 @@ fun main() {
 
 internal fun Int.isValidPassword(): Boolean {
     if (this < 100_000 || this > 999_999) return false
-    val s = toString()
-    if (s[0] == s[1] || s[1] == s[2] || s[2] == s[3] || s[3] == s[4] || s[4] == s[5]) {
-        return s[0] <= s[1] && s[1] <= s[2] && s[2] <= s[3] && s[3] <= s[4] && s[4] <= s[5]
+    var next = mod(10)
+    var n = div(10)
+    var hasDouble = false
+    for (i in 4 downTo 0) {
+        val curr = n % 10
+        if (curr > next) {
+            return false
+        }
+        if (curr == next) {
+            hasDouble = true
+        }
+        next = curr
+        n /= 10
     }
-    return false
+    return hasDouble
 }
 
 fun partOne(input: String): Int {
