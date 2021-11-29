@@ -44,7 +44,7 @@ private val days = listOf(
     ::day03_toboggan_trajectory,
     ::day04_passport_processing,
     ::day05_binary_boarding,
-    //::day02_program_alarm,
+    ::day02_program_alarm,
     /*INJECT:REF*/
 )
 
