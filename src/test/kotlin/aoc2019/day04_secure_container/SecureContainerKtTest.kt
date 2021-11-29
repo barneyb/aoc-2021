@@ -13,4 +13,12 @@ internal class SecureContainerKtTest {
         assertFalse(123789.isValidPassword())
     }
 
+    @Test
+    fun partTwo() {
+        assertTrue(112233.isMoreValidPassword())
+        assertFalse(123444.isMoreValidPassword())
+        assertTrue(111122.isMoreValidPassword())
+        assertFalse(111111.isMoreValidPassword())
+    }
+
 }
