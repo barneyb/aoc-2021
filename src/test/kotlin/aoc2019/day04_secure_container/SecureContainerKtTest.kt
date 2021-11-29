@@ -1,23 +1,16 @@
 package aoc2019.day04_secure_container
 
-import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertFalse
+import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
-
-private val WORKED_EXAMPLE = """
-    input
-""".trimIndent()
 
 internal class SecureContainerKtTest {
 
     @Test
     fun partOne() {
-        assertEquals(0, partOne(WORKED_EXAMPLE))
-    }
-
-    @kotlin.test.Ignore // todo: reinstate when ready!
-    @Test
-    fun partTwo() {
-        assertEquals(0, partTwo(WORKED_EXAMPLE))
+        assertTrue(111111.isValidPassword())
+        assertFalse(223450.isValidPassword())
+        assertFalse(123789.isValidPassword())
     }
 
 }
