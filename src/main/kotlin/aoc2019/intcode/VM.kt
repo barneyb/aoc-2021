@@ -25,23 +25,22 @@ class VM {
         }
     }
 
-    fun step() {
-        when (next) {
-            1 -> {
-                val answer = memory[next] + memory[next]
-                memory[next] = answer
-            }
-            2 -> {
-                val answer = memory[next] * memory[next]
-                memory[next] = answer
-            }
-            99 -> {}
-            else -> throw IllegalStateException("Unknown ${memory[ip - 1]} opcode at position ${ip - 1}")
-        }
+    @Suppress("ReplaceWithOperatorAssignment")
+    fun step() = when (next) {
+        1 -> param = param + param
+        2 -> param = param * param
+        99 -> {}
+        else -> throw IllegalStateException("Unknown ${memory[ip - 1]} opcode at position ${ip - 1}")
     }
 
     private val next
         get() = memory[ip++]
+
+    private var param: Int
+        get() = memory[next]
+        set(value) {
+            memory[next] = value
+        }
 
 }
 
