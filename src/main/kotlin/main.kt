@@ -22,6 +22,7 @@ import aoc2020.day04_passport_processing.main as day04_passport_processing
 import aoc2020.day05_binary_boarding.main as day05_binary_boarding
 import aoc2019.day02_program_alarm.main as day02_program_alarm
 import aoc2019.day04_secure_container.main as day04_secure_container
+import day01_sonar_sweep.main as day01_sonar_sweep
 /*INJECT:IMPORT*/
 
 private val days = listOf(
@@ -47,6 +48,7 @@ private val days = listOf(
     ::day05_binary_boarding,
     ::day02_program_alarm,
     ::day04_secure_container,
+    //::day01_sonar_sweep,
     /*INJECT:REF*/
 )
 
