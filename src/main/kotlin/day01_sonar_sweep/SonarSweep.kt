@@ -3,11 +3,12 @@ package day01_sonar_sweep
 import java.util.*
 
 fun main() {
-    util.solve(1616, ::partOne)
+    util.solve(1616, ::partOneFold)
+    util.solve(1616, ::partOneLoop)
     util.solve(1645, ::partTwo)
 }
 
-fun partOne(input: String) =
+fun partOneFold(input: String) =
     input
         .lineSequence()
         .map { it.toInt() }
@@ -15,6 +16,19 @@ fun partOne(input: String) =
             Pair(if (it > prev) n + 1 else n, it)
         }
         .first
+
+fun partOneLoop(input: String): Int {
+    var prev = Int.MAX_VALUE
+    var count = 0
+    for (it in input.lineSequence()) {
+        val n = it.toInt()
+        if (n > prev) {
+            count += 1
+        }
+        prev = n
+    }
+    return count
+}
 
 fun partTwo(input: String): Int {
     var prev = Int.MAX_VALUE

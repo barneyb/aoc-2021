@@ -19,8 +19,13 @@ private val WORKED_EXAMPLE = """
 internal class SonarSweepKtTest {
 
     @Test
-    fun partOne() {
-        assertEquals(7, partOne(WORKED_EXAMPLE))
+    fun partOneLoop() {
+        assertEquals(7, partOneLoop(WORKED_EXAMPLE))
+    }
+
+    @Test
+    fun partOneFold() {
+        assertEquals(7, partOneFold(WORKED_EXAMPLE))
     }
 
     @Test
