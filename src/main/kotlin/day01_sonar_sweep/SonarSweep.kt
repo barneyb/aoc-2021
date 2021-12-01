@@ -9,8 +9,7 @@ fun main() {
 
 fun partOne(input: String) =
     input
-        .lines()
-        .asSequence()
+        .lineSequence()
         .map { it.toInt() }
         .fold(Pair(0, Int.MAX_VALUE)) { (n, prev), it ->
             Pair(if (it > prev) n + 1 else n, it)
@@ -22,7 +21,7 @@ fun partTwo(input: String): Int {
     var curr = 0
     var count = 0
     val buffer: Queue<Int> = LinkedList()
-    for (it in input.lines()) {
+    for (it in input.lineSequence()) {
         val n = it.toInt()
         buffer.add(n)
         curr += n
