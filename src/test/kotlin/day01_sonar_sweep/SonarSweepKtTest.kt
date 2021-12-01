@@ -23,10 +23,9 @@ internal class SonarSweepKtTest {
         assertEquals(7, partOne(WORKED_EXAMPLE))
     }
 
-    @kotlin.test.Ignore // todo: reinstate when ready!
     @Test
     fun partTwo() {
-        assertEquals(0, partTwo(WORKED_EXAMPLE))
+        assertEquals(5, partTwo(WORKED_EXAMPLE))
     }
 
 }
