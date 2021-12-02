@@ -142,7 +142,9 @@ private fun <T : Any> bench(
             throw AssertionError("expected '$expected', but got '$actual'")
     }
     print("benchmarking...")
-    repeat(5) {
+    val warmupWatch = Stopwatch()
+    var warmupCount = 0
+    while (warmupCount++ < 5 && warmupWatch.elapsed < CUTOFF_BENCHMARK_DURATION) {
         check(solver(input))
     }
     print("warmed up...")
