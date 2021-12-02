@@ -126,6 +126,14 @@ private val CUTOFF_BENCHMARK_DURATION = 2_000_000_000.nanoseconds
 private const val CUTOFF_BENCHMARK_ITERATIONS = 2000
 
 fun <T : Any> benchmark(expected: T, solver: (String) -> T) {
+    val (samples, total) = bench(expected, solver)
+    benchSummary(expected, samples, total)
+}
+
+private fun <T : Any> bench(
+    expected: T,
+    solver: (String) -> T
+): Pair<List<Duration>, Duration> {
     val input = getInput(solver.javaClass)
     fun check(actual: T) {
         if (expected != actual)
@@ -147,6 +155,14 @@ fun <T : Any> benchmark(expected: T, solver: (String) -> T) {
         samples.add(elapsed)
     }
     println("done!")
+    return Pair(samples, total)
+}
+
+private fun <T : Any> benchSummary(
+    expected: T,
+    samples: Collection<Duration>,
+    total: Duration
+) {
     val N = samples.size
     val mean = total.nanoseconds / N
     val variance =
@@ -165,6 +181,11 @@ fun <T : Any> benchmark(expected: T, solver: (String) -> T) {
             )
         }
     })
+}
+
+fun <T : Any> benchAndHist(expected: T, solver: (String) -> T) {
+    val (samples, total) = bench(expected, solver)
+    benchSummary(expected, samples, total)
 
     barChart(
         continuousHistogram(
