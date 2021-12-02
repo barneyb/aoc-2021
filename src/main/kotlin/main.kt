@@ -50,7 +50,7 @@ private val days = listOf(
     ::day02_program_alarm,
     ::day04_secure_container,
     ::day01_sonar_sweep,
-    //::day02_dive,
+    ::day02_dive,
     /*INJECT:REF*/
 )
 
