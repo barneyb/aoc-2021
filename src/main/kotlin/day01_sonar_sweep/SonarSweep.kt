@@ -4,6 +4,8 @@ import java.util.*
 
 fun main() {
     util.solve(1616, ::partOneFold)
+    util.solve(1616, ::partOneZipSeq)
+    util.solve(1616, ::partOneZip)
     util.solve(1616, ::partOneLoop)
     util.solve(1645, ::partTwo)
 }
@@ -29,6 +31,21 @@ fun partOneLoop(input: String): Int {
     }
     return count
 }
+
+fun partOneZipSeq(input: String) =
+    input
+        .lineSequence()
+        .map { it.toInt() }
+        .zipWithNext()
+        .count { (a, b) -> a < b }
+
+fun partOneZip(input: String) =
+    input
+        .lines()
+        .map { it.toInt() }
+        .zipWithNext()
+        .filter { (a, b) -> a < b }
+        .size
 
 fun partTwo(input: String): Int {
     var prev = Int.MAX_VALUE
