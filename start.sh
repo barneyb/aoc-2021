@@ -17,8 +17,8 @@ THIS_YEAR="2021"
 THIS_DAY=`date +%d`
 
 # Past 8pm, assume I'm actually starting "tomorrow" (timezones! woo!)
-if [ `date +%H` -gt 20 ]; then
-    THIS_DAY=$(($THIS_DAY-1))
+if [ `date +%H` -ge 20 ]; then
+    THIS_DAY=$(($THIS_DAY+1))
 fi
 
 read -r -p "Year (${THIS_YEAR}): " YEAR
