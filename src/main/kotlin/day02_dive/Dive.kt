@@ -4,20 +4,24 @@ fun main() {
     util.solve(1840243, ::partOne)
     util.solve(1727785422, ::partTwo)
     util.solve(1727785422, ::partTwoLoop)
+    util.solve(1727785422, ::partTwoStateful)
 }
 
-interface Coords<T : Coords<T>> {
+interface OceanLocation {
     val pos: Int
     val depth: Int
-    fun forward(n: Int): T
-    fun up(n: Int): T
-    fun down(n: Int): T
 
     /**
      * The product of position and depth. No Manhattan distance this year!
      */
     val location
         get() = pos * depth
+}
+
+interface Coords<T : Coords<T>> : OceanLocation {
+    fun forward(n: Int): T
+    fun up(n: Int): T
+    fun down(n: Int): T
 }
 
 data class Coords1(
@@ -91,4 +95,40 @@ fun partTwoLoop(input: String): Int {
         }
     }
     return pos * depth
+}
+
+data class Sub(
+    override var pos: Int = 0,
+    override var depth: Int = 0,
+    var aim: Int = 0
+) : OceanLocation {
+
+    fun forward(n: Int) {
+        pos += n
+        depth += aim * n
+    }
+
+    fun up(n: Int) {
+        aim -= n
+    }
+
+    fun down(n: Int) {
+        aim += n
+    }
+
+}
+
+fun partTwoStateful(input: String): Int {
+    val sub = Sub()
+    for (line in input.lineSequence()) {
+        val spaceIdx = line.indexOf(" ")
+        val n = line.substring(spaceIdx + 1).toInt()
+        when (line[0]) {
+            'f' -> sub.forward(n)
+            'u' -> sub.up(n)
+            'd' -> sub.down(n)
+            else -> throw IllegalArgumentException("Unrecognized '$line' instruction")
+        }
+    }
+    return sub.location
 }
