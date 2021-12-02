@@ -8,6 +8,7 @@ fun main() {
     util.solve(1616, ::partOneZip)
     util.solve(1616, ::partOneLoop)
     util.solve(1645, ::partTwo)
+    util.solve(1645, ::partTwoZip)
 }
 
 fun partOneFold(input: String) =
@@ -68,3 +69,12 @@ fun partTwo(input: String): Int {
     }
     return count
 }
+
+fun partTwoZip(input: String) =
+    input
+        .lineSequence()
+        .map { it.toInt() }
+        .windowed(3)
+        .map { it.sum() }
+        .zipWithNext()
+        .count { (a, b) -> a < b }

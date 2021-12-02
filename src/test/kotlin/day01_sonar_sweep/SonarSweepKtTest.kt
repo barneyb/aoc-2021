@@ -43,4 +43,9 @@ internal class SonarSweepKtTest {
         assertEquals(5, partTwo(WORKED_EXAMPLE))
     }
 
+    @Test
+    fun partTwoZip() {
+        assertEquals(5, partTwoZip(WORKED_EXAMPLE))
+    }
+
 }
