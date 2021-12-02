@@ -104,7 +104,7 @@ fun solve(solver: (String) -> Any) {
 
 fun answer(
     ans: Any,
-    elapsed: Duration,
+    elapsed: Any,
     style: TextStyle = TextColors.brightBlue,
     label: String = "Answer ${nextAnswerLabel()}",
 ) {
@@ -142,7 +142,9 @@ private fun <T : Any> bench(
             throw AssertionError("expected '$expected', but got '$actual'")
     }
     print("benchmarking...")
-    repeat(5) {
+    val warmupWatch = Stopwatch()
+    var warmupCount = 0
+    while (warmupCount++ < 5 && warmupWatch.elapsed < CUTOFF_BENCHMARK_DURATION) {
         check(solver(input))
     }
     print("warmed up...")
@@ -172,28 +174,35 @@ private fun <T : Any> benchSummary(
         samples.sumOf { (it.nanoseconds - mean).pow(2.0) } / N
     val stddev = sqrt(variance)
     val ci95 = 1.96 * stddev / sqrt(N.toDouble())
-    val durationString = "" + mean.nanoseconds + " ± " + ci95.nanoseconds
     // since correctness was checked each iteration, all is well at this point
     Terminal().println(table {
-        borderTextStyle = TextColors.brightGreen
+        borderTextStyle = TextColors.magenta
         body {
             row(
-                TextColors.brightGreen(label) + " " +
-                        TextColors.gray("($durationString, N=$N)") + ": " +
-                        TextStyles.bold(expected.toString())
+                TextColors.magenta(label) + TextColors.gray(
+                    " (" +
+                            TextColors.black(TextStyles.bold(mean.nanoseconds.toString())) +
+                            " ± ${ci95.nanoseconds}, N=$N): " +
+                            expected.toString()
+                )
             )
         }
     })
 }
 
-fun <T : Any> benchAndHist(expected: T, solver: (String) -> T) {
+fun <T : Any> benchAndHist(
+    expected: T,
+    solver: (String) -> T,
+    bucketCount: Int = 10
+) {
     val (samples, total) = bench(expected, solver)
     benchSummary(expected, samples, total, (solver as KCallable<*>).name)
 
     barChart(
         continuousHistogram(
             samples,
-            keySelector = Duration::inWholeNanoseconds
+            keySelector = Duration::inWholeNanoseconds,
+            bucketCount = bucketCount,
         ),
         labelSelector = { it.nanoseconds.toString() }
     )
