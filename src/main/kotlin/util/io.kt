@@ -104,7 +104,7 @@ fun solve(solver: (String) -> Any) {
 
 fun answer(
     ans: Any,
-    elapsed: Duration,
+    elapsed: Any,
     style: TextStyle = TextColors.brightBlue,
     label: String = "Answer ${nextAnswerLabel()}",
 ) {
@@ -172,15 +172,17 @@ private fun <T : Any> benchSummary(
         samples.sumOf { (it.nanoseconds - mean).pow(2.0) } / N
     val stddev = sqrt(variance)
     val ci95 = 1.96 * stddev / sqrt(N.toDouble())
-    val durationString = "" + mean.nanoseconds + " ± " + ci95.nanoseconds
     // since correctness was checked each iteration, all is well at this point
     Terminal().println(table {
-        borderTextStyle = TextColors.brightGreen
+        borderTextStyle = TextColors.magenta
         body {
             row(
-                TextColors.brightGreen(label) + " " +
-                        TextColors.gray("($durationString, N=$N)") + ": " +
-                        TextStyles.bold(expected.toString())
+                TextColors.magenta(label) + TextColors.gray(
+                    " (" +
+                            TextColors.black(TextStyles.bold(mean.nanoseconds.toString())) +
+                            " ± ${ci95.nanoseconds}, N=$N): " +
+                            expected.toString()
+                )
             )
         }
     })
