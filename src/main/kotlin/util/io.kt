@@ -186,14 +186,19 @@ private fun <T : Any> benchSummary(
     })
 }
 
-fun <T : Any> benchAndHist(expected: T, solver: (String) -> T) {
+fun <T : Any> benchAndHist(
+    expected: T,
+    solver: (String) -> T,
+    bucketCount: Int = 10
+) {
     val (samples, total) = bench(expected, solver)
     benchSummary(expected, samples, total, (solver as KCallable<*>).name)
 
     barChart(
         continuousHistogram(
             samples,
-            keySelector = Duration::inWholeNanoseconds
+            keySelector = Duration::inWholeNanoseconds,
+            bucketCount = bucketCount,
         ),
         labelSelector = { it.nanoseconds.toString() }
     )
