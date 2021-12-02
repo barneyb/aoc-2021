@@ -1,27 +1,42 @@
 package day02_dive
 
-import geom2d.Dir
-import geom2d.Point
-
 fun main() {
     util.solve(1840243, ::partOne)
-    util.solve(::partTwo)
+    util.solve(1727785422, ::partTwo)
 }
 
-fun partOne(input: String): Long {
+fun partOne(input: String): Int {
     val dest = input
         .lineSequence()
-        .fold(Point.ORIGIN) { p, it ->
-            val words = it.split(" ")
-            val n = words[1].toLong()
+        .fold(Pair(0, 0)) { p, line ->
+            val words = line.split(" ")
+            val n = words[1].toInt()
             when (words[0]) {
-                "forward" -> p.step(Dir.EAST, n)
-                "up" -> p.step(Dir.NORTH, n)
-                "down" -> p.step(Dir.SOUTH, n)
-                else -> throw IllegalArgumentException("Unrecognized '$it' instruction")
+                "forward" -> Pair(p.first + n, p.second)
+                "up" -> Pair(p.first, p.second - n)
+                "down" -> Pair(p.first, p.second + n)
+                else -> throw IllegalArgumentException("Unrecognized '$line' instruction")
             }
         }
-    return dest.x * dest.y
+    return dest.first * dest.second
 }
 
-fun partTwo(input: String) = input.trim().length
+fun partTwo(input: String): Int {
+    val dest = input
+        .lineSequence()
+        .fold(Triple(0, 0, 0)) { t, line ->
+            val words = line.split(" ")
+            val n = words[1].toInt()
+            when (words[0]) {
+                "forward" -> Triple(
+                    t.first + n,
+                    t.second + t.third * n,
+                    t.third
+                )
+                "up" -> Triple(t.first, t.second, t.third - n)
+                "down" -> Triple(t.first, t.second, t.third + n)
+                else -> throw IllegalArgumentException("Unrecognized '$line' instruction")
+            }
+        }
+    return dest.first * dest.second
+}
