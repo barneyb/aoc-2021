@@ -78,15 +78,15 @@ fun partTwoLoop(input: String): Int {
     var depth = 0
     var aim = 0
     for (line in input.lineSequence()) {
-        val words = line.split(" ")
-        val n = words[1].toInt()
-        when (words[0]) {
-            "forward" -> {
+        val spaceIdx = line.indexOf(" ")
+        val n = line.substring(spaceIdx + 1).toInt()
+        when (line[0]) {
+            'f' -> {
                 pos += n
                 depth += aim * n
             }
-            "up" -> aim -= n
-            "down" -> aim += n
+            'u' -> aim -= n
+            'd' -> aim += n
             else -> throw IllegalArgumentException("Unrecognized '$line' instruction")
         }
     }
