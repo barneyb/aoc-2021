@@ -11,6 +11,7 @@ import java.io.File
 import kotlin.math.ceil
 import kotlin.math.pow
 import kotlin.math.sqrt
+import kotlin.reflect.KCallable
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.nanoseconds
 import kotlin.time.DurationUnit
@@ -62,7 +63,7 @@ fun <T : Any> solve(expected: T, solver: (String) -> T) {
     val (actual: T, elapsed: Duration) = solveAndTime(solver, input)
     val correct = expected == actual
     val style = if (correct) TextColors.brightGreen else TextColors.red
-    answer(actual, elapsed, style)
+    answer(actual, elapsed, style, (solver as KCallable<*>).name)
     if (!correct) throw AssertionError("expected '$expected', but got '$actual'")
 }
 
@@ -98,19 +99,20 @@ private fun <T : Any> solveAndTime(
 fun solve(solver: (String) -> Any) {
     val input = getInput(solver.javaClass)
     val (actual: Any, elapsed: Duration) = solveAndTime(solver, input)
-    answer(actual, elapsed)
+    answer(actual, elapsed, label = (solver as KCallable<*>).name)
 }
 
 fun answer(
     ans: Any,
     elapsed: Duration,
-    style: TextStyle = TextColors.brightBlue
+    style: TextStyle = TextColors.brightBlue,
+    label: String = "Answer ${nextAnswerLabel()}",
 ) {
     Terminal().println(table {
         borderTextStyle = style
         body {
             row(
-                style("Answer ${nextAnswerLabel()}") + " " +
+                style(label) + " " +
                         TextColors.gray("($elapsed)") + ": " +
                         TextStyles.bold(ans.toString())
             )
@@ -127,7 +129,7 @@ private const val CUTOFF_BENCHMARK_ITERATIONS = 2000
 
 fun <T : Any> benchmark(expected: T, solver: (String) -> T) {
     val (samples, total) = bench(expected, solver)
-    benchSummary(expected, samples, total)
+    benchSummary(expected, samples, total, (solver as KCallable<*>).name)
 }
 
 private fun <T : Any> bench(
@@ -161,7 +163,8 @@ private fun <T : Any> bench(
 private fun <T : Any> benchSummary(
     expected: T,
     samples: Collection<Duration>,
-    total: Duration
+    total: Duration,
+    label: String = "Benchmark ${nextAnswerLabel()}",
 ) {
     val N = samples.size
     val mean = total.nanoseconds / N
@@ -175,7 +178,7 @@ private fun <T : Any> benchSummary(
         borderTextStyle = TextColors.brightGreen
         body {
             row(
-                TextColors.brightGreen("Benchmark ${nextAnswerLabel()}") + " " +
+                TextColors.brightGreen(label) + " " +
                         TextColors.gray("($durationString, N=$N)") + ": " +
                         TextStyles.bold(expected.toString())
             )
@@ -185,7 +188,7 @@ private fun <T : Any> benchSummary(
 
 fun <T : Any> benchAndHist(expected: T, solver: (String) -> T) {
     val (samples, total) = bench(expected, solver)
-    benchSummary(expected, samples, total)
+    benchSummary(expected, samples, total, (solver as KCallable<*>).name)
 
     barChart(
         continuousHistogram(
