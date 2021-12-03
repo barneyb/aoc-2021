@@ -1,5 +1,7 @@
 package day03_binary_diagnostic
 
+import util.countForever
+
 fun main() {
     util.solve(3687446, ::partOne)
     util.solve(4406844, ::partTwo)
@@ -22,29 +24,23 @@ fun partOne(input: String): Long {
     return gamma * epsilon
 }
 
+private fun Collection<String>.findRating(bitCrit: (Int) -> Char): Long {
+    countForever().fold(this) { lines, i ->
+        if (lines.isEmpty()) throw NoSuchElementException()
+        if (lines.size == 1) return lines.first().toLong(2)
+        val bit = bitCrit(lines.fold(0) { n, line ->
+            n + if (line[i] == '1') 1 else -1
+        })
+        lines.filter {
+            it[i] == bit
+        }
+    }
+    throw IllegalStateException("Successfully counted to forever!")
+}
+
 fun partTwo(input: String): Long {
     val lines = input.lines()
-    var oxygen = lines
-    for (i in 0..10000) {
-        if (oxygen.size == 1) break
-        val bitFreq = oxygen.fold(0) { n, line ->
-            n + if (line[i] == '1') 1 else -1
-        }
-        val bit = if (bitFreq >= 0) '1' else '0'
-        oxygen = oxygen.filter {
-            it[i] == bit
-        }
-    }
-    var co2 = lines
-    for (i in 0..10000) {
-        if (co2.size == 1) break
-        val bitFreq = co2.fold(0) { n, line ->
-            n + if (line[i] == '1') 1 else -1
-        }
-        val bit = if (bitFreq < 0) '1' else '0'
-        co2 = co2.filter {
-            it[i] == bit
-        }
-    }
-    return oxygen.first().toLong(2) * co2.first().toLong(2)
+    val oxygen = lines.findRating { if (it >= 0) '1' else '0' }
+    val co2 = lines.findRating { if (it < 0) '1' else '0' }
+    return oxygen * co2
 }
