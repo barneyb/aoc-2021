@@ -31,7 +31,8 @@ fi
 
 if [ -z "${DAY}" ];then
     DAY=${THIS_DAY}
-elif [ "${#DAY}" = "1" ]; then
+fi
+if [ "${#DAY}" = "1" ]; then
     DAY="0${DAY}"
 fi
 
