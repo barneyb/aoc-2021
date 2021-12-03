@@ -1,4 +1,4 @@
-import kotlin.jvm.internal.FunctionReferenceImpl
+import kotlin.jvm.internal.CallableReference
 import aoc2015.day01_almost_lisp.main as day01_almost_lisp
 import aoc2015.day02_wrap_presents.main as day02_wrap_presents
 import aoc2015.day03_spherical_houses.main as day03_spherical_houses
@@ -58,7 +58,7 @@ private val days = listOf(
 
 fun main() {
     days.map {
-        println((it as FunctionReferenceImpl).owner)
+        println((it as CallableReference).owner)
         it()
     }
 }
