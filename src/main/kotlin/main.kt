@@ -1,3 +1,6 @@
+import com.github.ajalt.mordant.rendering.TextStyles
+import com.github.ajalt.mordant.terminal.Terminal
+import util.Stopwatch
 import kotlin.jvm.internal.CallableReference
 import aoc2015.day01_almost_lisp.main as day01_almost_lisp
 import aoc2015.day02_wrap_presents.main as day02_wrap_presents
@@ -8,7 +11,6 @@ import aoc2018.day01_chronal_calibration.main as day01_chronal_calibration
 import aoc2018.day02_inventory_management.main as day02_inventory_management
 import aoc2019.day01_rocket_equation.main as day01_rocket_equation
 import aoc2019.day03_crossed_wires.main as day03_crossed_wires
-
 import aoc2016.day01_no_time_for_taxi.main as day01_no_time_for_taxi
 import aoc2016.day02_bathroom_security.main as day02_bathroom_security
 import aoc2017.day01_inverse_captcha.main as day01_inverse_captcha
@@ -57,9 +59,12 @@ private val days = listOf(
 )
 
 fun main() {
+    val watch = Stopwatch()
     days.map {
         println((it as CallableReference).owner)
         it()
     }
+    val elapsed = watch.elapsed
+    Terminal().println("Total: " + TextStyles.bold("$elapsed"))
 }
 
