@@ -1,5 +1,6 @@
 package day03_binary_diagnostic
 
+import util.CountedToForeverException
 import util.countForever
 
 fun main() {
@@ -35,7 +36,7 @@ private fun Collection<String>.findRating(bitCrit: (Int) -> Char): Long {
             it[i] == bit
         }
     }
-    throw IllegalStateException("Successfully counted to forever!")
+    throw CountedToForeverException()
 }
 
 fun partTwo(input: String): Long {

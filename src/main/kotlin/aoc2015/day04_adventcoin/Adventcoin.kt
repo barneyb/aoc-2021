@@ -1,5 +1,6 @@
 package aoc2015.day04_adventcoin
 
+import util.CountedToForeverException
 import util.countForever
 import java.security.MessageDigest
 import kotlin.experimental.and
@@ -26,7 +27,7 @@ private fun firstCoinWithZeros(input: String, zeroCount: Int): Int {
             return it
         }
     }
-    throw IllegalStateException("what?!")
+    throw CountedToForeverException()
 }
 
 private const val ZERO = (0).toByte()

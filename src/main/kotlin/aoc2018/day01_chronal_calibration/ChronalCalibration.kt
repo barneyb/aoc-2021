@@ -1,5 +1,6 @@
 package aoc2018.day01_chronal_calibration
 
+import util.CountedToForeverException
 import util.countForever
 
 fun main() {
@@ -26,6 +27,6 @@ fun partTwo(input: String): Int {
             next
         }
     }
-    throw IllegalStateException("...um?")
+    throw CountedToForeverException()
 }
 
