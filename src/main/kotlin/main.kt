@@ -24,6 +24,7 @@ import aoc2019.day02_program_alarm.main as day02_program_alarm
 import aoc2019.day04_secure_container.main as day04_secure_container
 import day01_sonar_sweep.main as day01_sonar_sweep
 import day02_dive.main as day02_dive
+import day03_binary_diagnostic.main as day03_binary_diagnostic
 /*INJECT:IMPORT*/
 
 private val days = listOf(
@@ -51,6 +52,7 @@ private val days = listOf(
     ::day04_secure_container,
     ::day01_sonar_sweep,
     ::day02_dive,
+    //::day03_binary_diagnostic,
     /*INJECT:REF*/
 )
 
