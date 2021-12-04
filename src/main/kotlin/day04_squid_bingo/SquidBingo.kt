@@ -2,7 +2,7 @@ package day04_squid_bingo
 
 fun main() {
     util.solve(16716, ::partOne)
-    util.solve(::partTwo)
+    util.solve(4880, ::partTwo)
 }
 
 typealias Board = MutableList<Int>
@@ -30,12 +30,14 @@ private fun Board.sumOfUnmarked() =
         .filter { it >= 0 }
         .sum()
 
+private val RE_SPACES = " +".toRegex()
+
 private fun String.toBallsAndBoards(): Pair<List<Int>, List<Board>> {
     val lines = lines()
     val balls = lines
         .first()
         .split(',')
-        .map { it.toInt() }
+        .map(String::toInt)
     val boards = lines
         .drop(1)
         .chunked(6)
@@ -43,7 +45,7 @@ private fun String.toBallsAndBoards(): Pair<List<Int>, List<Board>> {
             board
                 .flatMap { line ->
                     line
-                        .split(" +".toRegex())
+                        .split(RE_SPACES)
                         .filter(String::isNotBlank)
                         .map(String::toInt)
                 }
@@ -62,7 +64,19 @@ fun partOne(input: String): Int {
             }
         }
     }
-    return -1
+    throw IllegalStateException("No winning board found?!")
 }
 
-fun partTwo(input: String) = input.trim().length
+fun partTwo(input: String): Int {
+    val (balls, allBoards) = input.toBallsAndBoards()
+    balls.fold(allBoards) { boards, ball ->
+        boards.forEach {
+            it.markDrawn(ball)
+        }
+        if (boards.size == 1 && boards.first().hasWon()) {
+            return ball * boards.first().sumOfUnmarked()
+        }
+        boards.filter { !it.hasWon() }
+    }
+    throw IllegalStateException("No winning board found?!")
+}
