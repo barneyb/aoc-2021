@@ -5,30 +5,39 @@ fun main() {
     util.solve(4880, ::partTwo)
 }
 
-typealias Board = MutableList<Int>
+private class Board(numbers: List<Int>) {
 
-private fun Board.markDrawn(drawn: Int) {
-    val idx = indexOf(drawn)
-    if (idx < 0) return
-    set(idx, -1)
-}
+    private val board: IntArray
 
-private fun Board.hasWon(): Boolean {
-    for (r in 0 until 5) {
-        if (((r * 5) until (r * 5 + 5)).all { get(it) < 0 })
-            return true
+    init {
+        assert(numbers.size == 25)
+        board = numbers.toIntArray()
     }
-    for (c in 0 until 5) {
-        if ((c until 25 step 5).all { get(it) < 0 })
-            return true
-    }
-    return false
-}
 
-private fun Board.sumOfUnmarked() =
-    asSequence()
-        .filter { it >= 0 }
-        .sum()
+    fun markDrawn(drawn: Int) {
+        val idx = board.indexOf(drawn)
+        if (idx < 0) return
+        board[idx] = -1
+    }
+
+    fun hasWon(): Boolean {
+        for (r in 0 until 5) {
+            if (((r * 5) until (r * 5 + 5)).all { board[it] < 0 })
+                return true
+        }
+        for (c in 0 until 5) {
+            if ((c until 25 step 5).all { board[it] < 0 })
+                return true
+        }
+        return false
+    }
+
+    fun sumOfUnmarked() =
+        board
+            .asSequence()
+            .filter { it >= 0 }
+            .sum()
+}
 
 private val RE_SPACES = " +".toRegex()
 
@@ -49,8 +58,8 @@ private fun String.toBallsAndBoards(): Pair<List<Int>, List<Board>> {
                         .filter(String::isNotBlank)
                         .map(String::toInt)
                 }
-                .toMutableList()
         }
+        .map(::Board)
     return Pair(balls, boards)
 }
 
