@@ -104,7 +104,7 @@ fun solve(solver: (String) -> Any) {
 
 fun answer(
     ans: Any,
-    elapsed: Any,
+    elapsed: Duration,
     style: TextStyle = TextColors.brightBlue,
     label: String = "Answer ${nextAnswerLabel()}",
 ) {
@@ -113,7 +113,7 @@ fun answer(
         body {
             row(
                 style(label) + " " +
-                        TextColors.gray("($elapsed)") + ": " +
+                        TextColors.gray("(${elapsed.toPrettyString()})") + ": " +
                         TextStyles.bold(ans.toString())
             )
         }
@@ -127,6 +127,7 @@ private val CUTOFF_BENCHMARK_DURATION = 2_000_000_000.nanoseconds
 
 private const val CUTOFF_BENCHMARK_ITERATIONS = 2000
 
+@Suppress("unused")
 fun <T : Any> benchmark(expected: T, solver: (String) -> T) {
     val (samples, total) = bench(expected, solver)
     benchSummary(expected, samples, total, (solver as KCallable<*>).name)
@@ -181,8 +182,12 @@ private fun <T : Any> benchSummary(
             row(
                 TextColors.magenta(label) + TextColors.gray(
                     " (" +
-                            TextColors.black(TextStyles.bold(mean.nanoseconds.toString())) +
-                            " ± ${ci95.nanoseconds}, N=$N): " +
+                            TextColors.black(TextStyles.bold(mean.nanoseconds.toPrettyString())) +
+                            " ± ${ci95.nanoseconds.toPrettyString()}, N=${
+                                TextColors.black(
+                                    N.toString()
+                                )
+                            }): " +
                             expected.toString()
                 )
             )
@@ -190,6 +195,15 @@ private fun <T : Any> benchSummary(
     })
 }
 
+private fun Duration.toPrettyString(): String {
+    val s = toString()
+    if (s.endsWith("us")) {
+        return s.substring(0, s.length - 2) + "μs"
+    }
+    return s
+}
+
+@Suppress("unused")
 fun <T : Any> benchAndHist(
     expected: T,
     solver: (String) -> T,
@@ -204,7 +218,7 @@ fun <T : Any> benchAndHist(
             keySelector = Duration::inWholeNanoseconds,
             bucketCount = bucketCount,
         ),
-        labelSelector = { it.nanoseconds.toString() }
+        labelSelector = { it.nanoseconds.toPrettyString() }
     )
 }
 
