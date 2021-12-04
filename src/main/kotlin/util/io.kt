@@ -67,32 +67,13 @@ fun <T : Any> solve(expected: T, solver: (String) -> T) {
     if (!correct) throw AssertionError("expected '$expected', but got '$actual'")
 }
 
-private val CUTOFF_NO_REPEAT = 400_000_000.nanoseconds
-
-private val CUTOFF_REPEAT_ONCE = 200_000_000.nanoseconds
-
-private val CUTOFF_REPEAT_TWICE = 100_000_000.nanoseconds
-
-private val CUTOFF_REPEAT_THRICE = 50_000_000.nanoseconds
-
 private fun <T : Any> solveAndTime(
     solver: (String) -> T,
     input: String
 ): Pair<T, Duration> {
-    var actual: T
-    var elapsed: Duration
-    var repeat = 0
-    while (true) {
-        val watch = Stopwatch()
-        actual = solver.invoke(input)
-        elapsed = watch.elapsed
-        if (repeat > 0 && elapsed > CUTOFF_NO_REPEAT) break
-        if (repeat > 1 && elapsed > CUTOFF_REPEAT_ONCE) break
-        if (repeat > 2 && elapsed > CUTOFF_REPEAT_TWICE) break
-        if (repeat > 3 && elapsed > CUTOFF_REPEAT_THRICE) break
-        if (repeat > 4) break
-        ++repeat
-    }
+    val watch = Stopwatch()
+    val actual = solver.invoke(input)
+    val elapsed = watch.elapsed
     return Pair(actual, elapsed)
 }
 
