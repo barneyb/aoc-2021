@@ -1,9 +1,8 @@
 package day01_sonar_sweep
 
+import draw.antialiasedGraphics
 import java.awt.Color
 import java.awt.Polygon
-import java.awt.RenderingHints
-import java.awt.geom.Rectangle2D
 import java.awt.image.BufferedImage
 import java.util.*
 import kotlin.math.max
@@ -92,62 +91,77 @@ fun draw(input: String, img: BufferedImage) {
     val depths = input
         .lines()
         .map { it.toInt() }
-    val count = depths.size.toFloat() - 1
-    val max = depths.reduce(::max).toFloat()
-    val zero = 0f
-    val width = img.width.toFloat()
-    val height = img.height.toFloat()
-    val sky = 50f
-    val waves = 1f
+    val count = depths.size
+    val max = depths.reduce(::max)
+    val width = img.width
+    val height = img.height
+    val sky = 50
+    val waves = 1
     val sea = height - sky - waves
-    val g = img.createGraphics()
-    val rh = RenderingHints(
-        RenderingHints.KEY_ANTIALIASING,
-        RenderingHints.VALUE_ANTIALIAS_ON
-    )
-    g.setRenderingHints(rh)
-    g.color = COLOR_SKY
-    g.fill(Rectangle2D.Float(zero, zero, width, sky))
-    g.color = Color.WHITE
-    g.fill(Rectangle2D.Float(zero, sky, width, waves))
-    g.color = Color.YELLOW.darker()
-    g.fill(Rectangle2D.Float(zero, sky + waves, width, sea))
-    g.color = Color.YELLOW.brighter()
-    (sky / 1.5).toInt().let {
-        g.fillOval(-it / 2, -it / 2, it, it)
+    // environment
+    val g = img.antialiasedGraphics().apply {
+        color = COLOR_SKY
+        fillRect(0, 0, width, sky)
+        color = Color.WHITE
+        fillRect(0, sky, width, waves)
+        color = Color.YELLOW.darker()
+        fillRect(0, sky + waves, width, sea)
+        color = Color.YELLOW.brighter()
+        (sky / 1.5).toInt().let {
+            fillOval(-it / 2, -it / 2, it, it)
+        }
     }
 
-    val water = Polygon()
-    val dx = width / count
-    val dy = sea / max
-    depths
-        .mapIndexed { i, d -> Pair(i * dx, sky + waves + d * dy) }
-        .forEach { (x, y) -> water.addPoint((width - x).toInt(), y.toInt()) }
-    water.addPoint(zero.toInt(), (sky + waves).toInt())
-    water.addPoint(width.toInt(), (sky + waves).toInt())
-    g.color = Color.BLUE
-    g.fill(water)
+    // water
+    img.antialiasedGraphics().apply {
+        translate(width / 2, (sky + waves))
+        scale(width.toDouble() / count, sea.toDouble() / max)
+        val water = Polygon().apply {
+            depths
+                .forEachIndexed { x, y -> addPoint(width - x, y) }
+            addPoint(-width, max)
+            addPoint(-width, 0)
+            addPoint(width, 0)
+        }
+        color = Color.BLUE
+        fill(water)
+    }
 
-    val ship = Polygon()
-    ship.addPoint(width.toInt(), sky.toInt() - 16)
-    ship.addPoint(width.toInt() - 7, sky.toInt() - 16)
-    ship.addPoint(width.toInt() - 10, sky.toInt() - 10)
-    ship.addPoint(width.toInt() - 20, sky.toInt() - 10)
-    ship.addPoint(width.toInt() - 15, (sky + waves + 2).toInt())
-    ship.addPoint(width.toInt(), (sky + waves + 2).toInt())
+    // ship
+    val ship = Polygon().apply {
+        addPoint(width, sky - 16)
+        addPoint(width - 7, sky - 16)
+        addPoint(width - 10, sky - 10)
+        addPoint(width - 20, sky - 10)
+        addPoint(width - 15, sky + waves + 2)
+        addPoint(width, sky + waves + 2)
+    }
     g.color = Color.WHITE.darker()
     g.fill(ship)
 
+    // sonar pulses
     repeat(5) { i ->
         (i * 6).let { d ->
             g.drawArc(
-                (width - 25).toInt() - d,
-                (sky + waves - 20).toInt(),
+                width - 25 - d,
+                sky + waves - 20,
                 30 + d,
                 30 + d,
                 210 - d / 2,
                 30 + d
             )
         }
+    }
+
+    // info
+    g.apply {
+        color = Color.WHITE
+        fillRect(15, sky + waves + 15, 120, 40)
+        color = Color.BLACK
+        drawRect(15, sky + waves + 15, 120, 40)
+        drawString("Readings:", 20, sky + waves + 30)
+        drawString(count.toString(), 100, sky + waves + 30)
+        drawString("Max Depth:", 20, sky + waves + 50)
+        drawString(max.toString(), 100, sky + waves + 50)
     }
 }
