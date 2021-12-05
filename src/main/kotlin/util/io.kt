@@ -67,32 +67,13 @@ fun <T : Any> solve(expected: T, solver: (String) -> T) {
     if (!correct) throw AssertionError("expected '$expected', but got '$actual'")
 }
 
-private val CUTOFF_NO_REPEAT = 400_000_000.nanoseconds
-
-private val CUTOFF_REPEAT_ONCE = 200_000_000.nanoseconds
-
-private val CUTOFF_REPEAT_TWICE = 100_000_000.nanoseconds
-
-private val CUTOFF_REPEAT_THRICE = 50_000_000.nanoseconds
-
 private fun <T : Any> solveAndTime(
     solver: (String) -> T,
     input: String
 ): Pair<T, Duration> {
-    var actual: T
-    var elapsed: Duration
-    var repeat = 0
-    while (true) {
-        val watch = Stopwatch()
-        actual = solver.invoke(input)
-        elapsed = watch.elapsed
-        if (repeat > 0 && elapsed > CUTOFF_NO_REPEAT) break
-        if (repeat > 1 && elapsed > CUTOFF_REPEAT_ONCE) break
-        if (repeat > 2 && elapsed > CUTOFF_REPEAT_TWICE) break
-        if (repeat > 3 && elapsed > CUTOFF_REPEAT_THRICE) break
-        if (repeat > 4) break
-        ++repeat
-    }
+    val watch = Stopwatch()
+    val actual = solver.invoke(input)
+    val elapsed = watch.elapsed
     return Pair(actual, elapsed)
 }
 
@@ -104,7 +85,7 @@ fun solve(solver: (String) -> Any) {
 
 fun answer(
     ans: Any,
-    elapsed: Any,
+    elapsed: Duration,
     style: TextStyle = TextColors.brightBlue,
     label: String = "Answer ${nextAnswerLabel()}",
 ) {
@@ -113,7 +94,7 @@ fun answer(
         body {
             row(
                 style(label) + " " +
-                        TextColors.gray("($elapsed)") + ": " +
+                        TextColors.gray("(${elapsed.toPrettyString()})") + ": " +
                         TextStyles.bold(ans.toString())
             )
         }
@@ -127,6 +108,7 @@ private val CUTOFF_BENCHMARK_DURATION = 2_000_000_000.nanoseconds
 
 private const val CUTOFF_BENCHMARK_ITERATIONS = 2000
 
+@Suppress("unused")
 fun <T : Any> benchmark(expected: T, solver: (String) -> T) {
     val (samples, total) = bench(expected, solver)
     benchSummary(expected, samples, total, (solver as KCallable<*>).name)
@@ -181,8 +163,12 @@ private fun <T : Any> benchSummary(
             row(
                 TextColors.magenta(label) + TextColors.gray(
                     " (" +
-                            TextColors.black(TextStyles.bold(mean.nanoseconds.toString())) +
-                            " ± ${ci95.nanoseconds}, N=$N): " +
+                            TextColors.black(TextStyles.bold(mean.nanoseconds.toPrettyString())) +
+                            " ± ${ci95.nanoseconds.toPrettyString()}, N=${
+                                TextColors.black(
+                                    N.toString()
+                                )
+                            }): " +
                             expected.toString()
                 )
             )
@@ -190,6 +176,15 @@ private fun <T : Any> benchSummary(
     })
 }
 
+private fun Duration.toPrettyString(): String {
+    val s = toString()
+    if (s.endsWith("us")) {
+        return s.substring(0, s.length - 2) + "μs"
+    }
+    return s
+}
+
+@Suppress("unused")
 fun <T : Any> benchAndHist(
     expected: T,
     solver: (String) -> T,
@@ -204,7 +199,7 @@ fun <T : Any> benchAndHist(
             keySelector = Duration::inWholeNanoseconds,
             bucketCount = bucketCount,
         ),
-        labelSelector = { it.nanoseconds.toString() }
+        labelSelector = { it.nanoseconds.toPrettyString() }
     )
 }
 
