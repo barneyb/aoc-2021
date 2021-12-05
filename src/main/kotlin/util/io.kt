@@ -7,6 +7,7 @@ import com.github.ajalt.mordant.rendering.TextStyles
 import com.github.ajalt.mordant.table.Borders
 import com.github.ajalt.mordant.table.table
 import com.github.ajalt.mordant.terminal.Terminal
+import histogram.continuousHistogramOf
 import java.io.File
 import kotlin.math.ceil
 import kotlin.math.pow
@@ -194,7 +195,7 @@ fun <T : Any> benchAndHist(
     benchSummary(expected, samples, total, (solver as KCallable<*>).name)
 
     barChart(
-        continuousHistogram(
+        continuousHistogramOf(
             samples,
             keySelector = Duration::inWholeNanoseconds,
             bucketCount = bucketCount,
