@@ -1,11 +1,16 @@
 package day05_hydrothermal_venture
 
+import com.github.ajalt.mordant.table.table
+import com.github.ajalt.mordant.terminal.Terminal
 import geom2d.Point
+import histogram.Histogram
 import histogram.count
+import kotlin.math.abs
+import kotlin.math.max
 
 fun main() {
     util.solve(7644, ::partOne)
-    util.solve(::partTwo)
+    util.solve(18627, ::partTwo)
 }
 
 data class Line(val start: Point, val end: Point) {
@@ -16,15 +21,23 @@ data class Line(val start: Point, val end: Point) {
     val vertical
         get() = start.x == end.x
 
+    val fortyFive
+        get() = abs(start.x - end.x) == abs(start.y - end.y)
+
+    private val xseq
+        get() = (if (start.x < end.x) start.x..end.x else start.x downTo end.x)
+            .asSequence()
+
+    private val yseq
+        get() = (if (start.y < end.y) start.y..end.y else start.y downTo end.y)
+            .asSequence()
+
     val allPoints
         get() = when {
-            horizontal -> (if (start.x < end.x) start.x..end.x else start.x downTo end.x)
-                .asSequence()
-                .map { start.copy(x = it) }
-            vertical -> (if (start.y < end.y) start.y..end.y else start.y downTo end.y)
-                .asSequence()
-                .map { start.copy(y = it) }
-            else -> throw UnsupportedOperationException("Only vertical and horizontal lines can have their points enumerated.")
+            horizontal -> xseq.map { start.copy(x = it) }
+            vertical -> yseq.map { start.copy(y = it) }
+            fortyFive -> xseq.zip(yseq, ::Point)
+            else -> throw UnsupportedOperationException("Unsupported slope for point enumeration.")
         }
 }
 
@@ -39,36 +52,51 @@ private fun String.toLine() =
             )
         }
 
-fun partOne(input: String): Int {
-    val lines = input
-        .lines()
-        .map(String::toLine)
-    val hist = HashMap<Point, Int>()
-        .also { hist ->
-            lines
-                .asSequence()
-                .filter { it.vertical || it.horizontal }
-                .map(Line::allPoints)
-                .forEach { it.forEach(hist::count) }
+fun partOne(input: String) =
+    HashMap<Point, Int>().let { hist ->
+        input
+            .lines()
+            .map(String::toLine)
+            .asSequence()
+            .filter { it.vertical || it.horizontal }
+            .map(Line::allPoints)
+            .forEach { it.forEach(hist::count) }
+//        hist.printMap()
+        hist.count { it.value > 1 }
+    }
+
+@Suppress("unused")
+private fun Histogram<Point>.printMap() {
+    val (mx, my) = keys.fold(Pair(0L, 0L)) { (mx, my), p ->
+        Pair(max(mx, p.x), max(my, p.y))
+    }
+    val sb = StringBuilder()
+    for (y in 0..mx) {
+        for (x in 0..my) {
+            sb.append(
+                when (val n = get((Point(x, y)))) {
+                    null -> '.'
+                    else -> n
+                }
+            )
         }
-//    val (mx, my) = lines.fold(Pair(0L, 0L)) { (mx, my), l ->
-//        Pair(
-//            max(mx, max(l.start.x, l.end.x)),
-//            max(my, max(l.start.y, l.end.y)),
-//        )
-//    }
-//    for (y in 0..mx) {
-//        for (x in 0..my) {
-//            print(
-//                when (val n = hist[(Point(x, y))]) {
-//                    null -> '.'
-//                    else -> n
-//                }
-//            )
-//        }
-//        println()
-//    }
-    return hist.count { it.value > 1 }
+        sb.append('\n')
+    }
+    Terminal().println(table {
+        body {
+            row(sb.toString())
+        }
+    })
 }
 
-fun partTwo(input: String) = input.trim().length
+fun partTwo(input: String) =
+    HashMap<Point, Int>().let { hist ->
+        input
+            .lines()
+            .map(String::toLine)
+            .asSequence()
+            .map(Line::allPoints)
+            .forEach { it.forEach(hist::count) }
+//        hist.printMap()
+        hist.count { it.value > 1 }
+    }
