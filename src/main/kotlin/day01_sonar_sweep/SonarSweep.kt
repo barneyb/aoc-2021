@@ -114,14 +114,14 @@ fun draw(input: String, img: BufferedImage) {
 
     // water
     img.antialiasedGraphics().apply {
-        translate(width / 2, (sky + waves))
+        translate(0, sky + waves)
         scale(width.toDouble() / count, sea.toDouble() / max)
         val water = Polygon().apply {
             depths
-                .forEachIndexed { x, y -> addPoint(width - x, y) }
-            addPoint(-width, max)
-            addPoint(-width, 0)
-            addPoint(width, 0)
+                .forEachIndexed { x, y -> addPoint(count - x, y) }
+            addPoint(-count, max)
+            addPoint(-count, 0)
+            addPoint(count, 0)
         }
         color = Color.BLUE
         fill(water)
