@@ -89,18 +89,12 @@ fun answer(
     elapsed: Duration,
     style: TextStyle = TextColors.brightBlue,
     label: String = "Answer ${nextAnswerLabel()}",
-) {
-    Terminal().println(table {
-        borderTextStyle = style
-        body {
-            row(
-                style(label) + " " +
-                        TextColors.gray("(${elapsed.toPrettyString()})") + ": " +
-                        TextStyles.bold(ans.toString())
-            )
-        }
-    })
-}
+) = printBoxed(
+    style(label) + " " +
+            TextColors.gray("(${elapsed.toPrettyString()})") + ": " +
+            TextStyles.bold(ans.toString()),
+    style
+)
 
 private val Duration.nanoseconds
     get() = toDouble(DurationUnit.NANOSECONDS)
@@ -158,21 +152,22 @@ private fun <T : Any> benchSummary(
     val stddev = sqrt(variance)
     val ci95 = 1.96 * stddev / sqrt(N.toDouble())
     // since correctness was checked each iteration, all is well at this point
+    printBoxed(
+        TextColors.magenta(label) + TextColors.gray(
+            " (" +
+                    TextColors.black(TextStyles.bold(mean.nanoseconds.toPrettyString())) +
+                    " ± ${ci95.nanoseconds.toPrettyString()}," +
+                    " N=${TextColors.black(N.toString())}): " +
+                    expected.toString()
+        ), TextColors.magenta
+    )
+}
+
+fun printBoxed(value: Any, borderTextStyle: TextStyle = TextColors.black) {
     Terminal().println(table {
-        borderTextStyle = TextColors.magenta
+        this.borderTextStyle = borderTextStyle
         body {
-            row(
-                TextColors.magenta(label) + TextColors.gray(
-                    " (" +
-                            TextColors.black(TextStyles.bold(mean.nanoseconds.toPrettyString())) +
-                            " ± ${ci95.nanoseconds.toPrettyString()}, N=${
-                                TextColors.black(
-                                    N.toString()
-                                )
-                            }): " +
-                            expected.toString()
-                )
-            )
+            row(value)
         }
     })
 }

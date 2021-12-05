@@ -1,10 +1,9 @@
 package day05_hydrothermal_venture
 
-import com.github.ajalt.mordant.table.table
-import com.github.ajalt.mordant.terminal.Terminal
 import geom2d.Point
 import histogram.Histogram
 import histogram.count
+import util.printBoxed
 import kotlin.math.abs
 import kotlin.math.max
 
@@ -82,11 +81,7 @@ private fun Histogram<Point>.printMap() {
         }
         sb.append('\n')
     }
-    Terminal().println(table {
-        body {
-            row(sb.toString())
-        }
-    })
+    printBoxed(sb.toString())
 }
 
 fun partTwo(input: String) =
