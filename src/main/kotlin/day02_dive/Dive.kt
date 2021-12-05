@@ -43,16 +43,25 @@ data class Coords1(
 private fun <T : Coords<T>> Coords<T>.follow(input: String) =
     input
         .lineSequence()
-        .fold(this) { c, line ->
-            val words = line.split(" ")
-            val n = words[1].toInt()
-            when (words[0]) {
-                "forward" -> c.forward(n)
-                "up" -> c.up(n)
-                "down" -> c.down(n)
-                else -> throw IllegalArgumentException("Unrecognized '$line' instruction")
-            }
+        .fold(this) { c, line -> c.execute(line) }
+
+private fun <T : Coords<T>> Coords<T>.execute(instruction: String) =
+    instruction.let { line ->
+        val words = line.split(" ")
+        val n = words[1].toInt()
+        when (words[0]) {
+            "forward" -> forward(n)
+            "up" -> up(n)
+            "down" -> down(n)
+            else -> throw IllegalArgumentException("Unrecognized '$line' instruction")
         }
+    }
+
+internal fun <T : Coords<T>> Coords<T>.trace(input: String): Sequence<T> =
+    @Suppress("UNCHECKED_CAST")
+    input
+        .lineSequence()
+        .runningFold(this as T) { c, line -> c.execute(line) }
 
 fun partOne(input: String) =
     Coords1().follow(input).location

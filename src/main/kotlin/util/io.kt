@@ -8,7 +8,6 @@ import com.github.ajalt.mordant.table.Borders
 import com.github.ajalt.mordant.table.table
 import com.github.ajalt.mordant.terminal.Terminal
 import histogram.continuousHistogramOf
-import java.io.File
 import kotlin.math.ceil
 import kotlin.math.pow
 import kotlin.math.sqrt
@@ -17,30 +16,16 @@ import kotlin.time.Duration
 import kotlin.time.Duration.Companion.nanoseconds
 import kotlin.time.DurationUnit
 
-/**
- * It's unlikely you want this one; use [getInput] passing "self class".
- */
-@Suppress("unused")
-fun getInput(): String {
-    val ctxFile = File("input.txt")
-    if (ctxFile.exists()) {
-        return ctxFile
-            .readText()
-            .cleanInput()
-    }
-    return getInput(
-        Class.forName("sun.launcher.LauncherHelper")
-            .getMethod("getApplicationClass")
-            .invoke(null) as Class<*>
-    )
-}
+fun getInput(clazz: Class<*>) =
+    getInput(clazz.packageName)
 
-fun getInput(clazz: Class<*>): String {
-    return clazz.classLoader
-        .getResource(clazz.packageName.replace('.', '/') + "/input.txt")!!
+fun getInput(packageName: String): String =
+    Thread
+        .currentThread()
+        .contextClassLoader
+        .getResource(packageName.replace('.', '/') + "/input.txt")!!
         .readText()
         .cleanInput()
-}
 
 fun String.cleanInput() =
     this.trim('\n')

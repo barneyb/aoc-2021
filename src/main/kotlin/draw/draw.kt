@@ -1,5 +1,7 @@
 package draw
 
+import util.Stopwatch
+import util.answer
 import util.getInput
 import java.awt.Graphics2D
 import java.awt.RenderingHints
@@ -13,8 +15,12 @@ fun saveImage(solver: (String, BufferedImage) -> Unit) {
         768,
         BufferedImage.TYPE_INT_RGB
     )
+    val watch = Stopwatch()
     solver(getInput(solver.javaClass), img)
-    ImageIO.write(img, "png", File("${solver.javaClass.packageName}.png"))
+    val elapsed = watch.elapsed
+    val outFile = File("${solver.javaClass.packageName}.png")
+    ImageIO.write(img, "png", outFile)
+    answer(outFile, elapsed, label = "Saved image")
 }
 
 fun BufferedImage.antialiasedGraphics(): Graphics2D =

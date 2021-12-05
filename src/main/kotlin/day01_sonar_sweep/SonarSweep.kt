@@ -1,8 +1,15 @@
 package day01_sonar_sweep
 
+import day02_dive.Coords1
+import day02_dive.Coords2
+import day02_dive.trace
 import draw.antialiasedGraphics
+import util.getInput
+import java.awt.BasicStroke
 import java.awt.Color
+import java.awt.Graphics2D
 import java.awt.Polygon
+import java.awt.font.LineMetrics
 import java.awt.image.BufferedImage
 import java.util.*
 import kotlin.math.max
@@ -104,7 +111,7 @@ fun draw(input: String, img: BufferedImage) {
         fillRect(0, 0, width, sky)
         color = Color.WHITE
         fillRect(0, sky, width, waves)
-        color = Color.YELLOW.darker()
+        color = Color.YELLOW.darker().darker()
         fillRect(0, sky + waves, width, sea)
         color = Color.YELLOW.brighter()
         (sky / 1.5).toInt().let {
@@ -123,18 +130,79 @@ fun draw(input: String, img: BufferedImage) {
             addPoint(-count, 0)
             addPoint(count, 0)
         }
-        color = Color.BLUE
+        color = Color.BLUE.darker()
         fill(water)
+    }
+
+    // Day 2
+    getInput("day02_dive").let { input02 ->
+        val traceOne = Coords1().trace(input02).toList()
+        val traceTwo = Coords2().trace(input02).toList()
+        img.antialiasedGraphics().apply {
+            drawTextBox(
+                "Dive!\npart 1",
+                10,
+                90,
+            )
+            translate(0, sky + waves)
+            scale(width.toDouble() / count, height.toDouble() / max)
+            color = Color.GREEN
+            stroke = BasicStroke(5f)
+            traceOne.last().also {
+                val delta = 10
+                drawLine(
+                    count - it.pos - delta,
+                    it.depth - delta,
+                    count - it.pos + delta,
+                    it.depth + delta
+                )
+                drawLine(
+                    count - it.pos + delta,
+                    it.depth - delta,
+                    count - it.pos - delta,
+                    it.depth + delta
+                )
+            }
+            Polygon()
+                .apply {
+                    traceOne.forEach { addPoint(count - it.pos, it.depth) }
+                }
+                .let {
+                    drawPolyline(it.xpoints, it.ypoints, it.npoints)
+                }
+        }
+        // draw what's present of trace two
+        img.antialiasedGraphics().apply {
+            drawTextBox(
+                "Dive!\npart 2",
+                width - 60,
+                height - 40,
+                bgColor = Color.WHITE.darker(),
+                color = Color.RED.darker()
+            )
+            translate(0, sky + waves)
+            scale(width.toDouble() / count, height.toDouble() / max)
+            color = Color.RED
+            Polygon()
+                .apply {
+                    traceTwo
+                        .takeWhile { it.depth <= max }
+                        .forEach { addPoint(count - it.pos, it.depth) }
+                }
+                .let {
+                    drawPolyline(it.xpoints, it.ypoints, it.npoints)
+                }
+        }
     }
 
     // ship
     val ship = Polygon().apply {
-        addPoint(width, sky - 16)
-        addPoint(width - 7, sky - 16)
-        addPoint(width - 10, sky - 10)
-        addPoint(width - 20, sky - 10)
-        addPoint(width - 15, sky + waves + 2)
-        addPoint(width, sky + waves + 2)
+        addPoint(width, sky - 15)
+        addPoint(width - 7, sky - 15)
+        addPoint(width - 10, sky - 8)
+        addPoint(width - 20, sky - 8)
+        addPoint(width - 15, sky + waves + 3)
+        addPoint(width, sky + waves + 3)
     }
     g.color = Color.WHITE.darker()
     g.fill(ship)
@@ -154,14 +222,36 @@ fun draw(input: String, img: BufferedImage) {
     }
 
     // info
-    g.apply {
-        color = Color.WHITE
-        fillRect(15, sky + waves + 15, 120, 40)
-        color = Color.BLACK
-        drawRect(15, sky + waves + 15, 120, 40)
-        drawString("Readings:", 20, sky + waves + 30)
-        drawString(count.toString(), 100, sky + waves + 30)
-        drawString("Max Depth:", 20, sky + waves + 50)
-        drawString(max.toString(), 100, sky + waves + 50)
+    g.drawTextBox(
+        "Max Depth: $max",
+        40,
+        height - 25
+    )
+}
+
+private data class LineWithMetrics(val str: String, val metrics: LineMetrics)
+
+fun Graphics2D.drawTextBox(
+    text: String,
+    x: Int,
+    y: Int,
+    bgColor: Color = Color.WHITE,
+    color: Color = Color.BLACK
+) {
+    val lines = text.trimIndent().lines()
+    val linesWithMetrics = lines.zip(lines.map {
+        fontMetrics.getLineMetrics(it, this)
+    }, ::LineWithMetrics)
+    val totalHeight = linesWithMetrics
+        .sumOf { it.metrics.height.toInt() }
+    val maxWidth = lines.maxOf(fontMetrics::stringWidth)
+    this.color = bgColor
+    fillRect(x, y, maxWidth + 10, totalHeight + 5)
+    this.color = color
+    drawRect(x, y, maxWidth + 10, totalHeight + 5)
+    linesWithMetrics.fold(0) { yOffset, (line, metrics) ->
+        val next = yOffset + metrics.height.toInt()
+        drawString(line, x + 5, y + next)
+        next
     }
 }
