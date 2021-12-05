@@ -2,6 +2,7 @@ package draw
 
 import util.Stopwatch
 import util.answer
+import util.getInput
 import java.awt.Color
 import java.awt.Graphics2D
 import java.awt.RenderingHints
@@ -10,19 +11,26 @@ import java.awt.image.BufferedImage
 import java.io.File
 import javax.imageio.ImageIO
 
-fun saveImage(work: (BufferedImage) -> Unit) {
+private fun saveImage(outFile: File, work: (BufferedImage) -> Unit) {
     val img = BufferedImage(
         1024,
         768,
-        BufferedImage.TYPE_INT_RGB
+        BufferedImage.TYPE_INT_ARGB
     )
     val watch = Stopwatch()
     work(img)
     val elapsed = watch.elapsed
-    val outFile = File("${work.javaClass.packageName}.png")
     ImageIO.write(img, "png", outFile)
     answer(outFile, elapsed, label = "Saved image")
 }
+
+fun saveImage(work: (BufferedImage) -> Unit) =
+    saveImage(File("${work.javaClass.packageName}.png"), work)
+
+fun saveImage(solver: (String, BufferedImage) -> Unit) =
+    saveImage(File("${solver.javaClass.packageName}.png")) { img ->
+        solver(getInput(solver.javaClass), img)
+    }
 
 fun BufferedImage.antialiasedGraphics(): Graphics2D =
     createGraphics().apply {

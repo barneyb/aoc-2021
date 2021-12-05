@@ -5,12 +5,15 @@ import histogram.Histogram
 import histogram.count
 import histogram.mutableHistogramOf
 import util.printBoxed
+import java.awt.Color
+import java.awt.image.BufferedImage
 import kotlin.math.abs
 import kotlin.math.max
 
 fun main() {
     util.solve(7644, ::partOne)
     util.solve(18627, ::partTwo)
+    draw.saveImage(::draw)
 }
 
 data class Line(val start: Point, val end: Point) {
@@ -53,17 +56,17 @@ private fun String.toLine() =
         }
 
 fun partOne(input: String) =
-    mutableHistogramOf<Point>().let { hist ->
-        input
-            .lines()
-            .map(String::toLine)
-            .asSequence()
-            .filter { it.vertical || it.horizontal }
-            .map(Line::allPoints)
-            .forEach { it.forEach(hist::count) }
-//        hist.printMap()
-        hist.count { it.value > 1 }
-    }
+    mutableHistogramOf<Point>()
+        .also { hist ->
+            input
+                .lineSequence()
+                .map(String::toLine)
+                .filter { it.vertical || it.horizontal }
+                .map(Line::allPoints)
+                .forEach { it.forEach(hist::count) }
+        }
+//        .also { it.printMap() }
+        .count { it.value > 1 }
 
 @Suppress("unused")
 private fun Histogram<Point>.printMap() {
@@ -86,13 +89,79 @@ private fun Histogram<Point>.printMap() {
 }
 
 fun partTwo(input: String) =
-    mutableHistogramOf<Point>().let { hist ->
-        input
-            .lines()
-            .map(String::toLine)
-            .asSequence()
-            .map(Line::allPoints)
-            .forEach { it.forEach(hist::count) }
-//        hist.printMap()
-        hist.count { it.value > 1 }
+    mutableHistogramOf<Point>()
+        .also { hist ->
+            input
+                .lineSequence()
+                .map(String::toLine)
+                .map(Line::allPoints)
+                .forEach { it.forEach(hist::count) }
+        }
+//        .also { it.printMap() }
+        .count { it.value > 1 }
+
+
+fun draw(input: String, img: BufferedImage) {
+    val linesTwo = input
+        .lines()
+        .map(String::toLine)
+    val linesOne = linesTwo
+        .filter { it.vertical || it.horizontal }
+    val histOne = mutableHistogramOf<Point>()
+        .also { hist ->
+            linesOne
+                .map(Line::allPoints)
+                .forEach { it.forEach(hist::count) }
+        }
+    val histTwo = mutableHistogramOf<Point>()
+        .also { hist ->
+            linesTwo
+                .map(Line::allPoints)
+                .forEach { it.forEach(hist::count) }
+        }
+    val width = img.width
+    val height = img.height
+    img.createGraphics().apply {
+        color = Color.YELLOW.darker().darker()
+        fillRect(0, 0, width, height)
     }
+    img.createGraphics().apply {
+        translate(5, 5)
+        scale(width / 1010.0, height / 1010.0)
+        histTwo.keys
+            .groupBy { p ->
+                val dn = histTwo[p]!!
+                val on = histOne.getOrDefault(p, 0)
+                when {
+                    dn == 1 && on == 0 -> Pair(
+                        2,
+                        Color.BLUE
+                    ) // non-conflict, diagonal-only
+                    dn == 1 && on == 1 -> Pair(
+                        1,
+                        Color.GREEN
+                    ) // non-conflict, orthogonal-only
+                    dn > 1 && on == 0 -> Pair(
+                        5,
+                        Color.CYAN
+                    ) // diagonal conflict, diagonal-only
+                    dn > 1 && on == 1 -> Pair(
+                        4,
+                        Color.MAGENTA
+                    ) // diagonal conflict, both lines
+                    dn == on -> Pair(3, Color.YELLOW) // orthogonal conflict
+                    dn > on -> Pair(6, Color.RED) // both conflict
+                    else -> throw IllegalStateException("Unknown state $dn/$on")
+                }
+            }
+            .toSortedMap { a, b ->
+                a.first - b.first
+            }
+            .forEach { (grp, points) ->
+                color = grp.second
+                points.forEach { p ->
+                    drawOval(p.x.toInt() - 1, p.y.toInt() - 1, 2, 2)
+                }
+            }
+    }
+}
