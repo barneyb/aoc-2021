@@ -116,6 +116,9 @@ sed -e "s~/\*INJECT:IMPORT\*/~import ${pkg}${DAY_DIR}.main as ${DAY_DIR}\\n/*INJ
 git add src/main/kotlin src/test
 git commit -m "skeleton"
 
+# don't include this in the skeleton commit, but add it so it's ready
+git add src/main/$res_root/${DAY_DIR}/input.txt
+
 if [[ $SCRIPT = .* ]]; then
   rm $SCRIPT
 fi
