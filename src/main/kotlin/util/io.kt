@@ -20,6 +20,7 @@ import kotlin.time.DurationUnit
 /**
  * It's unlikely you want this one; use [getInput] passing "self class".
  */
+@Suppress("unused")
 fun getInput(): String {
     val ctxFile = File("input.txt")
     if (ctxFile.exists()) {
