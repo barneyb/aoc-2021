@@ -17,22 +17,20 @@ fun <E> MutableHistogram<E>.count(item: E, times: Int = 1) =
 fun <E> MutableHistogram<E>.unobserved(item: E) =
     putIfAbsent(item, 0)
 
-fun <E> histogramOf(items: Iterable<E>) =
-    histogramOf(items.asSequence())
+fun <E> histogramOf(items: Iterable<E>): Histogram<E> =
+    mutableHistogramOf(items)
 
-fun <E> histogramOf(items: Sequence<E>) =
-    HashMap<E, Int>()
+fun <E> histogramOf(items: Sequence<E>): Histogram<E> =
+    mutableHistogramOf(items)
+
+fun <E> mutableHistogramOf(): MutableHistogram<E> = HashMap()
+
+fun <E> mutableHistogramOf(items: Iterable<E>) =
+    mutableHistogramOf(items.asSequence())
+
+fun <E> mutableHistogramOf(items: Sequence<E>) =
+    mutableHistogramOf<E>()
         .also { items.forEach(it::count) }
-
-fun <E, K : Comparable<K>> histogramOf(
-    items: Iterable<E>,
-    keySelector: (E) -> K,
-): Histogram<K> = histogramOf(items.asSequence(), keySelector)
-
-fun <E, K : Comparable<K>> histogramOf(
-    items: Sequence<E>,
-    keySelector: (E) -> K,
-): Histogram<K> = items.groupingBy(keySelector).eachCount()
 
 private val LongRange.length
     get() = last - first + 1
@@ -59,14 +57,12 @@ fun <E> continuousHistogramOf(
             r.expandTo(p.first)
         }
     val width = range.length / bucketCount + bucketCount // correct truncation
-    val hist = histogramOf(pairs
+    val hist = mutableHistogramOf(pairs
         .asSequence()
         .map { p ->
             (p.first - range.first) / width * width + range.first
         })
-    for (b in range step width) {
-        hist.putIfAbsent(b, 0)
-    }
+    (range step width).forEach(hist::unobserved)
     return hist.toSortedMap()
 }
 

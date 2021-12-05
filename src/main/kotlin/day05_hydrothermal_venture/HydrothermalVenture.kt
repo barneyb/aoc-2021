@@ -3,6 +3,7 @@ package day05_hydrothermal_venture
 import geom2d.Point
 import histogram.Histogram
 import histogram.count
+import histogram.mutableHistogramOf
 import util.printBoxed
 import kotlin.math.abs
 import kotlin.math.max
@@ -52,7 +53,7 @@ private fun String.toLine() =
         }
 
 fun partOne(input: String) =
-    HashMap<Point, Int>().let { hist ->
+    mutableHistogramOf<Point>().let { hist ->
         input
             .lines()
             .map(String::toLine)
@@ -85,7 +86,7 @@ private fun Histogram<Point>.printMap() {
 }
 
 fun partTwo(input: String) =
-    HashMap<Point, Int>().let { hist ->
+    mutableHistogramOf<Point>().let { hist ->
         input
             .lines()
             .map(String::toLine)
