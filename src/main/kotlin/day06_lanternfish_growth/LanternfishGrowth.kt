@@ -41,4 +41,20 @@ fun simulate(initial: Histogram<Int>, days: Int) =
         }
         .total
 
+//fun simulate(initial: Histogram<Int>, days: Int): Long {
+//    var curr = initial
+//    (1..days).forEach { day ->
+//        curr = nextGeneration(curr)
+//    }
+//    return curr.total
+//}
+
+//fun simulate(initial: Histogram<Int>, days: Int): Long {
+//    var curr = initial
+//    repeat(days) {
+//        curr = nextGeneration(curr)
+//    }
+//    return curr.total
+//}
+
 fun partTwo(input: String) = simulate(input, 256)
