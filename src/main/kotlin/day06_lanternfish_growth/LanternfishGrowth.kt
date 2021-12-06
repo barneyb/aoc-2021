@@ -1,34 +1,36 @@
 package day06_lanternfish_growth
 
+import histogram.buildHistogram
+import histogram.count
+import histogram.total
+
 fun main() {
-    util.solve(371379, ::partOne)
-    util.solve(1674303997472, ::partTwo)
+    util.solve(371_379, ::partOne)
+    util.solve(1_674_303_997_472, ::partTwo)
 }
 
 fun partOne(input: String) = simulate(input, 80)
 
 fun simulate(input: String, days: Int): Long {
-    val initial = mutableMapOf<Int, Long>()
-    input.split(',')
-        .map(String::toInt)
-        .forEach { initial.merge(it, 1, Long::plus) }
+    val initial = buildHistogram<Int>(9) {
+        input.split(',')
+            .map(String::toInt)
+            .forEach { count(it, 1) }
+    }
     return (1..days)
-        .fold(initial) { fish, day ->
-            val next = mutableMapOf<Int, Long>()
-            fish.entries.forEach { (timer, count) ->
-                when (timer) {
-                    0 -> {
-                        next.merge(6, count, Long::plus) // reset
-                        next.merge(8, count, Long::plus) // birth
+        .fold(initial) { fish, _ ->
+            buildHistogram(9) {
+                fish.entries.forEach { (timer, count) ->
+                    if (timer == 0) {
+                        count(6, count) // reset
+                        count(8, count) // birth
+                    } else {
+                        count(timer - 1, count) // decrement
                     }
-                    else ->
-                        next.merge(timer - 1, count, Long::plus) // decrement
                 }
             }
-            next
         }
-        .values
-        .sum()
+        .total
 }
 
 fun partTwo(input: String) = simulate(input, 256)

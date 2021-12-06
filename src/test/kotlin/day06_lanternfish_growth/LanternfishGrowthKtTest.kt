@@ -34,7 +34,6 @@ internal class LanternfishGrowthKtTest {
         assertEquals(5934, partOne(WORKED_EXAMPLE))
     }
 
-    @kotlin.test.Ignore // todo: reinstate when ready!
     @Test
     fun partTwo() {
         assertEquals(26984457539, partTwo(WORKED_EXAMPLE))

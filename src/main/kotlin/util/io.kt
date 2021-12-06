@@ -188,7 +188,7 @@ fun <T : Any> benchAndHist(
 private val ZERO_GRAY = TextColors.gray(fraction = 0.667)
 
 fun <V> barChart(
-    data: Map<V, Int>,
+    data: Map<V, Long>,
     labelSelector: (V) -> String = { it.toString() },
 ) {
     val maxVal = data.values.maxOf { it }
@@ -204,13 +204,13 @@ fun <V> barChart(
                 val bar = "█".repeat(ceil(n * 50.0 / maxVal).toInt())
                 row(
                     labelSelector(b).let {
-                        if (n == 0)
+                        if (n == 0L)
                             ZERO_GRAY(it)
                         else
                             it
                     },
                     TextColors.brightBlue(bar),
-                    if (n == 0)
+                    if (n == 0L)
                         ""
                     else
                         n.toString()
