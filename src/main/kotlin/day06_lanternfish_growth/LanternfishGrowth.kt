@@ -2,29 +2,33 @@ package day06_lanternfish_growth
 
 fun main() {
     util.solve(371379, ::partOne)
-    util.solve(::partTwo)
+    util.solve(1674303997472, ::partTwo)
 }
 
-fun partOne(input: String) = partOne(input, 80)
+fun partOne(input: String) = simulate(input, 80)
 
-fun partOne(input: String, days: Int) =
-    (1..days)
-        .fold(
-            input.split(',')
-                .map(String::toInt)
-        ) { fish, _ ->
-            val next = mutableListOf<Int>()
-            fish.forEach {
-                when (it) {
+fun simulate(input: String, days: Int): Long {
+    val initial = mutableMapOf<Int, Long>()
+    input.split(',')
+        .map(String::toInt)
+        .forEach { initial.merge(it, 1, Long::plus) }
+    return (1..days)
+        .fold(initial) { fish, day ->
+            val next = mutableMapOf<Int, Long>()
+            fish.entries.forEach { (timer, count) ->
+                when (timer) {
                     0 -> {
-                        next.add(6) // start
-                        next.add(8) // new fish
+                        next.merge(6, count, Long::plus) // reset
+                        next.merge(8, count, Long::plus) // birth
                     }
-                    else -> next.add(it - 1) // decrement
+                    else ->
+                        next.merge(timer - 1, count, Long::plus) // decrement
                 }
             }
             next
         }
-        .size
+        .values
+        .sum()
+}
 
-fun partTwo(input: String) = input.trim().length
+fun partTwo(input: String) = simulate(input, 256)

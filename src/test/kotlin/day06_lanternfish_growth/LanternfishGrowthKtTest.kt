@@ -10,23 +10,23 @@ private val WORKED_EXAMPLE = """
 internal class LanternfishGrowthKtTest {
 
     @Test
-    fun partOneDayZero() {
-        assertEquals(5, partOne(WORKED_EXAMPLE, 0))
+    fun simulateZero() {
+        assertEquals(5, simulate(WORKED_EXAMPLE, 0))
     }
 
     @Test
-    fun partOneDayOne() {
-        assertEquals(5, partOne(WORKED_EXAMPLE, 1))
+    fun simulateOne() {
+        assertEquals(5, simulate(WORKED_EXAMPLE, 1))
     }
 
     @Test
-    fun partOneDayTwo() {
-        assertEquals(6, partOne(WORKED_EXAMPLE, 2))
+    fun simulateTwo() {
+        assertEquals(6, simulate(WORKED_EXAMPLE, 2))
     }
 
     @Test
-    fun partOneDay18() {
-        assertEquals(26, partOne(WORKED_EXAMPLE, 18))
+    fun simulate18() {
+        assertEquals(26, simulate(WORKED_EXAMPLE, 18))
     }
 
     @Test
@@ -37,7 +37,7 @@ internal class LanternfishGrowthKtTest {
     @kotlin.test.Ignore // todo: reinstate when ready!
     @Test
     fun partTwo() {
-        assertEquals(0, partTwo(WORKED_EXAMPLE))
+        assertEquals(26984457539, partTwo(WORKED_EXAMPLE))
     }
 
 }
