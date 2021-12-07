@@ -4,10 +4,13 @@ import histogram.Histogram
 import histogram.buildHistogram
 import histogram.count
 import histogram.total
+import util.saveTextFile
+import java.io.PrintWriter
 
 fun main() {
     util.solve(371_379, ::partOne)
     util.solve(1_674_303_997_472, ::partTwo)
+    saveTextFile(::csv, "csv")
 }
 
 fun partOne(input: String) = simulate(input, 80)
@@ -35,11 +38,15 @@ fun simulate(input: String, days: Int) =
     simulate(input.toCounts(), days)
 
 fun simulate(initial: Histogram<Int>, days: Int) =
+    trace(initial, days)
+        .last()
+        .total
+
+private fun trace(initial: Histogram<Int>, days: Int) =
     (1..days)
-        .fold(initial) { counts, _ ->
+        .runningFold(initial) { counts, _ ->
             nextGeneration(counts)
         }
-        .total
 
 //fun simulate(initial: Histogram<Int>, days: Int): Long {
 //    var curr = initial
@@ -58,3 +65,13 @@ fun simulate(initial: Histogram<Int>, days: Int) =
 //}
 
 fun partTwo(input: String) = simulate(input, 256)
+
+private fun csv(input: String, out: PrintWriter) {
+    out.println("t,value,count")
+    trace(input.toCounts(), 256)
+        .forEachIndexed { t, hist ->
+            hist.forEach { (v, c) ->
+                out.println("$t,$v,$c")
+            }
+        }
+}
