@@ -1,5 +1,8 @@
 package day01_sonar_sweep
 
+import util.saveTextFile
+import java.io.PrintWriter
+import java.io.StringWriter
 import java.util.*
 
 fun main() {
@@ -8,13 +11,16 @@ fun main() {
     util.solve(1616, ::partOneZip)
     util.solve(1616, ::partOneLoop)
     util.solve(1645, ::partTwo)
-    util.solve(1645, ::partTwoZip)
+    saveTextFile(::csv, "csv")
 }
 
+private fun depthsOne(depths: Sequence<Int>) =
+    depths
+
 fun partOneFold(input: String) =
-    input
+    depthsOne(input
         .lineSequence()
-        .map { it.toInt() }
+        .map { it.toInt() })
         .fold(Pair(0, Int.MAX_VALUE)) { (n, prev), it ->
             Pair(if (it > prev) n + 1 else n, it)
         }
@@ -70,11 +76,28 @@ fun partTwo(input: String): Int {
     return count
 }
 
-fun partTwoZip(input: String) =
-    input
+private fun depthsTwo(raw: Sequence<Int>) =
+    raw
+        .windowed(3, partialWindows = true)
+        .map { it.sum() / it.size }
+
+fun csv(input: String): String {
+    val sw = StringWriter()
+    val out = PrintWriter(sw)
+    csv(input, out)
+    out.close()
+    return sw.toString()
+}
+
+private fun csv(input: String, out: PrintWriter) {
+    out.print("pos,depth,smooth_depth")
+    val raw = input
         .lineSequence()
         .map { it.toInt() }
-        .windowed(3)
-        .map { it.sum() }
-        .zipWithNext()
-        .count { (a, b) -> a < b }
+    depthsOne(raw)
+        .zip(depthsTwo(raw))
+        .forEachIndexed { i, (r, s) ->
+            out.println()
+            out.print("$i,$r,$s")
+        }
+}

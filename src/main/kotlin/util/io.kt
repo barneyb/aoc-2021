@@ -8,6 +8,9 @@ import com.github.ajalt.mordant.table.Borders
 import com.github.ajalt.mordant.table.table
 import com.github.ajalt.mordant.terminal.Terminal
 import histogram.continuousHistogramOf
+import java.io.File
+import java.io.OutputStream
+import java.io.PrintWriter
 import kotlin.math.ceil
 import kotlin.math.pow
 import kotlin.math.sqrt
@@ -15,6 +18,34 @@ import kotlin.reflect.KCallable
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.nanoseconds
 import kotlin.time.DurationUnit
+
+fun saveFile(outFile: File, work: (OutputStream) -> Unit) {
+    val out = outFile.outputStream()
+    val watch = Stopwatch()
+    work(out)
+    val elapsed = watch.elapsed
+    out.close() // don't include system/IO "stuff" in timing
+    answer(outFile, elapsed, label = "Saved file")
+}
+
+// todo: don't duplicate
+fun saveFile(work: (OutputStream) -> Unit) =
+    saveFile(File("${work.javaClass.packageName}.png"), work)
+
+fun saveFile(work: (String, OutputStream) -> Unit) =
+    saveFile(File("${work.javaClass.packageName}.png")) { out ->
+        work(getInput(work.javaClass), out)
+    }
+
+fun saveTextFile(
+    work: (String, PrintWriter) -> Unit,
+    extension: String = "txt"
+) =
+    saveFile(File("${work.javaClass.packageName}.$extension")) { out ->
+        val pw = PrintWriter(out)
+        work(getInput(work.javaClass), pw)
+        pw.close()
+    }
 
 fun getInput(clazz: Class<*>) =
     getInput(clazz.packageName)

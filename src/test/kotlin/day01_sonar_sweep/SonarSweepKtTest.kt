@@ -44,8 +44,22 @@ internal class SonarSweepKtTest {
     }
 
     @Test
-    fun partTwoZip() {
-        assertEquals(5, partTwoZip(WORKED_EXAMPLE))
+    fun csv() {
+        assertEquals(
+            """
+            pos,depth,smooth_depth
+            0,199,202
+            1,200,206
+            2,208,206
+            3,210,205
+            4,200,215
+            5,207,238
+            6,240,256
+            7,269,264
+            8,260,261
+            9,263,263
+        """.trimIndent(), csv(WORKED_EXAMPLE)
+        )
     }
 
 }
