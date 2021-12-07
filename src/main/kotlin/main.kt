@@ -61,7 +61,7 @@ private val days = listOf(
     ::day03_binary_diagnostic,
     ::day04_squid_bingo,
     ::day05_hydrothermal_venture,
-    //::day06_lanternfish_growth,
+    ::day06_lanternfish_growth,
     /*INJECT:REF*/
     ::ocean_profile,
 )
