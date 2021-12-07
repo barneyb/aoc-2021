@@ -130,27 +130,27 @@ fun draw(input: String, img: BufferedImage) {
         scale(width / 1010.0, height / 1010.0)
         histTwo.keys
             .groupBy { p ->
-                val dn = histTwo[p]!!
-                val on = histOne.getOrDefault(p, 0)
+                val dn = histTwo[p]!!.toInt()
+                val on = histOne.getOrDefault(p, 0).toInt()
                 when {
-                    dn == 1 && on == 0 -> Pair(
-                        2,
-                        Color.BLUE
-                    ) // non-conflict, diagonal-only
-                    dn == 1 && on == 1 -> Pair(
-                        1,
-                        Color.GREEN
-                    ) // non-conflict, orthogonal-only
-                    dn > 1 && on == 0 -> Pair(
-                        5,
-                        Color.CYAN
-                    ) // diagonal conflict, diagonal-only
-                    dn > 1 && on == 1 -> Pair(
-                        4,
-                        Color.MAGENTA
-                    ) // diagonal conflict, both lines
-                    dn == on -> Pair(3, Color.YELLOW) // orthogonal conflict
-                    dn > on -> Pair(6, Color.RED) // both conflict
+                    dn == 1 && on == 0 ->
+                        // non-conflict, diagonal-only
+                        Pair(2, Color.BLUE)
+                    dn == 1 && on == 1 ->
+                        // non-conflict, orthogonal-only
+                        Pair(1, Color.GREEN)
+                    dn > 1 && on == 0 ->
+                        // diagonal conflict, diagonal-only
+                        Pair(5, Color.CYAN)
+                    dn > 1 && on == 1 ->
+                        // diagonal conflict, both lines
+                        Pair(4, Color.MAGENTA)
+                    dn == on ->
+                        // orthogonal conflict
+                        Pair(3, Color.YELLOW)
+                    dn > on ->
+                        // both conflict
+                        Pair(6, Color.RED)
                     else -> throw IllegalStateException("Unknown state $dn/$on")
                 }
             }

@@ -1,15 +1,15 @@
 package histogram
 
-typealias Histogram<E> = Map<E, Int>
+typealias Histogram<E> = Map<E, Long>
 
-typealias MutableHistogram<E> = MutableMap<E, Int>
+typealias MutableHistogram<E> = MutableMap<E, Long>
 
 /**
  * Adds `times` (one, by default) instances of `item` to the histogram, and
  * returns `items` new total count.
  */
-fun <E> MutableHistogram<E>.count(item: E, times: Int = 1) =
-    merge(item, times, Int::plus)!!
+fun <E> MutableHistogram<E>.count(item: E, times: Long = 1) =
+    merge(item, times, Long::plus)!!
 
 /**
  * Include `item` in the histogram's domain, with zero instances.
@@ -25,12 +25,26 @@ fun <E> histogramOf(items: Sequence<E>): Histogram<E> =
 
 fun <E> mutableHistogramOf(): MutableHistogram<E> = HashMap()
 
+fun <E> mutableHistogramOf(capacity: Int): MutableHistogram<E> =
+    HashMap(capacity)
+
 fun <E> mutableHistogramOf(items: Iterable<E>) =
     mutableHistogramOf(items.asSequence())
 
 fun <E> mutableHistogramOf(items: Sequence<E>) =
     mutableHistogramOf<E>()
         .also { items.forEach(it::count) }
+
+fun <E> buildHistogram(action: MutableHistogram<E>.() -> Unit): Histogram<E> =
+    mutableHistogramOf<E>().apply(action)
+
+fun <E> buildHistogram(
+    capacity: Int,
+    action: MutableHistogram<E>.() -> Unit
+): Histogram<E> =
+    mutableHistogramOf<E>(capacity).apply(action)
+
+val Histogram<*>.total get() = values.sum()
 
 private val LongRange.length
     get() = last - first + 1
