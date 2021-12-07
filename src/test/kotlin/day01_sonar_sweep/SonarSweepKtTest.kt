@@ -58,6 +58,7 @@ internal class SonarSweepKtTest {
             7,269,264
             8,260,261
             9,263,263
+            
         """.trimIndent(), csv(WORKED_EXAMPLE)
         )
     }

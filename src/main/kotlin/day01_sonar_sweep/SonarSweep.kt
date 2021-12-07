@@ -90,14 +90,13 @@ fun csv(input: String): String {
 }
 
 private fun csv(input: String, out: PrintWriter) {
-    out.print("pos,depth,smooth_depth")
+    out.println("pos,depth,smooth_depth")
     val raw = input
         .lineSequence()
         .map { it.toInt() }
     depthsOne(raw)
         .zip(depthsTwo(raw))
         .forEachIndexed { i, (r, s) ->
-            out.println()
-            out.print("$i,$r,$s")
+            out.println("$i,$r,$s")
         }
 }

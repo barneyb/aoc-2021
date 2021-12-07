@@ -147,11 +147,10 @@ fun partTwoStateful(input: String): Int {
 }
 
 private fun csv(input: String, out: PrintWriter) {
-    out.print("pos,depth1,depth2")
+    out.println("pos,depth1,depth2")
     Coords1().trace(input)
         .zip(Coords2().trace(input))
         .forEach { (a, b) ->
-            out.println()
-            out.print("${a.pos},${a.depth},${b.depth}")
+            out.println("${a.pos},${a.depth},${b.depth}")
         }
 }
