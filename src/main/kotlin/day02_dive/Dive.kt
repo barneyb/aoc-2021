@@ -1,10 +1,14 @@
 package day02_dive
 
+import util.saveTextFile
+import java.io.PrintWriter
+
 fun main() {
     util.solve(1840243, ::partOne)
     util.solve(1727785422, ::partTwo)
     util.solve(1727785422, ::partTwoLoop)
     util.solve(1727785422, ::partTwoStateful)
+    saveTextFile(::csv, "csv")
 }
 
 interface OceanLocation {
@@ -140,4 +144,14 @@ fun partTwoStateful(input: String): Int {
         }
     }
     return sub.location
+}
+
+private fun csv(input: String, out: PrintWriter) {
+    out.print("pos,depth1,depth2")
+    Coords1().trace(input)
+        .zip(Coords2().trace(input))
+        .forEach { (a, b) ->
+            out.println()
+            out.print("${a.pos},${a.depth},${b.depth}")
+        }
 }
