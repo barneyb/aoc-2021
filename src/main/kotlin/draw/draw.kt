@@ -1,6 +1,7 @@
 package draw
 
 import util.getInput
+import util.outputFile
 import util.saveFile
 import java.awt.Color
 import java.awt.Graphics2D
@@ -22,12 +23,11 @@ private fun saveImage(outFile: File, work: (BufferedImage) -> Unit) {
     }
 }
 
-// todo: don't duplicate
 fun saveImage(work: (BufferedImage) -> Unit) =
-    saveImage(File("${work.javaClass.packageName}.png"), work)
+    saveImage(outputFile(work, "png"), work)
 
 fun saveImage(work: (String, BufferedImage) -> Unit) =
-    saveImage(File("${work.javaClass.packageName}.png")) { img ->
+    saveImage(outputFile(work, "png")) { img ->
         work(getInput(work.javaClass), img)
     }
 

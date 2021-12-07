@@ -19,7 +19,7 @@ import kotlin.time.Duration
 import kotlin.time.Duration.Companion.nanoseconds
 import kotlin.time.DurationUnit
 
-fun saveFile(outFile: File, work: (OutputStream) -> Unit) {
+internal fun saveFile(outFile: File, work: (OutputStream) -> Unit) {
     val out = outFile.outputStream()
     val watch = Stopwatch()
     work(out)
@@ -28,20 +28,14 @@ fun saveFile(outFile: File, work: (OutputStream) -> Unit) {
     answer(outFile, elapsed, label = "Saved file")
 }
 
-// todo: don't duplicate
-fun saveFile(work: (OutputStream) -> Unit) =
-    saveFile(File("${work.javaClass.packageName}.png"), work)
-
-fun saveFile(work: (String, OutputStream) -> Unit) =
-    saveFile(File("${work.javaClass.packageName}.png")) { out ->
-        work(getInput(work.javaClass), out)
-    }
+internal fun outputFile(source: Any, extension: String = "txt") =
+    File("files/${source.javaClass.packageName}.$extension")
 
 fun saveTextFile(
     work: (String, PrintWriter) -> Unit,
     extension: String = "txt"
 ) =
-    saveFile(File("${work.javaClass.packageName}.$extension")) { out ->
+    saveFile(outputFile(work, extension)) { out ->
         val pw = PrintWriter(out)
         work(getInput(work.javaClass), pw)
         pw.close()
