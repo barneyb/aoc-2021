@@ -28,9 +28,9 @@ private fun search(input: String, costToMove: (Int) -> Int): Int {
         if (curr <= down && curr <= up) {
             return curr
         } else if (down < curr) {
-            queue.add(pivot - 1)
+            queue.add(pivot - ((curr - down) / 2).coerceAtLeast(1))
         } else {
-            queue.add(pivot + 1)
+            queue.add(pivot + ((curr - up) / 2).coerceAtLeast(1))
         }
     }
     throw IllegalStateException("No minumum found?!")
