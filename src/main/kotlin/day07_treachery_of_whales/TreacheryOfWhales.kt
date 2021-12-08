@@ -9,7 +9,7 @@ fun main() {
 }
 
 fun partOne(input: String) =
-    search(input) { it }
+    search(input) { abs(it) }
 
 private fun search(input: String, costToMove: (Int) -> Int): Int {
     val crabs = input
@@ -22,9 +22,9 @@ private fun search(input: String, costToMove: (Int) -> Int): Int {
     queue.add(best)
     while (queue.isNotEmpty()) {
         val pivot = queue.remove()
-        val curr = crabs.sumOf { abs(costToMove(it - pivot)) }
-        val down = crabs.sumOf { abs(costToMove(it - (pivot - 1))) }
-        val up = crabs.sumOf { abs(costToMove(it - (pivot + 1))) }
+        val curr = crabs.sumOf { costToMove(it - pivot) }
+        val down = crabs.sumOf { costToMove(it - (pivot - 1)) }
+        val up = crabs.sumOf { costToMove(it - (pivot + 1)) }
         if (curr <= down && curr <= up) {
             return curr
         } else if (down < curr) {
