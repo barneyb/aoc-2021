@@ -5,8 +5,10 @@ import histogram.Histogram
 import histogram.count
 import histogram.mutableHistogramOf
 import util.printBoxed
+import util.saveTextFile
 import java.awt.Color
 import java.awt.image.BufferedImage
+import java.io.PrintWriter
 import kotlin.math.abs
 import kotlin.math.max
 
@@ -14,6 +16,7 @@ fun main() {
     util.solve(7644, ::partOne)
     util.solve(18627, ::partTwo)
     draw.saveImage(::draw)
+    saveTextFile(::csv_lines, "lines.csv")
 }
 
 data class Line(val start: Point, val end: Point) {
@@ -44,6 +47,10 @@ data class Line(val start: Point, val end: Point) {
         }
 }
 
+private fun String.toLines() =
+    lineSequence()
+        .map(String::toLine)
+
 private fun String.toLine() =
     replace(" -> ", ",")
         .split(',')
@@ -59,8 +66,7 @@ fun partOne(input: String) =
     mutableHistogramOf<Point>()
         .also { hist ->
             input
-                .lineSequence()
-                .map(String::toLine)
+                .toLines()
                 .filter { it.vertical || it.horizontal }
                 .map(Line::allPoints)
                 .forEach { it.forEach(hist::count) }
@@ -91,9 +97,7 @@ private fun Histogram<Point>.printMap() {
 fun partTwo(input: String) =
     mutableHistogramOf<Point>()
         .also { hist ->
-            input
-                .lineSequence()
-                .map(String::toLine)
+            input.toLines()
                 .map(Line::allPoints)
                 .forEach { it.forEach(hist::count) }
         }
@@ -103,8 +107,8 @@ fun partTwo(input: String) =
 
 fun draw(input: String, img: BufferedImage) {
     val linesTwo = input
-        .lines()
-        .map(String::toLine)
+        .toLines()
+        .toList()
     val linesOne = linesTwo
         .filter { it.vertical || it.horizontal }
     val histOne = mutableHistogramOf<Point>()
@@ -164,4 +168,21 @@ fun draw(input: String, img: BufferedImage) {
                 }
             }
     }
+}
+
+private val Line.type
+    get() = when {
+        horizontal -> "h"
+        vertical -> "v"
+        fortyFive -> "d"
+        else -> throw IllegalStateException("Unknown line type?!")
+    }
+
+private fun csv_lines(input: String, out: PrintWriter) {
+    out.println("type,x1,y1,x2,y2")
+    input
+        .toLines()
+        .forEach {
+            out.println("${it.type},${it.start.x},${it.start.y},${it.end.x},${it.end.y}")
+        }
 }
