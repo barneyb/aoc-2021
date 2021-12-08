@@ -17,6 +17,7 @@ fun main() {
     util.solve(18627, ::partTwo)
     draw.saveImage(::draw)
     saveTextFile(::csv_lines, "lines.csv")
+    saveTextFile(::csv_vents, "vents.csv")
 }
 
 data class Line(val start: Point, val end: Point) {
@@ -104,25 +105,63 @@ fun partTwo(input: String) =
 //        .also { it.printMap() }
         .count { it.value > 1 }
 
+enum class VentType(val tag: Char) {
+    ORTHOGONAL('o'),
+    DIAGONAL('d'),
+    OVERLAP_ORTHOGONAL('O'),
+    OVERLAP_COMBO('C'),
+    OVERLAP_DIAGONAL('D'),
+    OVERLAP_BOTH('B')
+}
 
-fun draw(input: String, img: BufferedImage) {
-    val linesTwo = input
-        .toLines()
+data class VentInfo(
+    val p: Point,
+    val type: VentType,
+    val orthCount: Int,
+    val diagCount: Int
+) {
+
+    val count = orthCount + diagCount
+
+}
+
+fun String.toVentTypes(): Collection<VentInfo> {
+    val allLines = toLines()
         .toList()
-    val linesOne = linesTwo
-        .filter { it.vertical || it.horizontal }
     val histOne = mutableHistogramOf<Point>()
         .also { hist ->
-            linesOne
+            allLines
+                .filter { it.vertical || it.horizontal }
                 .map(Line::allPoints)
                 .forEach { it.forEach(hist::count) }
         }
     val histTwo = mutableHistogramOf<Point>()
         .also { hist ->
-            linesTwo
+            allLines
                 .map(Line::allPoints)
                 .forEach { it.forEach(hist::count) }
         }
+    return histTwo.keys
+        .map { p ->
+            val dn = histTwo[p]!!.toInt()
+            val on = histOne.getOrDefault(p, 0).toInt()
+            VentInfo(
+                p,
+                when {
+                    dn == 1 && on == 0 -> VentType.DIAGONAL
+                    dn == 1 && on == 1 -> VentType.ORTHOGONAL
+                    dn > 1 && on == 0 -> VentType.OVERLAP_DIAGONAL
+                    dn > 1 && on == 1 -> VentType.OVERLAP_COMBO
+                    dn == on -> VentType.OVERLAP_ORTHOGONAL
+                    dn > on -> VentType.OVERLAP_BOTH
+                    else -> throw IllegalStateException("Unknown state $dn/$on")
+                }, on, dn - on
+            )
+        }
+}
+
+fun draw(input: String, img: BufferedImage) {
+    val ventTypes = input.toVentTypes()
     val width = img.width
     val height = img.height
     img.createGraphics().apply {
@@ -132,39 +171,22 @@ fun draw(input: String, img: BufferedImage) {
     img.createGraphics().apply {
         translate(5, 5)
         scale(width / 1010.0, height / 1010.0)
-        histTwo.keys
-            .groupBy { p ->
-                val dn = histTwo[p]!!.toInt()
-                val on = histOne.getOrDefault(p, 0).toInt()
-                when {
-                    dn == 1 && on == 0 ->
-                        // non-conflict, diagonal-only
-                        Pair(2, Color.BLUE)
-                    dn == 1 && on == 1 ->
-                        // non-conflict, orthogonal-only
-                        Pair(1, Color.GREEN)
-                    dn > 1 && on == 0 ->
-                        // diagonal conflict, diagonal-only
-                        Pair(5, Color.CYAN)
-                    dn > 1 && on == 1 ->
-                        // diagonal conflict, both lines
-                        Pair(4, Color.MAGENTA)
-                    dn == on ->
-                        // orthogonal conflict
-                        Pair(3, Color.YELLOW)
-                    dn > on ->
-                        // both conflict
-                        Pair(6, Color.RED)
-                    else -> throw IllegalStateException("Unknown state $dn/$on")
+        ventTypes
+            .groupBy(VentInfo::type)
+            .toSortedMap()
+            .forEach { (grp, infos) ->
+                color = when (grp!!) {
+                    VentType.ORTHOGONAL -> Color.GREEN
+                    VentType.DIAGONAL -> Color.BLUE
+                    VentType.OVERLAP_ORTHOGONAL -> Color.YELLOW
+                    VentType.OVERLAP_COMBO -> Color.MAGENTA
+                    VentType.OVERLAP_DIAGONAL -> Color.CYAN
+                    VentType.OVERLAP_BOTH -> Color.RED
                 }
-            }
-            .toSortedMap { a, b ->
-                a.first - b.first
-            }
-            .forEach { (grp, points) ->
-                color = grp.second
-                points.forEach { p ->
-                    drawOval(p.x.toInt() - 1, p.y.toInt() - 1, 2, 2)
+                infos.forEach { i ->
+                    i.p.also { p ->
+                        drawOval(p.x.toInt() - 1, p.y.toInt() - 1, 2, 2)
+                    }
                 }
             }
     }
@@ -184,5 +206,15 @@ private fun csv_lines(input: String, out: PrintWriter) {
         .toLines()
         .forEach {
             out.println("${it.type},${it.start.x},${it.start.y},${it.end.x},${it.end.y}")
+        }
+}
+
+private fun csv_vents(input: String, out: PrintWriter) {
+    out.println("x,y,type,count,orth_count,diag_count")
+    input.toVentTypes()
+        .asSequence()
+        .filter { it.count > 1 }
+        .forEach {
+            out.println("${it.p.x},${it.p.y},${it.type.tag},${it.count},${it.orthCount},${it.diagCount}")
         }
 }
