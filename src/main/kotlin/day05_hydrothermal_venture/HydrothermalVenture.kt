@@ -105,13 +105,13 @@ fun partTwo(input: String) =
 //        .also { it.printMap() }
         .count { it.value > 1 }
 
-enum class VentType(val tag: Char) {
-    ORTHOGONAL('o'),
-    DIAGONAL('d'),
-    OVERLAP_ORTHOGONAL('O'),
-    OVERLAP_COMBO('C'),
-    OVERLAP_DIAGONAL('D'),
-    OVERLAP_BOTH('B')
+enum class VentType(val tag: String) {
+    ORTHOGONAL("orthogonal"),
+    DIAGONAL("diagonal"),
+    OVERLAP_ORTHOGONAL("Orthogonal"),
+    OVERLAP_COMBO("Combination"),
+    OVERLAP_DIAGONAL("Diagonal"),
+    OVERLAP_BOTH("Both")
 }
 
 data class VentInfo(
