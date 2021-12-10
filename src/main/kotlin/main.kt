@@ -1,4 +1,5 @@
 import day06_lanternfish_growth.main as day06_lanternfish_growth
+import day08_seven_segment.main as day08_seven_segment
 /*INJECT:IMPORT*/
 import com.github.ajalt.mordant.rendering.TextStyles
 import com.github.ajalt.mordant.terminal.Terminal
@@ -62,6 +63,7 @@ private val days = listOf(
     ::day04_squid_bingo,
     ::day05_hydrothermal_venture,
     ::day06_lanternfish_growth,
+    ::day08_seven_segment,
     /*INJECT:REF*/
     ::ocean_profile,
 )
