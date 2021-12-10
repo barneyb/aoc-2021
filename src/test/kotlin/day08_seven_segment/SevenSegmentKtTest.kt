@@ -3,6 +3,9 @@ package day08_seven_segment
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 
+private val SINGLE_EXAMPLE =
+    "acedgfb cdfbe gcdfa fbcad dab cefabd cdfgeb eafb cagedb ab | cdfeb fcadb cdfeb cdbaf"
+
 private val WORKED_EXAMPLE = """
 be cfbegad cbdgef fgaecd cgeb fdcge agebfd fecdb fabcd edb | fdgacbe cefdb cefbgd gcbe
 edbfga begcd cbg gc gcadebf fbgde acbgfd abcde gfcbed gfec | fcgedb cgb dgebacf gc
@@ -20,13 +23,14 @@ internal class SevenSegmentKtTest {
 
     @Test
     fun partOne() {
+        assertEquals(0, partOne(SINGLE_EXAMPLE))
         assertEquals(26, partOne(WORKED_EXAMPLE))
     }
 
-    @kotlin.test.Ignore // todo: reinstate when ready!
     @Test
     fun partTwo() {
-        assertEquals(0, partTwo(WORKED_EXAMPLE))
+        assertEquals(5353, partTwo(SINGLE_EXAMPLE))
+        assertEquals(61229, partTwo(WORKED_EXAMPLE))
     }
 
 }
