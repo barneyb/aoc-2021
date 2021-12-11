@@ -2,6 +2,7 @@ import day06_lanternfish_growth.main as day06_lanternfish_growth
 import day07_treachery_of_whales.main as day07_treachery_of_whales
 import day08_seven_segment.main as day08_seven_segment
 import day09_smoke_basin.main as day09_smoke_basin
+import day10_syntax_scoring.main as day10_syntax_scoring
 /*INJECT:IMPORT*/
 import com.github.ajalt.mordant.rendering.TextStyles
 import com.github.ajalt.mordant.terminal.Terminal
@@ -68,6 +69,7 @@ private val days = listOf(
     ::day07_treachery_of_whales,
     ::day08_seven_segment,
     ::day09_smoke_basin,
+    ::day10_syntax_scoring,
     /*INJECT:REF*/
     ::ocean_profile,
 )
