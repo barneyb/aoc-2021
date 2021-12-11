@@ -69,7 +69,7 @@ private val days = listOf(
     ::day07_treachery_of_whales,
     ::day08_seven_segment,
     ::day09_smoke_basin,
-    //::day10_syntax_scoring,
+    ::day10_syntax_scoring,
     /*INJECT:REF*/
     ::ocean_profile,
 )
