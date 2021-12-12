@@ -2,6 +2,35 @@ package geom2d
 
 import kotlin.math.abs
 
+data class Rect(
+    val x1: Long, val y1: Long, val x2: Long, val y2: Long
+) {
+
+    val width = x2 - x1 + 1
+    val height = y2 - y1 + 1
+
+    constructor(p: Point, width: Long, height: Long) : this(
+        p.x,
+        p.y,
+        p.x + width - 1,
+        p.y + height - 1
+    )
+
+    fun contains(p: Point) =
+        p.x >= x1 && p.y >= y1 && p.x <= x2 && p.y <= y2
+
+    fun neighbors(p: Point) =
+        p
+            .neighbors()
+            .filter(::contains)
+
+    fun asPoint(linearOffset: Long) =
+        Point(linearOffset % width, linearOffset / width)
+
+    fun asLinearOffset(p: Point) =
+        p.y * width + p.x
+}
+
 data class Point(val x: Long, val y: Long) {
 
     companion object {
@@ -24,6 +53,18 @@ data class Point(val x: Long, val y: Long) {
 
     fun manhattanDistance(p: Point) =
         abs(p.x - x) + abs(p.y - y)
+
+    fun neighbors() =
+        listOf(
+            copy(x = x - 1, y = y - 1),
+            copy(y = y - 1),
+            copy(x = x + 1, y = y - 1),
+            copy(x = x - 1),
+            copy(x = x + 1),
+            copy(x = x - 1, y = y + 1),
+            copy(y = y + 1),
+            copy(x = x + 1, y = y + 1),
+        )
 }
 
 fun Char.toTurn() = when (this) {

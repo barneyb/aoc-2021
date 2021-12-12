@@ -1,5 +1,7 @@
 package day11_dumbo_octopus
 
+import geom2d.Point
+import geom2d.Rect
 import java.util.*
 
 fun main() {
@@ -12,17 +14,11 @@ fun partOne(input: String) =
 
 private class Grid(input: String) {
     val width = input.indexOf('\n')
-
-    fun coords(idx: Int) =
-        Pair(idx / width, idx % width)
-
-    fun index(row: Int, col: Int) =
-        row * width + col
-
     var grid = input
         .filter { it != '\n' }
         .map(Char::digitToInt)
     val height = grid.size / width
+    private val bounds = Rect(Point.ORIGIN, width.toLong(), height.toLong())
 
     var flashes = 0
     var ticks = 0
@@ -47,27 +43,9 @@ private class Grid(input: String) {
             val i = queue.remove()
             if (next[i] <= 9) continue
             if (!flashed.add(i)) continue
-            val (row, col) = coords(i)
-
-            if (row > 0)
-                illuminate(index(row - 1, col)) // north
-            if (col < width - 1) {
-                if (row > 0)
-                    illuminate(index(row - 1, col + 1)) // north-east
-                illuminate(index(row, col + 1)) // east
-                if (row < height - 1)
-                    illuminate(index(row + 1, col + 1)) // south-east
-            }
-            if (row < height - 1) {
-                if (col > 0)
-                    illuminate(index(row + 1, col - 1)) // south-west
-                illuminate(index(row + 1, col)) // south
-            }
-            if (col > 0) {
-                illuminate(index(row, col - 1)) // west
-                if (row > 0)
-                    illuminate(index(row - 1, col - 1)) // north-west
-            }
+            bounds
+                .neighbors(bounds.asPoint(i.toLong()))
+                .forEach { illuminate(bounds.asLinearOffset(it).toInt()) }
         }
         // reset flashers to zero
         flashed.forEach {
