@@ -7,7 +7,7 @@ import java.io.PrintWriter
 import java.util.*
 
 fun main() {
-    util.solve(554, ::partOne) // 1774 is too high
+    util.solve(554, ::partOne) // 1774 is too high (>=, not >)
     util.solve(1017792, ::partTwo)
     saveTextFile(::csv, "csv")
 }
@@ -44,7 +44,7 @@ private class Grid(input: String) {
             while (queue.isNotEmpty()) {
                 val p = queue.remove()
                 if (basin.contains(p)) continue
-                if (get(p) == 9) continue
+                if (grid[bounds.asLinearOffset(p).toInt()] == '9') continue
                 basin.add(p)
                 queue.addAll(p.orthogonalNeighbors(bounds))
             }
@@ -53,7 +53,7 @@ private class Grid(input: String) {
     }
 
     operator fun get(p: Point) =
-        grid[(p.y * width + p.x).toInt()].digitToInt()
+        grid[bounds.asLinearOffset(p).toInt()].digitToInt()
 }
 
 fun partOne(input: String) =
@@ -62,27 +62,28 @@ fun partOne(input: String) =
     }
 
 fun partTwo(input: String) =
-    Grid(input)
-        .basins
-        .map { it.size }
-        .sorted()       // should use a priority queue
-        .asReversed()   // here, but I don't have one
-        .take(3)        // readily available...
+    PriorityQueue<Int>(3)
+        .also { pq ->
+            Grid(input)
+                .basins
+                .forEach { b ->
+                    pq.add(b.size)
+                    if (pq.size > 3) pq.remove()
+                }
+
+        }
         .reduce(Int::times)
 
 private fun csv(input: String, out: PrintWriter) {
     out.println("x,y,height,is_low_point,basin_number")
     Grid(input).apply {
-        for (y in 0L until height) {
-            for (x in 0L until width) {
-                out.print("$x,$y")
-                val p = Point(x, y)
-                val height = this[p]
-                out.print(",$height,${if (lowPoints.contains(p)) 1 else 0}")
-                if (height != 9)
-                    out.print(",${basins.indexOfFirst { it.contains(p) }}")
-                out.println()
-            }
+        bounds.allPoints().forEach { p ->
+            val height = this[p]
+            out.print("${p.x},${p.y}")
+            out.print(",$height,${if (lowPoints.contains(p)) 1 else 0}")
+            if (height != 9)
+                out.print(",${basins.indexOfFirst { it.contains(p) }}")
+            out.println()
         }
     }
 }
