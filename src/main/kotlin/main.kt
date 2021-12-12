@@ -4,6 +4,7 @@ import day08_seven_segment.main as day08_seven_segment
 import day09_smoke_basin.main as day09_smoke_basin
 import day10_syntax_scoring.main as day10_syntax_scoring
 import day11_dumbo_octopus.main as day11_dumbo_octopus
+import day12_passage_pathing.main as day12_passage_pathing
 /*INJECT:IMPORT*/
 import com.github.ajalt.mordant.rendering.TextStyles
 import com.github.ajalt.mordant.terminal.Terminal
@@ -72,6 +73,7 @@ private val days = listOf(
     ::day09_smoke_basin,
     ::day10_syntax_scoring,
     ::day11_dumbo_octopus,
+    //::day12_passage_pathing,
     /*INJECT:REF*/
     ::ocean_profile,
 )
