@@ -64,10 +64,19 @@ internal class PassagePathingKtTest {
         assertEquals(226, partOne(EXAMPLE_LARGE))
     }
 
-    @kotlin.test.Ignore // todo: reinstate when ready!
     @Test
-    fun partTwo() {
-        assertEquals(0, partTwo(EXAMPLE_SMALL))
+    fun partTwo_small() {
+        assertEquals(36, partTwo(EXAMPLE_SMALL))
+    }
+
+    @Test
+    fun partTwo_medium() {
+        assertEquals(103, partTwo(EXAMPLE_MEDIUM))
+    }
+
+    @Test
+    fun partTwo_large() {
+        assertEquals(3509, partTwo(EXAMPLE_LARGE))
     }
 
 }
