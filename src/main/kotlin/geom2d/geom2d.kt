@@ -35,13 +35,13 @@ data class Rect(
 
     fun contains(p: Point) =
         p.x >= x1 && p.y >= y1 && p.x <= x2 && p.y <= y2
-
-    fun asPoint(linearOffset: Long) =
-        Point(linearOffset % width, linearOffset / width)
-
-    fun asLinearOffset(p: Point) =
-        p.y * width + p.x
 }
+
+fun Rect.asPoint(linearOffset: Long) =
+    Point(linearOffset % width, linearOffset / width)
+
+fun Rect.asLinearOffset(p: Point) =
+    p.y * width + p.x
 
 data class Point(val x: Long, val y: Long) {
 
@@ -100,6 +100,12 @@ data class Point(val x: Long, val y: Long) {
     fun orthogonalNeighbors(bounds: Rect) =
         orthogonalNeighbors().filter(bounds::contains)
 }
+
+fun Long.asPoint(bounds: Rect) =
+    bounds.asPoint(this)
+
+fun Point.asLinearOffset(bounds: Rect) =
+    bounds.asLinearOffset(this)
 
 fun Char.toDir() = when (this) {
     'N', '^', 'U' -> Dir.NORTH

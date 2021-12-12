@@ -2,6 +2,8 @@ package day11_dumbo_octopus
 
 import geom2d.Point
 import geom2d.Rect
+import geom2d.asLinearOffset
+import geom2d.asPoint
 import java.util.*
 
 fun main() {
