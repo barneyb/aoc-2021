@@ -71,7 +71,7 @@ private val days = listOf(
     ::day08_seven_segment,
     ::day09_smoke_basin,
     ::day10_syntax_scoring,
-    //::day11_dumbo_octopus,
+    ::day11_dumbo_octopus,
     /*INJECT:REF*/
     ::ocean_profile,
 )
