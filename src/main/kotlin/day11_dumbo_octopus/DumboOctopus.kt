@@ -4,13 +4,13 @@ import java.util.*
 
 fun main() {
     util.solve(1588, ::partOne)
-    util.solve(::partTwo)
+    util.solve(517, ::partTwo)
 }
 
 fun partOne(input: String) =
     partOne(input, 100)
 
-fun partOne(input: String, steps: Int): Int {
+private class Grid(input: String) {
     val width = input.indexOf('\n')
 
     fun coords(idx: Int) =
@@ -19,13 +19,17 @@ fun partOne(input: String, steps: Int): Int {
     fun index(row: Int, col: Int) =
         row * width + col
 
-    val grid = input
+    var grid = input
         .filter { it != '\n' }
         .map(Char::digitToInt)
     val height = grid.size / width
-    return (0 until steps).fold(Pair(grid, 0)) { (curr, flashes), _ ->
+
+    var flashes = 0
+    var ticks = 0
+
+    fun tick(): Int {
         // everyone goes up by one
-        val next = curr
+        val next = grid
             .map { it + 1 } as MutableList
         // greater than nine flashes
         val queue: Queue<Int> = LinkedList()
@@ -70,8 +74,26 @@ fun partOne(input: String, steps: Int): Int {
             next[it] = 0
         }
 
-        Pair(next, flashes + flashed.size)
-    }.second
+        grid = next
+        flashes += flashed.size
+        ticks += 1
+
+        return flashed.size
+    }
 }
 
-fun partTwo(input: String) = input.trim().length
+fun partOne(input: String, steps: Int): Int {
+    val grid = Grid(input)
+    repeat(steps) { grid.tick() }
+    return grid.flashes
+}
+
+fun partTwo(input: String): Int {
+    val grid = Grid(input)
+    val all = grid.width * grid.height
+    while (true) {
+        if (grid.tick() == all) {
+            return grid.ticks
+        }
+    }
+}

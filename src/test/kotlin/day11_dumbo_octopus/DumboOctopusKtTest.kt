@@ -39,10 +39,9 @@ internal class DumboOctopusKtTest {
         assertEquals(1656, partOne(WORKED_EXAMPLE))
     }
 
-    @kotlin.test.Ignore // todo: reinstate when ready!
     @Test
     fun partTwo() {
-        assertEquals(0, partTwo(WORKED_EXAMPLE))
+        assertEquals(195, partTwo(WORKED_EXAMPLE))
     }
 
 }
