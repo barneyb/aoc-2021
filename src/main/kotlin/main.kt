@@ -73,7 +73,7 @@ private val days = listOf(
     ::day09_smoke_basin,
     ::day10_syntax_scoring,
     ::day11_dumbo_octopus,
-    //::day12_passage_pathing,
+    ::day12_passage_pathing,
     /*INJECT:REF*/
     ::ocean_profile,
 )
