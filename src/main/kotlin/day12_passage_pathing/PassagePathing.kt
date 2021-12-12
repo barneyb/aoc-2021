@@ -8,40 +8,52 @@ fun main() {
 }
 
 fun partOne(input: String): Int {
-    // this is sorta gross. encode the strings!
-    val graph: Map<String, List<String>> =
-        mutableMapOf<String, MutableList<String>>()
+    val START = 0
+    val END = 1
+    val nodes = mutableMapOf("start" to START, "end" to END)
+    val graph: Map<Int, Collection<Int>> =
+        mutableMapOf<Int, MutableList<Int>>()
             .apply {
                 input
                     .lines()
-                    .map { it.split('-') }
+                    .map { edge ->
+                        edge.split('-')
+                            .map { cave ->
+                                nodes.getOrPut(cave) {
+                                    if (cave[0].isUpperCase())
+                                        nodes.size
+                                    else
+                                        -nodes.size
+                                }
+                            }
+                    }
                     .map { (a, b) ->
                         getOrPut(a, ::mutableListOf).add(b)
                         getOrPut(b, ::mutableListOf).add(a)
                     }
             }
 
-    data class Path(val at: String, val visited: Set<String>) {
+    data class Path(val at: Int, val visited: Set<Int>) {
 
-        constructor(at: String) : this(at, setOf(at))
+        constructor(at: Int) : this(at, setOf(at))
 
-        fun then(cave: String) =
+        fun then(cave: Int) =
             Path(cave, visited + cave)
 
     }
 
     var pathCount = 0
-    val queue: Queue<Path> = LinkedList()
-    queue.add(Path("start"))
+    val queue: Queue<Path> = ArrayDeque()
+    queue.add(Path(START))
     while (queue.isNotEmpty()) {
         val p = queue.remove()
-        if (p.at == "end") {
+        if (p.at == END) {
             pathCount += 1
             continue
         }
         queue.addAll(
             graph[p.at]!!
-                .filter { it[0].isUpperCase() || !p.visited.contains(it) }
+                .filter { it > 0 || !p.visited.contains(it) }
                 .map { p.then(it) }
         )
     }
