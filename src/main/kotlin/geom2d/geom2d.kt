@@ -68,14 +68,14 @@ data class Point(val x: Long, val y: Long) {
 
     fun neighbors() =
         listOf(
-            copy(x = x - 1, y = y - 1),
-            copy(y = y - 1),
+            copy(/**/       y = y - 1),
             copy(x = x + 1, y = y - 1),
-            copy(x = x - 1),
-            copy(x = x + 1),
-            copy(x = x - 1, y = y + 1),
-            copy(y = y + 1),
+            copy(x = x + 1       /**/),
             copy(x = x + 1, y = y + 1),
+            copy(/**/       y = y + 1),
+            copy(x = x - 1, y = y + 1),
+            copy(x = x - 1       /**/),
+            copy(x = x - 1, y = y - 1),
         )
 
     fun neighbors(bounds: Rect) =
@@ -83,10 +83,10 @@ data class Point(val x: Long, val y: Long) {
 
     fun diagonalNeighbors() =
         listOf(
-            copy(x = x - 1, y = y - 1),
             copy(x = x + 1, y = y - 1),
-            copy(x = x - 1, y = y + 1),
             copy(x = x + 1, y = y + 1),
+            copy(x = x - 1, y = y + 1),
+            copy(x = x - 1, y = y - 1),
         )
 
     fun diagonalNeighbors(bounds: Rect) =
@@ -95,9 +95,9 @@ data class Point(val x: Long, val y: Long) {
     fun orthogonalNeighbors() =
         listOf(
             copy(y = y - 1),
-            copy(x = x - 1),
             copy(x = x + 1),
             copy(y = y + 1),
+            copy(x = x - 1),
         )
 
     fun orthogonalNeighbors(bounds: Rect) =
