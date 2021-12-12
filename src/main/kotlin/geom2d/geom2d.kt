@@ -9,6 +9,8 @@ data class Rect(
     val width = x2 - x1 + 1
     val height = y2 - y1 + 1
 
+    constructor(width: Long, height: Long) : this(Point.ORIGIN, width, height)
+
     constructor(p: Point, width: Long, height: Long) : this(
         p.x,
         p.y,
@@ -16,13 +18,23 @@ data class Rect(
         p.y + height - 1
     )
 
+    fun allPoints(): Sequence<Point> {
+        var row = 0L
+        var col = -1L
+        return generateSequence {
+            col += 1
+            if (col == width) {
+                col = 0
+                row += 1
+            }
+            if (row < height) {
+                Point(col, row)
+            } else null
+        }
+    }
+
     fun contains(p: Point) =
         p.x >= x1 && p.y >= y1 && p.x <= x2 && p.y <= y2
-
-    fun neighbors(p: Point) =
-        p
-            .neighbors()
-            .filter(::contains)
 
     fun asPoint(linearOffset: Long) =
         Point(linearOffset % width, linearOffset / width)
@@ -65,6 +77,31 @@ data class Point(val x: Long, val y: Long) {
             copy(y = y + 1),
             copy(x = x + 1, y = y + 1),
         )
+
+    fun neighbors(bounds: Rect) =
+        neighbors().filter(bounds::contains)
+
+    fun diagonalNeighbors() =
+        listOf(
+            copy(x = x - 1, y = y - 1),
+            copy(x = x + 1, y = y - 1),
+            copy(x = x - 1, y = y + 1),
+            copy(x = x + 1, y = y + 1),
+        )
+
+    fun diagonalNeighbors(bounds: Rect) =
+        diagonalNeighbors().filter(bounds::contains)
+
+    fun orthogonalNeighbors() =
+        listOf(
+            copy(y = y - 1),
+            copy(x = x - 1),
+            copy(x = x + 1),
+            copy(y = y + 1),
+        )
+
+    fun orthogonalNeighbors(bounds: Rect) =
+        orthogonalNeighbors().filter(bounds::contains)
 }
 
 fun Char.toTurn() = when (this) {

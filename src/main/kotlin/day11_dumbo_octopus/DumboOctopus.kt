@@ -43,8 +43,8 @@ private class Grid(input: String) {
             val i = queue.remove()
             if (next[i] <= 9) continue
             if (!flashed.add(i)) continue
-            bounds
-                .neighbors(bounds.asPoint(i.toLong()))
+            bounds.asPoint(i.toLong())
+                .neighbors(bounds)
                 .forEach { illuminate(bounds.asLinearOffset(it).toInt()) }
         }
         // reset flashers to zero

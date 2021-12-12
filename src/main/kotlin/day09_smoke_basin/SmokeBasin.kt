@@ -1,7 +1,7 @@
 package day09_smoke_basin
 
-import geom2d.Dir
 import geom2d.Point
+import geom2d.Rect
 import util.saveTextFile
 import java.io.PrintWriter
 import java.util.*
@@ -13,27 +13,27 @@ fun main() {
 }
 
 private class Grid(input: String) {
-    val width: Int
-    val grid: String
-    val height: Int
+    val width = input.indexOf('\n')
+    val grid = input
+        .filter { it != '\n' }
+    val height = grid.length / width
+    val bounds = Rect(width.toLong(), height.toLong())
     val lowPoints: Set<Point>
 
     init {
-        width = input.indexOf('\n')
-        grid = input
-            .filter { it != '\n' }
-        height = grid.length / width
         lowPoints = mutableSetOf()
-        for (r in 0 until height) {
-            for (c in 0 until width) {
-                val n = grid[r * width + c]
-                if (r > 0 && n >= grid[(r - 1) * width + c]) continue
-                if (r < height - 1 && n >= grid[(r + 1) * width + c]) continue
-                if (c > 0 && n >= grid[r * width + c - 1]) continue
-                if (c < width - 1 && n >= grid[r * width + c + 1]) continue
-                lowPoints.add(Point(c.toLong(), r.toLong()))
+        bounds
+            .allPoints()
+            .forEach { p ->
+                val n = grid[bounds.asLinearOffset(p).toInt()]
+                if (p.orthogonalNeighbors(bounds)
+                        .all {
+                            n < grid[bounds.asLinearOffset(it).toInt()]
+                        }
+                ) {
+                    lowPoints.add(p)
+                }
             }
-        }
     }
 
     val basins: List<Set<Point>> by lazy {
@@ -46,10 +46,7 @@ private class Grid(input: String) {
                 if (basin.contains(p)) continue
                 if (get(p) == 9) continue
                 basin.add(p)
-                if (p.y > 0) queue.add(p.step(Dir.NORTH))
-                if (p.y < height - 1) queue.add(p.step(Dir.SOUTH))
-                if (p.x > 0) queue.add(p.step(Dir.WEST))
-                if (p.x < width - 1) queue.add(p.step(Dir.EAST))
+                queue.addAll(p.orthogonalNeighbors(bounds))
             }
             basin
         }
