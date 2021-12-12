@@ -40,7 +40,7 @@ private class Grid(input: String) {
     val basins: List<Set<Point>> by lazy {
         lowPoints.map { low ->
             val basin = mutableSetOf<Point>()
-            val queue = LinkedList<Point>()
+            val queue: Queue<Point> = LinkedList()
             queue.add(low)
             while (queue.isNotEmpty()) {
                 val p = queue.remove()

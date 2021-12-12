@@ -26,7 +26,7 @@ fun partOne(input: String) =
         .sum()
 
 private fun String.toSyntaxScore(): Long {
-    val stack: Deque<Char> = LinkedList()
+    val stack: Deque<Char> = ArrayDeque()
     forEach {
         when (it) {
             '(' -> stack.addFirst(')')
