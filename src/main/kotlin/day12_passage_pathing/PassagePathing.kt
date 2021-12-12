@@ -5,6 +5,8 @@ import java.util.*
 fun main() {
     util.solve(5333, ::partOne)
     util.solve(146553, ::partTwo)
+    // using String instead of Int is ~35% slower
+    // using Set instead of List is ~200% slower
 }
 
 //typealias Cave = String
