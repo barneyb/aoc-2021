@@ -4,28 +4,30 @@ import java.util.*
 
 fun main() {
     util.solve(290691, ::partOne)
+    // 240.165μs initially
+    // 243.996μs with "pattern" types
     util.solve(2768166558, ::partTwo)
+    // 213.655μs initially
+    // 199.046μs with "pattern" types
 }
-
-private val SCORE_LEGAL: Long = 0
-private val SCORE_PAREN: Long = 3
-private val SCORE_BRACKET: Long = 57
-private val SCORE_BRACE: Long = 1197
-private val SCORE_ANGLE: Long = 25137
-
-private val COMP_PAREN: Long = 1
-private val COMP_BRACKET: Long = 2
-private val COMP_BRACE: Long = 3
-private val COMP_ANGLE: Long = 4
 
 fun partOne(input: String) =
     input
         .lineSequence()
         .map(String::toSyntaxScore)
-        .filter { it > 0 }
-        .sum()
+        .sumOf {
+            when (it) {
+                is Corrupt -> it.score
+                else -> 0
+            }
+        }
 
-private fun String.toSyntaxScore(): Long {
+private interface Score
+private class Corrupt(val score: Long) : Score
+private class Incomplete(val score: Long) : Score
+private class Legal : Score
+
+private fun String.toSyntaxScore(): Score {
     val stack: Deque<Char> = ArrayDeque()
     forEach {
         when (it) {
@@ -33,34 +35,41 @@ private fun String.toSyntaxScore(): Long {
             '[' -> stack.addFirst(']')
             '{' -> stack.addFirst('}')
             '<' -> stack.addFirst('>')
-            ')' -> if (stack.removeFirst() != ')') return SCORE_PAREN
-            ']' -> if (stack.removeFirst() != ']') return SCORE_BRACKET
-            '}' -> if (stack.removeFirst() != '}') return SCORE_BRACE
-            '>' -> if (stack.removeFirst() != '>') return SCORE_ANGLE
+            ')' -> if (stack.removeFirst() != ')')
+                return Corrupt(3)
+            ']' -> if (stack.removeFirst() != ']')
+                return Corrupt(57)
+            '}' -> if (stack.removeFirst() != '}')
+                return Corrupt(1197)
+            '>' -> if (stack.removeFirst() != '>')
+                return Corrupt(25137)
             else -> throw IllegalArgumentException("Unknown char '$it'")
         }
     }
-    return if (stack.isEmpty())
-        SCORE_LEGAL
-    else {
-        -stack.map {
-            when (it) {
-                ')' -> COMP_PAREN
-                ']' -> COMP_BRACKET
-                '}' -> COMP_BRACE
-                '>' -> COMP_ANGLE
-                else -> throw IllegalArgumentException("Unknown stacked char '$it'")
-            }
+    if (stack.isEmpty()) return Legal()
+    return Incomplete(stack.map {
+        when (it) {
+            ')' -> 1
+            ']' -> 2
+            '}' -> 3
+            '>' -> 4
+            else -> throw IllegalArgumentException("Unknown stacked char '$it'")
         }
-            .fold(0L) { sum, n -> sum * 5 + n }
     }
+        .fold(0L) { sum, n -> sum * 5 + n })
 }
 
 fun partTwo(input: String) =
-    -input
+    input
         .lineSequence()
         .map(String::toSyntaxScore)
-        .filter { it < 0 }
+        .map {
+            when (it) {
+                is Incomplete -> it.score
+                else -> -1
+            }
+        }
+        .filter { it > 0 }
         .sorted()
         .toList()
         .let {
