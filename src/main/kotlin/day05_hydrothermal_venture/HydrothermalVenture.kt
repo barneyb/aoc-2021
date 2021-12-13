@@ -141,9 +141,9 @@ fun String.toVentTypes(): Collection<VentInfo> {
                 .map(Line::allPoints)
                 .forEach { it.forEach(hist::count) }
         }
-    return histTwo.keys
-        .map { p ->
-            val dn = histTwo[p]!!.toInt()
+    return histTwo.entries
+        .map { (p, dnL) ->
+            val dn = dnL.toInt()
             val on = histOne.getOrDefault(p, 0).toInt()
             VentInfo(
                 p,
@@ -157,6 +157,16 @@ fun String.toVentTypes(): Collection<VentInfo> {
                     else -> throw IllegalStateException("Unknown state $dn/$on")
                 }, on, dn - on
             )
+        }
+        .sortedWith { a, b ->
+            val ap = a.p
+            val bp = b.p
+            if (ap.y < bp.y)
+                -1
+            else if (ap.y > bp.y)
+                1
+            else
+                (ap.x - bp.x).toInt()
         }
 }
 
