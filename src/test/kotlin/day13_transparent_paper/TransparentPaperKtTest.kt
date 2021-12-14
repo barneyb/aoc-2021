@@ -38,11 +38,11 @@ internal class TransparentPaperKtTest {
     fun partTwo() {
         assertEquals(
             """
-                #####
-                #...#
-                #...#
-                #...#
-                #####
+                █████
+                █...█
+                █...█
+                █...█
+                █████
             """.trimIndent(),
             partTwo(WORKED_EXAMPLE).trim()
         )

@@ -9,13 +9,13 @@ fun main() {
     util.solve(765, ::partOne)
     util.solve(
         """
-###..####.#..#.####.#....###...##..#..#
-#..#....#.#.#.....#.#....#..#.#..#.#..#
-#..#...#..##.....#..#....#..#.#....####
-###...#...#.#...#...#....###..#.##.#..#
-#.#..#....#.#..#....#....#....#..#.#..#
-#..#.####.#..#.####.####.#.....###.#..#
-""", ::partTwo
+            ███..████.█..█.████.█....███...██..█..█
+            █..█....█.█.█.....█.█....█..█.█..█.█..█
+            █..█...█..██.....█..█....█..█.█....████
+            ███...█...█.█...█...█....███..█.██.█..█
+            █.█..█....█.█..█....█....█....█..█.█..█
+            █..█.████.█..█.████.████.█.....███.█..█
+        """.trimIndent(), ::partTwo
     )
 }
 
@@ -65,6 +65,15 @@ private fun foldItUp(dots: Set<Point>, folds: List<Fold>): Set<Point> {
     }
 }
 
+fun Collection<Point>.toStringGrid(): String {
+    val bounds = bounds()
+    return bounds.ys.joinToString(separator = "\n") { y ->
+        bounds.xs.joinToString(separator = "") { x ->
+            if (contains(Point(x, y))) "█" else "."
+        }
+    }
+}
+
 fun Collection<Point>.bounds() =
     drop(1).fold(Rect(first(), 1, 1)) { r, p ->
         Rect(
@@ -77,15 +86,5 @@ fun Collection<Point>.bounds() =
 
 fun partTwo(input: String): String {
     val (dots, folds) = parse(input)
-    val result = foldItUp(dots, folds)
-    val bounds = result.bounds()
-    val sb = StringBuilder()
-    sb.append('\n')
-    for (y in bounds.ys) {
-        for (x in bounds.xs) {
-            sb.append(if (result.contains(Point(x, y))) '#' else '.')
-        }
-        sb.append('\n')
-    }
-    return sb.toString()
+    return foldItUp(dots, folds).toStringGrid()
 }

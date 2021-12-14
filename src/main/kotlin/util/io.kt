@@ -73,7 +73,11 @@ private fun nextAnswerLabel() = when (++answerCount) {
 fun <T : Any> solve(expected: T, solver: (String) -> T) {
     val input = getInput(solver.javaClass)
     val (actual: T, elapsed: Duration) = solveAndTime(solver, input)
-    val correct = expected == actual
+    val correct = if (actual is String && actual.contains('\n')) {
+        (expected as String).trimIndent() == actual.trimIndent()
+    } else {
+        expected == actual
+    }
     val style = if (correct) TextColors.brightGreen else TextColors.red
     answer(actual, elapsed, style, (solver as KCallable<*>).name)
     if (!correct) throw AssertionError("expected '$expected', but got '$actual'")
@@ -103,7 +107,12 @@ fun answer(
 ) = printBoxed(
     style(label) + " " +
             TextColors.gray("(${elapsed.toPrettyString()})") + ": " +
-            TextStyles.bold(ans.toString()),
+            TextStyles.bold(ans.toString().let {
+                if (it.contains('\n'))
+                    "\n$it"
+                else
+                    it
+            }),
     style
 )
 
