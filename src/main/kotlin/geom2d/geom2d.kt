@@ -11,12 +11,17 @@ data class Rect(
 
     constructor(width: Long, height: Long) : this(Point.ORIGIN, width, height)
 
+    constructor(p1: Point, p2: Point) : this(p1.x, p1.y, p2.x, p2.y)
+
     constructor(p: Point, width: Long, height: Long) : this(
         p.x,
         p.y,
         p.x + width - 1,
         p.y + height - 1
     )
+
+    val xs get() = x1..x2
+    val ys get() = y1..y2
 
     fun allPoints(): Sequence<Point> {
         var row = 0L

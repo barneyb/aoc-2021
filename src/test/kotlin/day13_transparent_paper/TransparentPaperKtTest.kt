@@ -34,10 +34,18 @@ internal class TransparentPaperKtTest {
         assertEquals(17, partOne(WORKED_EXAMPLE))
     }
 
-    @kotlin.test.Ignore // todo: reinstate when ready!
     @Test
     fun partTwo() {
-        assertEquals(0, partTwo(WORKED_EXAMPLE))
+        assertEquals(
+            """
+                #####
+                #...#
+                #...#
+                #...#
+                #####
+            """.trimIndent(),
+            partTwo(WORKED_EXAMPLE).trim()
+        )
     }
 
 }
