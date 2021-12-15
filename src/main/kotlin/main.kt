@@ -1,13 +1,3 @@
-import day06_lanternfish_growth.main as day06_lanternfish_growth
-import day07_treachery_of_whales.main as day07_treachery_of_whales
-import day08_seven_segment.main as day08_seven_segment
-import day09_smoke_basin.main as day09_smoke_basin
-import day10_syntax_scoring.main as day10_syntax_scoring
-import day11_dumbo_octopus.main as day11_dumbo_octopus
-import day12_passage_pathing.main as day12_passage_pathing
-import day13_transparent_paper.main as day13_transparent_paper
-import day14_extended_polymerization.main as day14_extended_polymerization
-/*INJECT:IMPORT*/
 import com.github.ajalt.mordant.rendering.TextStyles
 import com.github.ajalt.mordant.terminal.Terminal
 import util.Stopwatch
@@ -39,6 +29,16 @@ import day02_dive.main as day02_dive
 import day03_binary_diagnostic.main as day03_binary_diagnostic
 import day04_squid_bingo.main as day04_squid_bingo
 import day05_hydrothermal_venture.main as day05_hydrothermal_venture
+import day06_lanternfish_growth.main as day06_lanternfish_growth
+import day07_treachery_of_whales.main as day07_treachery_of_whales
+import day08_seven_segment.main as day08_seven_segment
+import day09_smoke_basin.main as day09_smoke_basin
+import day10_syntax_scoring.main as day10_syntax_scoring
+import day11_dumbo_octopus.main as day11_dumbo_octopus
+import day12_passage_pathing.main as day12_passage_pathing
+import day13_transparent_paper.main as day13_transparent_paper
+import day14_extended_polymerization.main as day14_extended_polymerization
+/*INJECT:IMPORT*/
 import ocean_profile.main as ocean_profile
 
 private val days = listOf(
