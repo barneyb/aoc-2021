@@ -75,7 +75,7 @@ private val days = listOf(
     ::day10_syntax_scoring,
     ::day11_dumbo_octopus,
     ::day12_passage_pathing,
-    //::day14_extended_polymerization,
+    ::day14_extended_polymerization,
     /*INJECT:REF*/
     ::ocean_profile,
 )
