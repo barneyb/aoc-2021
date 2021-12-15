@@ -75,7 +75,7 @@ private val days = listOf(
     ::day10_syntax_scoring,
     ::day11_dumbo_octopus,
     ::day12_passage_pathing,
-    //::day13_transparent_paper,
+    ::day13_transparent_paper,
     /*INJECT:REF*/
     ::ocean_profile,
 )
