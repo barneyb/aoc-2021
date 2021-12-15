@@ -1,8 +1,11 @@
 package day14_extended_polymerization
 
+import histogram.Histogram
 import histogram.count
 import histogram.histogramOf
 import histogram.mutableHistogramOf
+import util.extent
+import util.length
 
 fun main() {
     util.solve(2891, ::partOne)
@@ -25,25 +28,26 @@ internal fun solve(input: String, steps: Int): Long {
         }
     val initial = histogramOf(template
         .zipWithNext { a, b -> "$a$b" })
-    val hist = (1..steps).fold(initial) { hist, step ->
-        val next = mutableHistogramOf<String>()
-        for ((k, v) in hist) {
-            rules[k]!!.forEach {
-                next.count(it, v)
+    val pairHist = (1..steps).fold(initial) { hist, step ->
+        mutableHistogramOf<String>().apply {
+            for ((k, v) in hist) {
+                rules[k]!!.forEach {
+                    count(it, v)
+                }
             }
         }
-        next
     }
-    val chars = mutableHistogramOf<Char>()
-    chars.count(template.first())
-    chars.count(template.last())
-    for ((p, n) in hist) {
-        chars.count(p[0], n)
-        chars.count(p[1], n)
+    val charHist: Histogram<Char> = mutableHistogramOf<Char>().apply {
+        count(template.first())
+        count(template.last())
+        for ((p, n) in pairHist) {
+            count(p[0], n)
+            count(p[1], n)
+        }
     }
-    val diff = chars.values.maxOrNull()!! - chars.values.minOrNull()!!
-    if (diff % 2L == 1L) throw IllegalStateException("got an odd number?")
-    return diff / 2
+    val extent = charHist.values.extent()
+    if (extent.length % 2L == 1L) throw IllegalStateException("got an odd number?")
+    return extent.length / 2
 }
 
 fun partTwo(input: String) =
