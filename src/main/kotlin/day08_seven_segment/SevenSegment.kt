@@ -50,6 +50,27 @@ fun partTwo(input: String) =
         .map { decipherOutput(it.first(), it.last()) }
         .sum()
 
+private infix fun Segments.overlaps(other: Segments) =
+    this and other == other
+
+private fun <K, E> Map<K, Collection<E>>.pull(key: K): E {
+    val items = get(key)!!
+    if (items.size == 1) return items.first()
+    throw IllegalStateException("Multiple items exist for key")
+}
+
+private fun <K, E> Map<K, Collection<E>>.pull(
+    key: K,
+    predicate: (E) -> Boolean
+): E {
+    val items = get(key)!!
+    if (items.size == 1 && predicate(items.first())) return items.first()
+    val matches = items.filter(predicate)
+    if (matches.size == 1) return matches.first()
+    if (matches.isEmpty()) throw NoSuchElementException()
+    throw IllegalStateException("Multiple items match predicate")
+}
+
 fun decipherOutput(
     observations: List<Segments>,
     output: List<Segments>
@@ -58,30 +79,29 @@ fun decipherOutput(
     val valueToSeg = mutableMapOf<Int, Segments>()
     val byLen = observations.groupBy(Segments::countOneBits)
 
-    fun gotIt(seg: Segments, value: Int) {
-        segToValue[seg] = value
-        valueToSeg[value] = seg
-        (byLen[seg.countOneBits()] as MutableList).remove(seg)
+    fun Segments.means(value: Int): Segments {
+        segToValue[this] = value
+        valueToSeg[value] = this
+        (byLen[countOneBits()] as MutableList).remove(this)
+        return this
     }
 
     // simple ones
-    val one = byLen[2]!!.first()
-    val four = byLen[4]!!.first()
-    gotIt(one, 1)
-    gotIt(byLen[3]!!.first(), 7)
-    gotIt(four, 4)
-    gotIt(byLen[7]!!.first(), 8)
+    val one = byLen.pull(2).means(1)
+    val four = byLen.pull(4).means(4)
+    byLen.pull(3).means(7)
+    byLen.pull(7).means(8)
 
     // five-segment ones
     val fourSubOne = four xor one
-    gotIt(byLen[5]!!.find { it and fourSubOne == fourSubOne }!!, 5)
-    gotIt(byLen[5]!!.find { it and one == one }!!, 3)
-    gotIt(byLen[5]!!.first(), 2)
+    byLen.pull(5) { it overlaps fourSubOne }.means(5)
+    byLen.pull(5) { it overlaps one }.means(3)
+    byLen.pull(5).means(2)
 
     // six segment ones
-    gotIt(byLen[6]!!.find { it and four == four }!!, 9)
-    gotIt(byLen[6]!!.find { it and one == one }!!, 0)
-    gotIt(byLen[6]!!.first(), 6)
+    byLen.pull(6) { it overlaps four }.means(9)
+    byLen.pull(6) { it overlaps one }.means(0)
+    byLen.pull(6).means(6)
 
     return output.fold(0) { n, seg ->
         n * 10 + segToValue[seg]!!
