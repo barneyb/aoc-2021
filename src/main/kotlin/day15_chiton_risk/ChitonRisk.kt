@@ -40,12 +40,12 @@ fun partOne(input: String): Int =
     Grid(input).let { grid ->
         val stack: Deque<Path> = ArrayDeque()
         stack.addFirst(Path(Point.ORIGIN))
-        val allRisks = mutableMapOf<Point, Int>()
+        val allRisks = HashMap<Point, Int>()
         var minRisk = Int.MAX_VALUE
         val goal = grid.bottomRight
         while (stack.isNotEmpty()) {
             val p = stack.removeFirst()
-            if (p.totalRisk >= allRisks.getOrDefault(p.at, minRisk)) {
+            if (p.totalRisk >= (allRisks[p.at] ?: minRisk)) {
                 continue
             }
             allRisks.merge(p.at, p.totalRisk, ::min)
