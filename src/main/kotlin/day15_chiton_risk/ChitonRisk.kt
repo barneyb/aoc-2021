@@ -24,14 +24,13 @@ private class Grid(input: String) {
         grid[p.asLinearOffset(bounds).toInt()]
 }
 
-data class Path(val at: Point, val visited: List<Point>, val totalRisk: Int) {
+data class Path(val at: Point, val totalRisk: Int) {
 
-    constructor(at: Point) : this(at, listOf(at), 0)
+    constructor(at: Point) : this(at, 0)
 
     fun then(pos: Point, risk: Int) =
         Path(
             pos,
-            visited + pos,
             totalRisk + risk
         )
 
@@ -56,7 +55,6 @@ fun partOne(input: String): Int =
             }
             p.at
                 .orthogonalNeighbors(grid.bounds)
-                .filter { !p.visited.contains(it) }
                 .map { p.then(it, grid.getRiskAt(it)) }
                 .forEach(stack::addFirst)
         }
