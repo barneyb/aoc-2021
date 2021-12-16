@@ -38,6 +38,7 @@ import day11_dumbo_octopus.main as day11_dumbo_octopus
 import day12_passage_pathing.main as day12_passage_pathing
 import day13_transparent_paper.main as day13_transparent_paper
 import day14_extended_polymerization.main as day14_extended_polymerization
+import day15_chiton_risk.main as day15_chiton_risk
 /*INJECT:IMPORT*/
 import ocean_profile.main as ocean_profile
 
@@ -78,6 +79,7 @@ private val days = listOf(
     ::day12_passage_pathing,
     ::day13_transparent_paper,
     ::day14_extended_polymerization,
+    ::day15_chiton_risk,
     /*INJECT:REF*/
     ::ocean_profile,
 )

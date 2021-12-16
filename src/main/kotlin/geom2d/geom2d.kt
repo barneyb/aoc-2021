@@ -9,6 +9,11 @@ data class Rect(
     val width = x2 - x1 + 1
     val height = y2 - y1 + 1
 
+    val topLeft get() = Point(x1, y1)
+    val topRight get() = Point(x2, y1)
+    val bottomLeft get() = Point(x1, y2)
+    val bottomRight get() = Point(x2, y2)
+
     constructor(width: Long, height: Long) : this(Point.ORIGIN, width, height)
 
     constructor(p1: Point, p2: Point) : this(p1.x, p1.y, p2.x, p2.y)
@@ -70,14 +75,16 @@ data class Point(val x: Long, val y: Long) {
 
     fun neighbors() =
         listOf(
-            copy(/**/       y = y - 1),
+            // @formatter:off
+            copy(           y = y - 1),
             copy(x = x + 1, y = y - 1),
-            copy(x = x + 1       /**/),
+            copy(x = x + 1           ),
             copy(x = x + 1, y = y + 1),
-            copy(/**/       y = y + 1),
+            copy(           y = y + 1),
             copy(x = x - 1, y = y + 1),
-            copy(x = x - 1       /**/),
+            copy(x = x - 1           ),
             copy(x = x - 1, y = y - 1),
+            // @formatter:on
         )
 
     fun neighbors(bounds: Rect) =

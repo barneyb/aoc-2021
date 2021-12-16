@@ -31,13 +31,12 @@ data class Path(val at: Cave, val visited: List<Cave>, val double: Boolean) {
 
     constructor(at: Cave) : this(at, listOf(at), false)
 
-    fun then(cave: Cave): Path {
-        return Path(
+    fun then(cave: Cave): Path =
+        Path(
             cave,
             visited + cave,
             double || (!cave.isUnlimitedEntry && visited.contains(cave))
         )
-    }
 
 }
 
