@@ -4,7 +4,6 @@ import geom2d.Point
 import geom2d.Rect
 import geom2d.asLinearOffset
 import java.util.*
-import kotlin.math.min
 
 fun main() {
     util.solve(589, ::partOne)
@@ -24,7 +23,7 @@ private class Grid(input: String) {
         grid[p.asLinearOffset(bounds).toInt()]
 }
 
-data class Path(val at: Point, val totalRisk: Int) {
+data class Path(val at: Point, val totalRisk: Int) : Comparable<Path> {
 
     constructor(at: Point) : this(at, 0)
 
@@ -34,21 +33,23 @@ data class Path(val at: Point, val totalRisk: Int) {
             totalRisk + risk
         )
 
+    override fun compareTo(other: Path) =
+        totalRisk - other.totalRisk
+
 }
 
 fun partOne(input: String): Int =
     Grid(input).let { grid ->
-        val stack: Deque<Path> = ArrayDeque()
-        stack.addFirst(Path(Point.ORIGIN))
+        val queue: Queue<Path> = PriorityQueue()
+        queue.add(Path(Point.ORIGIN))
         val allRisks = HashMap<Point, Int>()
         var minRisk = Int.MAX_VALUE
         val goal = grid.bottomRight
-        while (stack.isNotEmpty()) {
-            val p = stack.removeFirst()
-            if (p.totalRisk >= (allRisks[p.at] ?: minRisk)) {
-                continue
-            }
-            allRisks.merge(p.at, p.totalRisk, ::min)
+        while (queue.isNotEmpty()) {
+            val p = queue.remove()
+            val r = allRisks[p.at]
+            if (p.totalRisk >= (r ?: minRisk)) continue
+            allRisks[p.at] = p.totalRisk
             if (p.at == goal) {
                 minRisk = minRisk.coerceAtMost(p.totalRisk)
                 continue
@@ -56,7 +57,7 @@ fun partOne(input: String): Int =
             p.at
                 .orthogonalNeighbors(grid.bounds)
                 .map { p.then(it, grid.getRiskAt(it)) }
-                .forEach(stack::addFirst)
+                .forEach(queue::add)
         }
         minRisk
     }
