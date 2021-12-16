@@ -75,14 +75,16 @@ data class Point(val x: Long, val y: Long) {
 
     fun neighbors() =
         listOf(
-            copy(/**/       y = y - 1),
+            // @formatter:off
+            copy(           y = y - 1),
             copy(x = x + 1, y = y - 1),
-            copy(x = x + 1       /**/),
+            copy(x = x + 1           ),
             copy(x = x + 1, y = y + 1),
-            copy(/**/       y = y + 1),
+            copy(           y = y + 1),
             copy(x = x - 1, y = y + 1),
-            copy(x = x - 1       /**/),
+            copy(x = x - 1           ),
             copy(x = x - 1, y = y - 1),
+            // @formatter:on
         )
 
     fun neighbors(bounds: Rect) =
