@@ -33,14 +33,23 @@ private class SimpleGrid(input: String) : Grid() {
 }
 
 
-data class Path(val at: Point, val totalRisk: Int) : Comparable<Path> {
+data class Path(
+    val at: Point,
+    val totalRisk: Int,
+//    val visited: List<Point>,
+) : Comparable<Path> {
 
-    constructor(at: Point) : this(at, 0)
+    constructor(at: Point) : this(
+        at,
+        0,
+//        listOf(at),
+    )
 
     fun then(pos: Point, risk: Int) =
         Path(
             pos,
-            totalRisk + risk
+            totalRisk + risk,
+//            visited + pos,
         )
 
     override fun compareTo(other: Path) =
@@ -55,23 +64,22 @@ private fun riskOfBestPath(grid: Grid): Int {
     val queue: Queue<Path> = PriorityQueue()
     queue.add(Path(Point.ORIGIN))
     val allRisks = HashMap<Point, Int>()
-    var minRisk = Int.MAX_VALUE
     val goal = grid.bottomRight
     while (queue.isNotEmpty()) {
         val p = queue.remove()
-        val r = allRisks[p.at]
-        if (p.totalRisk >= (r ?: minRisk)) continue
-        allRisks[p.at] = p.totalRisk
         if (p.at == goal) {
-            minRisk = minRisk.coerceAtMost(p.totalRisk)
+            return p.totalRisk
+        }
+        if (p.totalRisk >= allRisks.getOrDefault(p.at, Int.MAX_VALUE)) {
             continue
         }
+        allRisks[p.at] = p.totalRisk
         p.at
             .orthogonalNeighbors(grid.bounds)
             .map { p.then(it, grid.getRiskAt(it)) }
             .forEach(queue::add)
     }
-    return minRisk
+    throw IllegalStateException("found no path to the bottom corner?!")
 }
 
 private class TiledGrid(
