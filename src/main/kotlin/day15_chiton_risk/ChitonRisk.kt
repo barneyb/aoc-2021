@@ -32,24 +32,23 @@ private class SimpleGrid(input: String) : Grid() {
         grid[p.asLinearOffset(bounds).toInt()]
 }
 
-
 data class Path(
     val at: Point,
     val totalRisk: Int,
-//    val visited: List<Point>,
+    val visited: List<Point>?,
 ) : Comparable<Path> {
 
-    constructor(at: Point) : this(
+    constructor(at: Point, track: Boolean = false) : this(
         at,
         0,
-//        listOf(at),
+        if (track) listOf(at) else null,
     )
 
     fun then(pos: Point, risk: Int) =
         Path(
             pos,
             totalRisk + risk,
-//            visited + pos,
+            visited?.plus(pos)
         )
 
     override fun compareTo(other: Path) =
@@ -60,20 +59,22 @@ data class Path(
 fun partOne(input: String): Int =
     riskOfBestPath(SimpleGrid(input))
 
-private fun riskOfBestPath(grid: Grid): Int {
+private fun riskOfBestPath(grid: Grid, sink: ((Path) -> Unit)? = null): Int {
     val queue: Queue<Path> = PriorityQueue()
-    queue.add(Path(Point.ORIGIN))
+    queue.add(Path(Point.ORIGIN, sink != null))
     val allRisks = HashMap<Point, Int>()
     val goal = grid.bottomRight
     while (queue.isNotEmpty()) {
         val p = queue.remove()
         if (p.at == goal) {
+            sink?.invoke(p)
             return p.totalRisk
         }
         if (p.totalRisk >= allRisks.getOrDefault(p.at, Int.MAX_VALUE)) {
             continue
         }
         allRisks[p.at] = p.totalRisk
+        sink?.invoke(p)
         p.at
             .orthogonalNeighbors(grid.bounds)
             .map { p.then(it, grid.getRiskAt(it)) }
