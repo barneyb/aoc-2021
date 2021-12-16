@@ -94,10 +94,9 @@ internal class ChitonRiskKtTest {
         assertEquals(122, partOne(EXAMPLE_20))
     }
 
-    @kotlin.test.Ignore // todo: reinstate when ready!
     @Test
     fun partTwo() {
-        assertEquals(0, partTwo(WORKED_EXAMPLE))
+        assertEquals(315, partTwo(WORKED_EXAMPLE))
     }
 
 }
