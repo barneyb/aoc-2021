@@ -1,6 +1,5 @@
 package day11_dumbo_octopus
 
-import geom2d.Point
 import geom2d.Rect
 import geom2d.asLinearOffset
 import geom2d.asPoint
@@ -20,7 +19,7 @@ private class Grid(input: String) {
         .filter { it != '\n' }
         .map(Char::digitToInt)
     val height = grid.size / width
-    private val bounds = Rect(Point.ORIGIN, width.toLong(), height.toLong())
+    private val bounds = Rect(width.toLong(), height.toLong())
 
     var flashes = 0
     var ticks = 0
