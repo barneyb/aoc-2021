@@ -40,6 +40,7 @@ import day13_transparent_paper.main as day13_transparent_paper
 import day14_extended_polymerization.main as day14_extended_polymerization
 import day15_chiton_risk.main as day15_chiton_risk
 import day16_packet_decoder.main as day16_packet_decoder
+import day17_trick_shot.main as day17_trick_shot
 /*INJECT:IMPORT*/
 import ocean_profile.main as ocean_profile
 
@@ -82,6 +83,7 @@ private val days = listOf(
     ::day14_extended_polymerization,
     ::day15_chiton_risk,
     ::day16_packet_decoder,
+    //::day17_trick_shot,
     /*INJECT:REF*/
     ::ocean_profile,
 )
