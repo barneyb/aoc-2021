@@ -2,6 +2,25 @@ package day12_passage_pathing
 
 import java.util.*
 
+/**
+ * Another graph, specified solely by the edges (the nodes are implied). The
+ * right data structure is required, though it needn't be a fancy variant. A
+ * simple adjacency list is plenty, and a symbol table isn't required. With the
+ * right structure populated from the input, just a matter of walking w/ a visit
+ * map and counting the paths that don't violate the rules.
+ *
+ * Part two requires more bookkeeping, but like Treachery of Whales (#7), the
+ * strategy pattern is the way to go. The strategy is "can enter cave?", where
+ * part one is based solely on case, while part two needs to do some analysis of
+ * the prior path to allow reentering exactly one small cave exactly twice.
+ *
+ * A symbol table can make things somewhat faster, and will certainly scale
+ * better if the cave system were to have more than the 20-something caves in
+ * the input. Representing small/large caves is required, of course, and having
+ * to dereference the symbol table on every "can enter" check may mitigate any
+ * advantages. A single bit can be represented by the sign bit on a signed
+ * integer, so there is a zero-overhead way to encode that info. Sneaky!
+ */
 fun main() {
     util.solve(5333, ::partOne)
     util.solve(146553, ::partTwo)
