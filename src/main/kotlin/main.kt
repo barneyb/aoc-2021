@@ -81,7 +81,7 @@ private val days = listOf(
     ::day13_transparent_paper,
     ::day14_extended_polymerization,
     ::day15_chiton_risk,
-    //::day16_packet_decoder,
+    ::day16_packet_decoder,
     /*INJECT:REF*/
     ::ocean_profile,
 )
