@@ -5,6 +5,28 @@ import geom2d.Rect
 import geom2d.asLinearOffset
 import java.util.*
 
+/**
+ * 2D plane again. "You start... your destination" means a graph walk. "Lowest
+ * total risk" means an optimization problem. The wrinkle is that the
+ * optimization needs to be integrated into the walk, as the search space is
+ * infinite, since there's no rules about returning to an already-visited
+ * location. Such reentrance cannot yield an optimal route, of course, but we
+ * can do better. As soon as we have _any_ total risk (minimal or not), any
+ * partial routes which have already exceeded that threshold can be immediately
+ * ignored.
+ *
+ * Part two's search space is _massive_ compared to part one. Generalizing the
+ * pruning from part one to apply to each point (not just complete routes)
+ * trades some memory for a lot of CPU, so well worth it. Using a priority queue
+ * to always extend the lowest-risk routes as quickly as possible maximizes the
+ * effectiveness of that pruning.
+ *
+ * The 5x5 map is also interesting. It's not a simple tiling, but each non-first
+ * tile is still wholly determined by the first tile. So no need to actually
+ * materialize the full map. If part one's map has a nice interface,
+ * a decorator can be used to "project" it to five times its size (in each
+ * direction), including the requisite increase in risk.
+ */
 fun main() {
     util.solve(589, ::partOne)
     util.solve(2885, ::partTwo)
