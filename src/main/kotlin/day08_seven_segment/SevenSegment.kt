@@ -4,6 +4,22 @@ import kotlin.experimental.and
 import kotlin.experimental.or
 import kotlin.experimental.xor
 
+/**
+ * Well this is easy, just grab the stuff after the pipe and count how many
+ * strings have length 1, 4, 7, or 8. Done! Smells like a trap...
+ *
+ * Part two is about picking structures based on problem analysis. As well as
+ * ignoring "garbage" information from the business problem. The segment mapping
+ * doesn't matter; all that matters is the set-of-segments to digit mapping.
+ * Which is a clue; it has "set" right there. Analysis (to build the decision
+ * tree) also shows that you need "overlaps" and "difference" type operations
+ * to dissect which set-of-segments is which. Those are set operations!
+ *
+ * As a bonus, while `Set<Char>` is sufficient for correctness, there are only
+ * seven segments. A bitmap stored as a single Byte is equivalent, and has
+ * significantly less overhead. Set's "intersect" is bitwise `and`, and
+ * "difference" is `xor`.
+ */
 fun main() {
     util.solve(390, ::partOne)
     util.solve(1011785, ::partTwo)
