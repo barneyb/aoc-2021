@@ -7,6 +7,16 @@ import histogram.mutableHistogramOf
 import util.extent
 import util.length
 
+/**
+ * Chopping up strings and reassembling them is easy! A little parsing, a loop,
+ * and done! Hopefully part two isn't like Lanternfish (#6)...
+ *
+ * It's like Lanternfish. But here we need a character-based result, while the
+ * growth rules are based on pairs, so can't just keep track of char counts.
+ * Every char except the first and last is part of two pairs, however. So
+ * tracking pairs - plus the first/last wrinkle - should give us double the
+ * answer we want. Dividing by two is easy; done!
+ */
 fun main() {
     util.solve(2891, ::partOne)
     // 975.249μs initially
