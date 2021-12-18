@@ -139,8 +139,8 @@ private fun <T : Any> bench(
     }
     print("benchmarking...")
     val warmupWatch = Stopwatch()
-    var warmupCount = 0
-    while (warmupCount++ < 5 && warmupWatch.elapsed < CUTOFF_BENCHMARK_DURATION) {
+    var warmupsRemaining = CUTOFF_BENCHMARK_ITERATIONS / 20
+    while (warmupsRemaining-- > 0 && warmupWatch.elapsed < CUTOFF_BENCHMARK_DURATION) {
         check(solver(input))
     }
     print("warmed up...")
