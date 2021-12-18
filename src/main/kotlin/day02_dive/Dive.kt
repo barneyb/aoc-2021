@@ -3,6 +3,15 @@ package day02_dive
 import util.saveTextFile
 import java.io.PrintWriter
 
+/**
+ * Compound state is the name of the game: modeling the position and depth as a
+ * single value. The input is not simple data to process either, but rather a
+ * set of instructions to interpret, necessitating building a (very simple)
+ * "virtual machine".
+ *
+ * Part two furthers the compound state mandate by adding `aim` to the tuple. It
+ * also requires a revised virtual machine _for the same instruction set_.
+ */
 fun main() {
     util.solve(1840243, ::partOne)
     util.solve(1727785422, ::partTwo)
