@@ -28,6 +28,9 @@ data class Rect(
     val xs get() = x1..x2
     val ys get() = y1..y2
 
+    /**
+     * A sequence of all points in the Rect, in English reading order.
+     */
     fun allPoints(): Sequence<Point> {
         var row = 0L
         var col = -1L
@@ -46,6 +49,19 @@ data class Rect(
     fun contains(p: Point) =
         p.x >= x1 && p.y >= y1 && p.x <= x2 && p.y <= y2
 }
+
+/**
+ * Draw the rect as an ASCII Art grid, using the passed renderer to draw each
+ * "pixel". While you can return any char sequence, you almost certainly want
+ * to return single-character sequences. At the very least, each `x` value
+ * should have the same length for all `y` values, or it won't line up right.
+ */
+fun Rect.toAsciiArt(render: (Point) -> CharSequence) =
+    ys.joinToString(separator = "\n") { y ->
+        xs.joinToString(separator = "") { x ->
+            render(Point(x, y))
+        }
+    }
 
 fun Rect.asPoint(linearOffset: Long) =
     Point(linearOffset % width, linearOffset / width)
