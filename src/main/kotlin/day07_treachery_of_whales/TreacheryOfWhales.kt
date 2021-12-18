@@ -3,6 +3,16 @@ package day07_treachery_of_whales
 import java.util.*
 import kotlin.math.abs
 
+/**
+ * Now for (efficient) optimization. Clearly the best position is between the
+ * min and max initial positions, and a brute force search of every position
+ * will get you an answer. There must be exactly one minimum. It's probably
+ * close to the mean. No need to search position-by-position.
+ *
+ * For part two: enter the strategy pattern! The optimization algorithm needn't
+ * change, only the cost function is different. Plug in a different strategy,
+ * and reuse all the (optimized!) search logic from part one as-is.
+ */
 fun main() {
     util.solve(337833, ::partOne)
     util.solve(96678050, ::partTwo)
