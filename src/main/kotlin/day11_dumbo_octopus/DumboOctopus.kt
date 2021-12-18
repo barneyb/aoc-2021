@@ -5,6 +5,18 @@ import geom2d.asLinearOffset
 import geom2d.asPoint
 import java.util.*
 
+/**
+ * Conway's game of life, but with cascade! Since each state is wholly derived
+ * from the prior state, that suggests an immutable fold of some sort. But with
+ * the cascade, it's not going to be a _simple_ fold. Each iteration will need
+ * to have some stateful recursive walk inside to cascade the flashes from
+ * octopus to octopus.
+ *
+ * Part two's just a matter of setting up a forever loop and some way of knowing
+ * how many flashes occurred on a given step. The former's simple; the latter's
+ * already known - though perhaps not explicitly - so that the right octopuses
+ * can be reset to zero after the cascade.
+ */
 fun main() {
     util.solve(1588, ::partOne)
     util.solve(517, ::partTwo)
@@ -19,7 +31,7 @@ private class Grid(input: String) {
         .filter { it != '\n' }
         .map(Char::digitToInt)
     val height = grid.size / width
-    private val bounds = Rect(width.toLong(), height.toLong())
+    val bounds = Rect(width.toLong(), height.toLong())
 
     var flashes = 0
     var ticks = 0
@@ -69,7 +81,7 @@ fun partOne(input: String, steps: Int): Int {
 
 fun partTwo(input: String): Int {
     val grid = Grid(input)
-    val all = grid.width * grid.height
+    val all = grid.bounds.pointCount.toInt()
     while (true) {
         if (grid.tick() == all) {
             return grid.ticks
