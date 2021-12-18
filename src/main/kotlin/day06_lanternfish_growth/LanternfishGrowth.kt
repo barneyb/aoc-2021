@@ -7,6 +7,19 @@ import histogram.total
 import util.saveTextFile
 import java.io.PrintWriter
 
+/**
+ * The first analysis day! Implementing a solution based on the description of
+ * the "business" problem will get it done, but hardly a good approach. Mapping
+ * business problems onto a computer domain is the essence of programming, and
+ * today's the day! In many ways, today is another day one: a very simple
+ * problem, just "can you do analysis" vs "can you read a text file". Except it
+ * isn't actually required...
+ *
+ * Part two makes it required. There is no possible way to get the second star
+ * with a naive - though correct - implementation of part one. All "timer 2"
+ * fish are the same class of fish, and can be treated uniformly. Identifying
+ * the right types in the business domain is crucial to create good software.
+ */
 fun main() {
     util.solve(371_379, ::partOne)
     util.solve(1_674_303_997_472, ::partTwo)
