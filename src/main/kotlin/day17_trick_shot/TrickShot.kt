@@ -5,6 +5,18 @@ import geom2d.Rect
 import util.countForever
 import kotlin.math.abs
 
+/**
+ * More analysis; no code required. The probe has to go up and then come back
+ * down at the same rate (the `y` velocity changes at a constant rate). Thus,
+ * the target area's bottom y-coordinate is all you need to know.
+ *
+ * Like Seven Segment Search (#8), solving part one the expedient way appears
+ * valueless for part two. Not true, however. Part one's answer is one of the
+ * bounds for part two's search space. Finding the x-dimension's bound is
+ * different (it doesn't have a constant rate), but not _much_ different. An
+ * exhaustive search of this constrained domain is well within reach, though
+ * further constraining is possible.
+ */
 fun main() {
     util.solve(11781, ::partOne)
     util.solve(4531, ::partTwo)
