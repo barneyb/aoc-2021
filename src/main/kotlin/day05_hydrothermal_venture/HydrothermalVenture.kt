@@ -12,6 +12,18 @@ import java.io.PrintWriter
 import kotlin.math.abs
 import kotlin.math.max
 
+/**
+ * Can you manage the 2D plane? The input dataset (lines) needs to be
+ * "decompressed" to create the actual dataset (points). Perhaps some ASCII art
+ * to help with problem analysis? Certainly some sort of grouping of the
+ * collection to identify the overlaps (histogram, anyone?). Don't forget
+ * bounds checking: gotta deal with the lines from 3->1 as well as from 1->3.
+ * And there's enough data that some care around performance is required.
+ *
+ * Part two requires a more complicated "decompression", requiring compound
+ * _iteration_, not just compound state. It also makes the dataset quite a bit
+ * larger; if part one was wasteful, part two might fall over.
+ */
 fun main() {
     util.solve(7644, ::partOne)
     util.solve(18627, ::partTwo)
