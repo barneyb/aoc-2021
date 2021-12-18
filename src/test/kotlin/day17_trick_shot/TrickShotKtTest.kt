@@ -18,11 +18,11 @@ internal class TrickShotKtTest {
         println("target: $target")
         val locations = mutableListOf<Probe>()
             .apply {
-//                var curr = Probe(7, 2)
+                var curr = Probe(7, 2)
 //                var curr = Probe(6, 3)
 //                var curr = Probe(9, 0)
 //                var curr = Probe(17, -4) // miss
-                var curr = Probe(6, 9) // best (dx=7 works too)
+//                var curr = Probe(6, 9) // best (dx=7 works too)
 //                var curr = Probe(6, 8)
                 add(curr)
                 while (true) {
@@ -55,10 +55,9 @@ internal class TrickShotKtTest {
         assertEquals(45, partOne(WORKED_EXAMPLE))
     }
 
-    @kotlin.test.Ignore // todo: reinstate when ready!
     @Test
     fun partTwo() {
-        assertEquals(0, partTwo(WORKED_EXAMPLE))
+        assertEquals(112, partTwo(WORKED_EXAMPLE))
     }
 
 }

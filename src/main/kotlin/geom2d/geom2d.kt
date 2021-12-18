@@ -30,6 +30,8 @@ data class Rect(
     val xs get() = if (x1 <= x2) x1..x2 else x1 downTo x2
     val ys get() = if (y1 <= y2) y1..y2 else y1 downTo y2
 
+    val pointCount get() = (abs(x2 - x1) + 1) * (abs(y2 - y1) + 1)
+
     /**
      * A sequence of all points in the Rect, in English reading order.
      */
