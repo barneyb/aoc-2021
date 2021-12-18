@@ -68,4 +68,16 @@ internal class PacketDecoderKtTest {
         assertEquals(31, partOne("A0016C880162017C3686B18A3D4780"))
     }
 
+    @Test
+    fun partTwo() {
+        assertEquals(3, partTwo("C200B40A82"))
+        assertEquals(54, partTwo("04005AC33890"))
+        assertEquals(7, partTwo("880086C3E88112"))
+        assertEquals(9, partTwo("CE00C43D881120"))
+        assertEquals(1, partTwo("D8005AC2A8F0"))
+        assertEquals(0, partTwo("F600BC2D8F"))
+        assertEquals(0, partTwo("9C005AC2F8F0"))
+        assertEquals(1, partTwo("9C0141080250320F1802104A08"))
+    }
+
 }

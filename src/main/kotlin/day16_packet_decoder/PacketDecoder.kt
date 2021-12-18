@@ -2,22 +2,27 @@ package day16_packet_decoder
 
 fun main() {
     util.solve(960, ::partOne)
-    util.solve(::partTwo)
+    util.solve(12301926782560, ::partTwo) // 197445829014 is too low
 }
 
 interface Packet {
     val version: Int
     val type: Int
     val versionSum: Int
+
+    fun evaluate(): Long
 }
 
 data class Literal(
     override val version: Int,
     override val type: Int,
-    val value: Int
+    val value: Long
 ) : Packet {
-    override val versionSum: Int
+    override val versionSum
         get() = version
+
+    override fun evaluate() =
+        value
 }
 
 data class Operator(
@@ -25,9 +30,30 @@ data class Operator(
     override val type: Int,
     val operands: List<Packet>
 ) : Packet {
-    override val versionSum: Int
+    override val versionSum
         get() =
             version + operands.sumOf(Packet::versionSum)
+
+    override fun evaluate(): Long =
+        when (type) {
+            0 -> operands.sumOf(Packet::evaluate)
+            1 -> operands.map(Packet::evaluate).reduce(Long::times)
+            2 -> operands.minOf(Packet::evaluate)
+            3 -> operands.maxOf(Packet::evaluate)
+            5 -> {
+                val (a, b) = operands.map(Packet::evaluate)
+                if (a > b) 1 else 0
+            }
+            6 -> {
+                val (a, b) = operands.map(Packet::evaluate)
+                if (a < b) 1 else 0
+            }
+            7 -> {
+                val (a, b) = operands.map(Packet::evaluate)
+                if (a == b) 1 else 0
+            }
+            else -> throw IllegalStateException("Unknown '$type' operator type")
+        }
 }
 
 class CountingIterator<T>(val delegate: Iterator<T>) : Iterator<T> {
@@ -94,8 +120,8 @@ fun CountingIterator<Boolean>.readPacket(): Packet {
     }
 }
 
-private fun Iterator<Boolean>.readLiteral(): Int {
-    var v = 0
+private fun Iterator<Boolean>.readLiteral(): Long {
+    var v = 0L
     do {
         val segment = readInt(5)
         v = (v shl 4) + (segment and 0b01111)
@@ -106,9 +132,8 @@ private fun Iterator<Boolean>.readLiteral(): Int {
 fun String.toPacket(): Packet =
     asHexBitSequence().readPacket()
 
-fun partOne(input: String): Int {
-    val packet = input.toPacket()
-    return packet.versionSum
-}
+fun partOne(input: String) =
+    input.toPacket().versionSum
 
-fun partTwo(input: String) = input.trim().length
+fun partTwo(input: String) =
+    input.toPacket().evaluate()
