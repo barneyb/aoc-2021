@@ -1,5 +1,16 @@
 package day04_squid_bingo
 
+/**
+ * Our first non-homogenous input: the first line is the called balls while the
+ * rest is a series of multi-line segments. We also have a bunch of parallel
+ * compound states (the boards) to manage as we iterate through an "unrelated"
+ * series of items (the balls). And, of course, the first "do spacial things" -
+ * finding rows and cols - on the 2D plane.
+ *
+ * Part two requires iteratively narrowing collection, and also a nice fencepost
+ * problem. Can't just identify the last board to win, you have to keep playing
+ * until it has actually won.
+ */
 fun main() {
     util.solve(16716, ::partOne)
     util.solve(4880, ::partTwo)
