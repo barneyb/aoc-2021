@@ -2,6 +2,18 @@ package day10_syntax_scoring
 
 import java.util.*
 
+/**
+ * "Chunks contain ... other chunks" means recursion is the name of the game,
+ * and that means a stack. Some lookup tables for matching delimiters and scores
+ * will be needed too. Since we're again interpreting the input (not treating it
+ * as data), this will be a parser-heavy task.
+ *
+ * Turns out part one also partitioned the input lines into corrupt and
+ * incomplete halves (you noticed "all of them" for which lines had errors,
+ * right?). Now instead of using the stacks to find mismatches, we need to use
+ * what is left on the stacks to compute a score. Comprehending a collection is
+ * a cinch. Phew.
+ */
 fun main() {
     util.solve(290691, ::partOne)
     // 240.165μs initially
