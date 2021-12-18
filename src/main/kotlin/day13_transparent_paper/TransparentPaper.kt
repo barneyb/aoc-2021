@@ -6,6 +6,19 @@ import geom2d.toAsciiArt
 import kotlin.math.max
 import kotlin.math.min
 
+/**
+ * More 2D fun, this time transforming the plane itself, not moving around it.
+ * It's also got another heterogeneous input file, though this one's simpler
+ * than Squid Bingo (#4) was. More subtle, representing the plane here is a bad
+ * choice; only the dots are interesting and a cursory look at the input says
+ * the dots are pretty sparse.
+ *
+ * Oof. Print and _manually_ read some letters? With the first fold done for
+ * part one, iterating the rest is simple. Another "Game of Life"-style
+ * immutable fold is reasonable, but re-projecting into the same set and only
+ * reducing the bounding box would also work. Either way, the second part
+ * requires drawing the resulting "ASCII art" so you can read the answer.
+ */
 fun main() {
     util.solve(765, ::partOne)
     util.solve(
