@@ -5,12 +5,21 @@ import java.io.PrintWriter
 import java.io.StringWriter
 import java.util.*
 
+/**
+ * Classic day one: prove you can read in a text file, get numeric values out of
+ * it, and then loop over them.
+ *
+ * Part two requires the a windowed loop, instead of treating each item
+ * separately. Kotlin has a library function which can be simply injected into
+ * part one's solution without changing anything else (consider [partOneZip] vs
+ * [partTwoZip]).
+ */
 fun main() {
     util.solve(1616, ::partOneFold)
-    util.solve(1616, ::partOneZipSeq)
-    util.solve(1616, ::partOneZip)
     util.solve(1616, ::partOneLoop)
+    util.solve(1616, ::partOneZip)
     util.solve(1645, ::partTwo)
+    util.solve(1645, ::partTwoZip)
     saveTextFile(::csv, "csv")
 }
 
@@ -18,9 +27,11 @@ private fun depthsOne(depths: Sequence<Int>) =
     depths
 
 fun partOneFold(input: String) =
-    depthsOne(input
-        .lineSequence()
-        .map { it.toInt() })
+    depthsOne(
+        input
+            .lineSequence()
+            .map(String::toInt)
+    )
         .fold(Pair(0, Int.MAX_VALUE)) { (n, prev), it ->
             Pair(if (it > prev) n + 1 else n, it)
         }
@@ -39,20 +50,12 @@ fun partOneLoop(input: String): Int {
     return count
 }
 
-fun partOneZipSeq(input: String) =
-    input
-        .lineSequence()
-        .map { it.toInt() }
-        .zipWithNext()
-        .count { (a, b) -> a < b }
-
 fun partOneZip(input: String) =
     input
-        .lines()
-        .map { it.toInt() }
+        .lineSequence()
+        .map(String::toInt)
         .zipWithNext()
-        .filter { (a, b) -> a < b }
-        .size
+        .count { (a, b) -> a < b }
 
 fun partTwo(input: String): Int {
     var prev = Int.MAX_VALUE
@@ -75,6 +78,14 @@ fun partTwo(input: String): Int {
     }
     return count
 }
+
+fun partTwoZip(input: String) =
+    input
+        .lineSequence()
+        .map(String::toInt)
+        .windowed(size = 3, transform = List<Int>::sum) // new vs partOneZip
+        .zipWithNext()
+        .count { (a, b) -> a < b }
 
 private fun depthsTwo(raw: Sequence<Int>) =
     raw

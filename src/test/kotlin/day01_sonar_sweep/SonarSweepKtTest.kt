@@ -29,11 +29,6 @@ internal class SonarSweepKtTest {
     }
 
     @Test
-    fun partOneZipSeq() {
-        assertEquals(7, partOneZipSeq(WORKED_EXAMPLE))
-    }
-
-    @Test
     fun partOneZip() {
         assertEquals(7, partOneZip(WORKED_EXAMPLE))
     }
