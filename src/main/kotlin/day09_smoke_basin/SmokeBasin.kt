@@ -7,6 +7,17 @@ import util.saveTextFile
 import java.io.PrintWriter
 import java.util.*
 
+/**
+ * "The 2D plane" needs a refresher. Move around it, find neighbors, a bit of
+ * parsing, find the right data structures... Partially review, and also upping
+ * the number of balls in the air a bit. Definitely into week two.
+ *
+ * Part two is the first graph traversal, where the nodes of the graph are the
+ * locations and the edges are "neighbors". Part one's answer provides the start
+ * points for traversing and the rules say `9` means stop. BFS or DFS will do
+ * about the same, but visit marking is required. The last wrinkle is finding
+ * the three largest basins - sounds like a heap-based priority queue!
+ */
 fun main() {
     util.solve(554, ::partOne) // 1774 is too high (>=, not >)
     util.solve(1017792, ::partTwo)
