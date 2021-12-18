@@ -73,14 +73,10 @@ private fun nextAnswerLabel() = when (++answerCount) {
 fun <T : Any> solve(expected: T, solver: (String) -> T) {
     val input = getInput(solver.javaClass)
     val (actual: T, elapsed: Duration) = solveAndTime(solver, input)
-    val correct = if (actual is String && actual.contains('\n')) {
-        (expected as String).trimIndent() == actual.trimIndent()
-    } else {
-        expected == actual
-    }
-    val style = if (correct) TextColors.brightGreen else TextColors.red
+    val failure = expected != actual
+    val style = if (failure) TextColors.red else TextColors.brightGreen
     answer(actual, elapsed, style, (solver as KCallable<*>).name)
-    if (!correct) throw AssertionError("expected '$expected', but got '$actual'")
+    if (failure) throw AssertionError("expected '$expected', but got '$actual'")
 }
 
 private fun <T : Any> solveAndTime(
@@ -99,6 +95,14 @@ fun solve(solver: (String) -> Any) {
     answer(actual, elapsed, label = (solver as KCallable<*>).name)
 }
 
+private fun Any.toAnswerString() =
+    toString().let {
+        if (it.contains('\n'))
+            "\n$it"
+        else
+            it
+    }
+
 fun answer(
     ans: Any,
     elapsed: Duration,
@@ -107,12 +111,7 @@ fun answer(
 ) = printBoxed(
     style(label) + " " +
             TextColors.gray("(${elapsed.toPrettyString()})") + ": " +
-            TextStyles.bold(ans.toString().let {
-                if (it.contains('\n'))
-                    "\n$it"
-                else
-                    it
-            }),
+            TextStyles.bold(ans.toAnswerString()),
     style
 )
 
@@ -178,7 +177,7 @@ private fun <T : Any> benchSummary(
                     TextColors.black(TextStyles.bold(mean.nanoseconds.toPrettyString())) +
                     " ± ${ci95.nanoseconds.toPrettyString()}," +
                     " N=${TextColors.black(N.toString())}): " +
-                    expected.toString()
+                    expected.toAnswerString()
         ), TextColors.magenta
     )
 }

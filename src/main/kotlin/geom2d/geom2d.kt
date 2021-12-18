@@ -1,6 +1,8 @@
 package geom2d
 
 import kotlin.math.abs
+import kotlin.math.max
+import kotlin.math.min
 
 data class Rect(
     val x1: Long, val y1: Long, val x2: Long, val y2: Long
@@ -25,9 +27,14 @@ data class Rect(
         p.y + height - 1
     )
 
-    val xs get() = x1..x2
-    val ys get() = y1..y2
+    val xs get() = if (x1 <= x2) x1..x2 else x1 downTo x2
+    val ys get() = if (y1 <= y2) y1..y2 else y1 downTo y2
 
+    val pointCount get() = (abs(x2 - x1) + 1) * (abs(y2 - y1) + 1)
+
+    /**
+     * A sequence of all points in the Rect, in English reading order.
+     */
     fun allPoints(): Sequence<Point> {
         var row = 0L
         var col = -1L
@@ -45,7 +52,32 @@ data class Rect(
 
     fun contains(p: Point) =
         p.x >= x1 && p.y >= y1 && p.x <= x2 && p.y <= y2
+
+    fun expandedTo(p: Point) =
+        if (contains(p)) this else Rect(
+            min(x1, p.x),
+            min(y1, p.y),
+            max(x2, p.x),
+            max(y2, p.y),
+        )
+
+    fun mirrorX() = Rect(x2, y1, x1, y2)
+    fun mirrorY() = Rect(x1, y2, x2, y1)
+
 }
+
+/**
+ * Draw the rect as an ASCII art grid, using the passed renderer to draw each
+ * "pixel". While you can return any char sequence, you almost certainly want
+ * to return single chars. At the very least, each `x` value should have the
+ * same length for all `y` values.
+ */
+fun Rect.toAsciiArt(render: (Point) -> CharSequence) =
+    ys.joinToString(separator = "\n") { y ->
+        xs.joinToString(separator = "") { x ->
+            render(Point(x, y))
+        }
+    }
 
 fun Rect.asPoint(linearOffset: Long) =
     Point(linearOffset % width, linearOffset / width)

@@ -2,6 +2,7 @@ package day13_transparent_paper
 
 import geom2d.Point
 import geom2d.Rect
+import geom2d.toAsciiArt
 import kotlin.math.max
 import kotlin.math.min
 
@@ -15,7 +16,8 @@ fun main() {
             ███...█...█.█...█...█....███..█.██.█..█
             █.█..█....█.█..█....█....█....█..█.█..█
             █..█.████.█..█.████.████.█.....███.█..█
-        """.trimIndent(), ::partTwo
+        """.trimIndent(),
+        ::partTwo
     )
 }
 
@@ -65,14 +67,10 @@ private fun foldItUp(dots: Set<Point>, folds: List<Fold>): Set<Point> {
     }
 }
 
-fun Collection<Point>.toStringGrid(): String {
-    val bounds = bounds()
-    return bounds.ys.joinToString(separator = "\n") { y ->
-        bounds.xs.joinToString(separator = "") { x ->
-            if (contains(Point(x, y))) "█" else "."
-        }
+fun Collection<Point>.toStringGrid() =
+    bounds().toAsciiArt {
+        if (contains(it)) "█" else "."
     }
-}
 
 fun Collection<Point>.bounds() =
     drop(1).fold(Rect(first(), 1, 1)) { r, p ->
