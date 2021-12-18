@@ -1,5 +1,18 @@
 package day16_packet_decoder
 
+/**
+ * Binary things again! "One or more sub-packets" means recursion. Lots of
+ * bookkeeping. But a simple question: find all the version numbers and sum.
+ * Nailing the parsing is key, since the input data looks like an optimized wire
+ * packet with its non-byte-aligned fields. "Make an int from these three bits."
+ * Keeping track of your position in the stream is also needed, both number of
+ * packets _and_ number of bits.
+ *
+ * It's super-simple IntCode, all in one day! Recurse through the packet,
+ * interpreting the type IDs, just like any other expression evaluator. Like
+ * the tiles for part two of Chiton Risk (#15), a good `Packet` interface makes
+ * this a breeze.
+ */
 fun main() {
     util.solve(960, ::partOne)
     util.solve(12301926782560, ::partTwo) // 197445829014 is too low
