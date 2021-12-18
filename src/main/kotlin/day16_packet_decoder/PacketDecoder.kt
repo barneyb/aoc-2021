@@ -68,12 +68,6 @@ class CountingIterator<T>(val delegate: Iterator<T>) : Iterator<T> {
     }
 }
 
-fun <T> Iterator<T>.countingIterator() =
-    CountingIterator(this)
-
-fun <T> Iterable<T>.countingIterator() =
-    CountingIterator(iterator())
-
 fun <T> Sequence<T>.countingIterator() =
     CountingIterator(iterator())
 
