@@ -39,6 +39,30 @@ private val LARGER_EXAMPLE = """
     [[[[4,2],2],6],[8,7]]
 """.trimIndent()
 
+fun String.snailExplode(): String {
+    val num = toSnailNum()
+    num.explode()
+    return num.toString()
+}
+
+fun String.snailSplit(): String {
+    val num = toSnailNum()
+    num.split()
+    return num.toString()
+}
+
+fun String.snailReduce(): String {
+    val num = toSnailNum()
+    num.reduce()
+    return num.toString()
+}
+
+fun String.snailPlus(other: String) =
+    toSnailNum().plus(other.toSnailNum()).toString()
+
+val String.snailMagnitude: Int
+    get() = toSnailNum().magnitude
+
 internal class SnailfishKtTest {
 
     @Test

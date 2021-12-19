@@ -24,9 +24,9 @@ private const val T_OPEN = -100
 private const val T_DELIM = -1
 private const val T_CLOSE = -101
 
-class SnailNum(var tokens: MutableList<Int>) {
-    var mutationCount: Int = 0
-    val size get() = tokens.size
+class SnailNum(private var tokens: MutableList<Int>) {
+    private var mutationCount: Int = 0
+    private val size get() = tokens.size
 
     val magnitude: Int
         get() {
@@ -49,9 +49,7 @@ class SnailNum(var tokens: MutableList<Int>) {
             return stack.pop()
         }
 
-    fun get(index: Int) = tokens[index]
-
-    fun explode() {
+    internal fun explode() {
         var depth = 0
         var idxToExplode = -1
         for (i in tokens.indices) {
@@ -95,7 +93,7 @@ class SnailNum(var tokens: MutableList<Int>) {
         mutationCount += 1
     }
 
-    fun split() {
+    internal fun split() {
         for (i in 0 until size) {
             if (tokens[i] >= 10) {
                 val a = tokens[i] / 2
@@ -106,7 +104,7 @@ class SnailNum(var tokens: MutableList<Int>) {
         }
     }
 
-    fun reduce() {
+    internal fun reduce() {
         while (true) {
             val mc = mutationCount
             explode()
@@ -148,7 +146,6 @@ class SnailNum(var tokens: MutableList<Int>) {
 
 }
 
-
 fun String.toSnailNum(): SnailNum {
     val tokens = mutableListOf<Int>()
     val itr = iterator().countingIterator()
@@ -170,30 +167,6 @@ fun String.toSnailNum(): SnailNum {
     }
     return SnailNum(tokens)
 }
-
-fun String.snailExplode(): String {
-    val num = toSnailNum()
-    num.explode()
-    return num.toString()
-}
-
-fun String.snailSplit(): String {
-    val num = toSnailNum()
-    num.split()
-    return num.toString()
-}
-
-fun String.snailReduce(): String {
-    val num = toSnailNum()
-    num.reduce()
-    return num.toString()
-}
-
-fun String.snailPlus(other: String) =
-    toSnailNum().plus(other.toSnailNum()).toString()
-
-val String.snailMagnitude: Int
-    get() = toSnailNum().magnitude
 
 fun partOne(input: String) =
     input
