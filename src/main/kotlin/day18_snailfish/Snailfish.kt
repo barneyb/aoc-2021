@@ -1,12 +1,17 @@
 package day18_snailfish
 
 import util.countingIterator
+import java.util.*
 
 /**
- * todo: add notes
+ * The main task here is similar to rotations for balancing a binary tree. In
+ * AoC style, they are nonsensical (they destroy data!), but the general idea
+ * is the same: take a binary tree and mutate its structure to constrain its
+ * overall height. Magnitude is another "evaluate the expression tree" like both
+ * Syntax Scoringa (#10) and Packet Decoder (#16).
  */
 fun main() {
-    util.solve(::partOne)
+    util.solve(3734, ::partOne)
     util.solve(::partTwo)
 }
 
@@ -17,6 +22,27 @@ private const val T_CLOSE = -101
 data class SnailNum(var tokens: MutableList<Int>) {
     var mutationCount: Int = 0
     val size get() = tokens.size
+
+    val magnitude: Int
+        get() {
+            val stack: Deque<Int> = ArrayDeque()
+            for (t in tokens) {
+                when (t) {
+                    T_OPEN -> {}
+                    T_DELIM -> {}
+                    T_CLOSE -> {
+                        val r = stack.pop() * 2
+                        val l = stack.pop() * 3
+                        stack.push(l + r)
+                    }
+                    else -> stack.push(t)
+                }
+            }
+            if (stack.size != 1) {
+                throw AssertionError("Stack didn't unwind to single value: $stack")
+            }
+            return stack.pop()
+        }
 
     fun get(index: Int) = tokens[index]
 
@@ -161,25 +187,14 @@ fun String.snailReduce(): String {
 fun String.snailPlus(other: String) =
     toSnailNum().plus(other.toSnailNum()).toString()
 
-val SnailNum.snailMagnitude: Int
-    get() {
-        TODO("Not yet implemented")
-    }
+val String.snailMagnitude: Int
+    get() = toSnailNum().magnitude
 
-/*
-reducing: [[[[[6,6],[ 6,6]],[[ 6,0],[6,7]]],[[[ 7,7],[ 8,9]],[ 8,[8,1]]]],[2,9]]
- explode: [[[[  0  ,[12,6]],[[ 6,0],[6,7]]],[[[ 7,7],[ 8,9]],[ 8,[8,1]]]],[2,9]]
- explode: [[[[ 12  ,   0  ],[[12,0],[6,7]]],[[[ 7,7],[ 8,9]],[ 8,[8,1]]]],[2,9]]
- explode: [[[[ 12  ,  12  ],[   0  ,[6,7]]],[[[ 7,7],[ 8,9]],[ 8,[8,1]]]],[2,9]]
- explode: [[[[ 12  ,  12  ],[   6  ,  0  ]],[[[14,7],[ 8,9]],[ 8,[8,1]]]],[2,9]]
- explode: [[[[ 12  ,  12  ],[   6  , 14  ]],[[   0  ,[15,9]],[ 8,[8,1]]]],[2,9]]
- explode: [[[[ 12  ,  12  ],[   6  , 14  ]],[[  15  ,   0  ],[17,[8,1]]]],[2,9]]
- explode: [[[[ 12  ,  12  ],[   6  , 14  ]],[[  15  ,   0  ],[115,0]]],[3,9]]
-   split: [[[[[6,6],12],[6,14]],[[15,0],[115,0]]],[3,9]]
- explode: [[[[0,18],[6,14]],[[15,0],[115,0]]],[3,9]]
-   split: [[[[0,[9,9]],[6,14]],[[15,0],[115,0]]],[3,9]]
- */
-
-fun partOne(input: String) = input.trim().length
+fun partOne(input: String) =
+    input
+        .lines()
+        .map(String::toSnailNum)
+        .reduce(SnailNum::plus)
+        .magnitude
 
 fun partTwo(input: String) = input.trim().length

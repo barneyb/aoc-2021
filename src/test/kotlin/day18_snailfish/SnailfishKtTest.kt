@@ -172,31 +172,31 @@ internal class SnailfishKtTest {
         )
     }
 
-//    @Test
-//    fun magnitude() {
-//        assertEquals(29, "[9,1]".snailMagnitude)
-//        assertEquals(21, "[1,9]".snailMagnitude)
-//        assertEquals(129, "[[9,1],[1,9]]".snailMagnitude)
-//
-//        assertEquals(143, "[[1,2],[[3,4],5]]".snailMagnitude)
-//        assertEquals(
-//            1384,
-//            "[[[[0,7],4],[[7,8],[6,0]]],[8,1]]".snailMagnitude
-//        )
-//        assertEquals(445, "[[[[1,1],[2,2]],[3,3]],[4,4]]".snailMagnitude)
-//        assertEquals(791, "[[[[3,0],[5,3]],[4,4]],[5,5]]".snailMagnitude)
-//        assertEquals(1137, "[[[[5,0],[7,4]],[5,5]],[6,6]]".snailMagnitude)
-//        assertEquals(
-//            3488,
-//            "[[[[8,7],[7,7]],[[8,6],[7,7]]],[[[0,7],[6,6]],[8,7]]]".snailMagnitude
-//        )
-//
-//    }
+    @Test
+    fun magnitude() {
+        assertEquals(29, "[9,1]".snailMagnitude)
+        assertEquals(21, "[1,9]".snailMagnitude)
+        assertEquals(129, "[[9,1],[1,9]]".snailMagnitude)
 
-//    @Test
-//    fun partOne() {
-//        assertEquals(4140, partOne(WORKED_EXAMPLE))
-//    }
+        assertEquals(143, "[[1,2],[[3,4],5]]".snailMagnitude)
+        assertEquals(
+            1384,
+            "[[[[0,7],4],[[7,8],[6,0]]],[8,1]]".snailMagnitude
+        )
+        assertEquals(445, "[[[[1,1],[2,2]],[3,3]],[4,4]]".snailMagnitude)
+        assertEquals(791, "[[[[3,0],[5,3]],[4,4]],[5,5]]".snailMagnitude)
+        assertEquals(1137, "[[[[5,0],[7,4]],[5,5]],[6,6]]".snailMagnitude)
+        assertEquals(
+            3488,
+            "[[[[8,7],[7,7]],[[8,6],[7,7]]],[[[0,7],[6,6]],[8,7]]]".snailMagnitude
+        )
+
+    }
+
+    @Test
+    fun partOne() {
+        assertEquals(4140, partOne(WORKED_EXAMPLE))
+    }
 
     @kotlin.test.Ignore // todo: reinstate when ready!
     @Test
