@@ -8,18 +8,23 @@ import java.util.*
  * AoC style, they are nonsensical (they destroy data!), but the general idea
  * is the same: take a binary tree and mutate its structure to constrain its
  * overall height. Magnitude is another "evaluate the expression tree" like both
- * Syntax Scoringa (#10) and Packet Decoder (#16).
+ * Syntax Scoring (#10) and Packet Decoder (#16).
+ *
+ * Part two is a simple Cartesian product search... assuming part one gave you
+ * useful - and performant - primitives to work with. The non-commutative nature
+ * of snailfish addition is called out as a hint, though shouldn't be news given
+ * the algorithm is data-destroying.
  */
 fun main() {
     util.solve(3734, ::partOne)
-    util.solve(::partTwo)
+    util.solve(4837, ::partTwo)
 }
 
 private const val T_OPEN = -100
 private const val T_DELIM = -1
 private const val T_CLOSE = -101
 
-data class SnailNum(var tokens: MutableList<Int>) {
+class SnailNum(var tokens: MutableList<Int>) {
     var mutationCount: Int = 0
     val size get() = tokens.size
 
@@ -197,4 +202,15 @@ fun partOne(input: String) =
         .reduce(SnailNum::plus)
         .magnitude
 
-fun partTwo(input: String) = input.trim().length
+fun partTwo(input: String) =
+    input
+        .lines()
+        .map(String::toSnailNum)
+        .let { numbers ->
+            numbers.maxOf { a ->
+                numbers.maxOf { b ->
+                    if (a == b) -1
+                    else (a + b).magnitude
+                }
+            }
+        }

@@ -198,10 +198,9 @@ internal class SnailfishKtTest {
         assertEquals(4140, partOne(WORKED_EXAMPLE))
     }
 
-    @kotlin.test.Ignore // todo: reinstate when ready!
     @Test
     fun partTwo() {
-        assertEquals(0, partTwo(WORKED_EXAMPLE))
+        assertEquals(3993, partTwo(WORKED_EXAMPLE))
     }
 
 }
