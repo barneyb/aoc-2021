@@ -1,5 +1,8 @@
 package day16_packet_decoder
 
+import util.CountingIterator
+import util.countingIterator
+
 /**
  * Binary things again! "One or more sub-packets" means recursion. Lots of
  * bookkeeping. But a simple question: find all the version numbers and sum.
@@ -68,21 +71,6 @@ data class Operator(
             else -> throw IllegalStateException("Unknown '$type' operator type")
         }
 }
-
-class CountingIterator<T>(val delegate: Iterator<T>) : Iterator<T> {
-    var count: Int = 0
-
-    override fun hasNext() =
-        delegate.hasNext()
-
-    override fun next(): T {
-        count += 1
-        return delegate.next()
-    }
-}
-
-fun <T> Sequence<T>.countingIterator() =
-    CountingIterator(iterator())
 
 fun String.asHexBitSequence(): CountingIterator<Boolean> {
     val hexDigits = iterator()
