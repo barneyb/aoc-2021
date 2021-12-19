@@ -17,14 +17,18 @@ import java.util.*
  */
 fun main() {
     util.solve(3734, ::partOne)
+    // initial: 3.4ms
+    // array: 1.3ms
     util.solve(4837, ::partTwo)
+    // initial: 53ms
+    // array: 20ms
 }
 
 private const val T_OPEN = -100
 private const val T_DELIM = -1
 private const val T_CLOSE = -101
 
-class SnailNum(private var tokens: MutableList<Int>) {
+class SnailNum(private var tokens: IntArray) {
     private var mutationCount: Int = 0
     private val size get() = tokens.size
 
@@ -73,7 +77,7 @@ class SnailNum(private var tokens: MutableList<Int>) {
                 break
             }
         }
-        replace(idxToExplode - 1, idxToExplode + 4, listOf(0))
+        replace(idxToExplode - 1, idxToExplode + 4, intArrayOf(0))
         for (i in idxToExplode - 2 downTo 0) {
             if (tokens[i] >= 0) {
                 tokens[i] += left
@@ -83,12 +87,12 @@ class SnailNum(private var tokens: MutableList<Int>) {
         }
     }
 
-    private fun replace(start: Int, end: Int, stuff: List<Int>) {
-        val next = ArrayList<Int>(size - (end - start) + stuff.size)
-        next.addAll(tokens.subList(0, start))
-        next.addAll(stuff)
+    private fun replace(start: Int, end: Int, stuff: IntArray) {
+        val next = IntArray(size - (end - start) + stuff.size)
+        tokens.copyInto(next, 0, 0, start)
+        stuff.copyInto(next, start)
         if (end < size - 1)
-            next.addAll(tokens.subList(end, size))
+            tokens.copyInto(next, start + stuff.size, end)
         tokens = next
         mutationCount += 1
     }
@@ -98,7 +102,7 @@ class SnailNum(private var tokens: MutableList<Int>) {
             if (tokens[i] >= 10) {
                 val a = tokens[i] / 2
                 val b = tokens[i] - a
-                replace(i, i + 1, listOf(T_OPEN, a, T_DELIM, b, T_CLOSE))
+                replace(i, i + 1, intArrayOf(T_OPEN, a, T_DELIM, b, T_CLOSE))
                 break
             }
         }
@@ -120,12 +124,12 @@ class SnailNum(private var tokens: MutableList<Int>) {
     }
 
     operator fun plus(other: SnailNum): SnailNum {
-        val tokens = ArrayList<Int>(3 + size + other.size)
-        tokens.add(T_OPEN)
-        tokens.addAll(this.tokens)
-        tokens.add(T_DELIM)
-        tokens.addAll(other.tokens)
-        tokens.add(T_CLOSE)
+        val tokens = IntArray(3 + size + other.size)
+        tokens[0] = T_OPEN
+        this.tokens.copyInto(tokens, 1)
+        tokens[size + 1] = T_DELIM
+        other.tokens.copyInto(tokens, size + 2)
+        tokens[tokens.size - 1] = T_CLOSE
         val num = SnailNum(tokens)
         num.reduce()
         return num
@@ -165,7 +169,7 @@ fun String.toSnailNum(): SnailNum {
             else -> throw IllegalArgumentException("Unknown '$c' at ${itr.count}")
         }
     }
-    return SnailNum(tokens)
+    return SnailNum(tokens.toIntArray())
 }
 
 fun partOne(input: String) =
