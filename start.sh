@@ -72,6 +72,9 @@ mkdir -p src/main/$root/${DAY_DIR}
 cat > src/main/$root/${DAY_DIR}/${CAMEL}.kt << EOF
 package ${pkg}${DAY_DIR}
 
+/**
+ * todo: add notes
+ */
 fun main() {
     util.solve(::partOne)
     util.solve(::partTwo)
