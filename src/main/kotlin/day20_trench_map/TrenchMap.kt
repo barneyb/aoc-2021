@@ -6,11 +6,17 @@ import geom2d.asLinearOffset
 import geom2d.bounds
 
 /**
- * todo: add notes
+ * Image processing! Just as described. Sharpening, blurring, edge detection, et
+ * all are all based on this sort of algorithm. Take a kernel from the input, do
+ * a thing to create an output pixel, repeat. Images are incredibly data-dense,
+ * so making it work is only the tip of the iceberg. It has to be _fast_ or even
+ * images of middling size will ruin your day.
+ *
+ * Part two illustrates the last. Nothing new, just "is it performant?"
  */
 fun main() {
     util.solve(4917, ::partOne) // 5392, 4924 are too high; 4491 is too low
-    util.solve(::partTwo)
+    util.solve(16389, ::partTwo)
 }
 
 private class Grid(input: String) {
@@ -50,43 +56,35 @@ private fun solve(input: String, steps: Int): Int {
     }
     val idx = input.indexOf('\n')
     val mask = input.substring(0, idx)
-    val grid = Grid(input.substring(idx + 2))
-    var curr = grid.bounds
-        .allPoints()
-        .filter(grid::isLit)
-        .toList()
-    repeat(steps / 2) { iteration ->
-//        printBoxed(curr.toStringGrid("#"))
-        val bounds = curr.bounds
-            .expandedBy(5)
-        curr = bounds
-            .allPoints()
-            .filter { p ->
-                val maskIdx = p.kernel()
-                    .map(curr::contains)
-                    .fold(0) { n, b ->
-                        (n shl 1) + (if (b) 1 else 0)
-                    }
-                mask[maskIdx] == '#'
-            }
-            .toList()
-//        printBoxed(curr.toStringGrid("#"))
-        curr = bounds
-            .allPoints()
-            .filter { p ->
-                val maskIdx = p.kernel()
-                    .map(curr::contains)
-                    .fold(0) { n, b ->
-                        (n shl 1) + (if (b) 1 else 0)
-                    }
-                mask[maskIdx] == '#'
-            }
-            .toList()
-        val box = bounds.expandedBy(-1)
-        curr = curr.filter(box::contains)
+    var curr = Grid(input.substring(idx + 2))
+        .let { grid ->
+            grid.bounds
+                .allPoints()
+                .filter(grid::isLit)
+                .toSet()
+        }
+    var bounds = curr.bounds
+    repeat(steps / 2) { halfTick ->
+        bounds = bounds.expandedBy(3)
+        repeat(2) {
+            curr = bounds
+                .allPoints()
+                .filter { p ->
+                    val maskIdx = p.kernel()
+                        .map(curr::contains)
+                        .fold(0) { n, b ->
+                            (n shl 1) + (if (b) 1 else 0)
+                        }
+                    mask[maskIdx] == '#'
+                }
+                .toSet()
+        }
+        bounds = bounds.expandedBy(-1)
+        curr = curr
+            .filter(bounds::contains)
+            .toSet()
     }
-//    printBoxed(curr.toStringGrid("#"))
     return curr.size
 }
 
-fun partTwo(input: String) = input.trim().length
+fun partTwo(input: String) = solve(input, 50)
