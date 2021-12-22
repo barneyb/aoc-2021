@@ -19,6 +19,12 @@ import kotlin.time.Duration
 import kotlin.time.Duration.Companion.nanoseconds
 import kotlin.time.DurationUnit
 
+private fun Any.toPrettyLabel() =
+    when (this) {
+        is KCallable<*> -> name
+        else -> toString()
+    }
+
 internal fun saveFile(outFile: File, work: (OutputStream) -> Unit) {
     val out = outFile.outputStream()
     val watch = Stopwatch()
@@ -75,7 +81,7 @@ fun <T : Any> solve(expected: T, solver: (String) -> T) {
     val (actual: T, elapsed: Duration) = solveAndTime(solver, input)
     val failure = expected != actual
     val style = if (failure) TextColors.red else TextColors.brightGreen
-    answer(actual, elapsed, style, (solver as KCallable<*>).name)
+    answer(actual, elapsed, style, solver.toPrettyLabel())
     if (failure) throw AssertionError("expected '$expected', but got '$actual'")
 }
 
@@ -92,7 +98,7 @@ private fun <T : Any> solveAndTime(
 fun solve(solver: (String) -> Any) {
     val input = getInput(solver.javaClass)
     val (actual: Any, elapsed: Duration) = solveAndTime(solver, input)
-    answer(actual, elapsed, label = (solver as KCallable<*>).name)
+    answer(actual, elapsed, label = solver.toPrettyLabel())
 }
 
 private fun Any.toAnswerString() =
@@ -125,7 +131,7 @@ private const val CUTOFF_BENCHMARK_ITERATIONS = 2000
 @Suppress("unused")
 fun <T : Any> benchmark(expected: T, solver: (String) -> T) {
     val (samples, total) = bench(expected, solver)
-    benchSummary(expected, samples, total, (solver as KCallable<*>).name)
+    benchSummary(expected, samples, total, solver.toPrettyLabel())
 }
 
 private fun <T : Any> bench(
@@ -206,7 +212,7 @@ fun <T : Any> benchAndHist(
     bucketCount: Int = 10
 ) {
     val (samples, total) = bench(expected, solver)
-    benchSummary(expected, samples, total, (solver as KCallable<*>).name)
+    benchSummary(expected, samples, total, solver.toPrettyLabel())
 
     barChart(
         continuousHistogramOf(

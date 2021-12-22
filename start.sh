@@ -77,7 +77,7 @@ package ${pkg}${DAY_DIR}
  */
 fun main() {
     util.solve(::partOne)
-    util.solve(::partTwo)
+//    util.solve(::partTwo)
 }
 
 fun partOne(input: String) = input.length
