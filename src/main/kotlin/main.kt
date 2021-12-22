@@ -42,6 +42,7 @@ import day15_chiton_risk.main as day15_chiton_risk
 import day16_packet_decoder.main as day16_packet_decoder
 import day17_trick_shot.main as day17_trick_shot
 import day18_snailfish.main as day18_snailfish
+import day20_trench_map.main as day20_trench_map
 /*INJECT:IMPORT*/
 import ocean_profile.main as ocean_profile
 
@@ -86,6 +87,7 @@ private val days = listOf(
     ::day16_packet_decoder,
     ::day17_trick_shot,
     ::day18_snailfish,
+    //::day20_trench_map,
     /*INJECT:REF*/
     ::ocean_profile,
 )
