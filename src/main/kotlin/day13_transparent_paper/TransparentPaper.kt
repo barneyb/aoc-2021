@@ -1,10 +1,7 @@
 package day13_transparent_paper
 
 import geom2d.Point
-import geom2d.Rect
-import geom2d.toAsciiArt
-import kotlin.math.max
-import kotlin.math.min
+import geom2d.toStringGrid
 
 /**
  * More 2D fun, this time transforming the plane itself, not moving around it.
@@ -79,21 +76,6 @@ private fun foldItUp(dots: Set<Point>, folds: List<Fold>): Set<Point> {
             .toSet()
     }
 }
-
-fun Collection<Point>.toStringGrid() =
-    bounds().toAsciiArt {
-        if (contains(it)) "█" else "."
-    }
-
-fun Collection<Point>.bounds() =
-    drop(1).fold(Rect(first(), 1, 1)) { r, p ->
-        Rect(
-            min(r.x1, p.x),
-            min(r.y1, p.y),
-            max(r.x2, p.x),
-            max(r.y2, p.y),
-        )
-    }
 
 fun partTwo(input: String): String {
     val (dots, folds) = parse(input)

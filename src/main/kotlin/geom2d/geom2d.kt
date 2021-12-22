@@ -36,15 +36,15 @@ data class Rect(
      * A sequence of all points in the Rect, in English reading order.
      */
     fun allPoints(): Sequence<Point> {
-        var row = 0L
-        var col = -1L
+        var row = y1
+        var col = x1 - 1
         return generateSequence {
             col += 1
-            if (col == width) {
-                col = 0
+            if (col > x2) {
+                col = x1
                 row += 1
             }
-            if (row < height) {
+            if (row <= y2) {
                 Point(col, row)
             } else null
         }
@@ -63,6 +63,17 @@ data class Rect(
 
     fun mirrorX() = Rect(x2, y1, x1, y2)
     fun mirrorY() = Rect(x1, y2, x2, y1)
+
+    /**
+     * Expands the Rect by the specified delta(s).
+     */
+    fun expandedBy(dx: Int, dy: Int = dx) =
+        Rect(
+            x1 - dx,
+            y1 - dy,
+            x2 + dx,
+            y2 + dy
+        )
 
 }
 
@@ -84,6 +95,25 @@ fun Rect.asPoint(linearOffset: Long) =
 
 fun Rect.asLinearOffset(p: Point) =
     p.y * width + p.x
+
+fun Collection<Point>.toStringGrid(
+    on: CharSequence = "█",
+    off: CharSequence = "."
+) =
+    bounds.toAsciiArt {
+        if (contains(it)) on else off
+    }
+
+val Collection<Point>.bounds
+    get() =
+        drop(1).fold(Rect(first(), 1, 1)) { r, p ->
+            Rect(
+                min(r.x1, p.x),
+                min(r.y1, p.y),
+                max(r.x2, p.x),
+                max(r.y2, p.y),
+            )
+        }
 
 data class Point(val x: Long, val y: Long) {
 
