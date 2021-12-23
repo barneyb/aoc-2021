@@ -23,19 +23,22 @@ fun main() {
     util.solve(446968027750017, ::partTwo)
 }
 
-data class Player(var pos: Long, var score: Long) {
-    fun move(n: Int) {
-        pos = (pos - 1 + n) % 10 + 1
-        score += pos
+private val split_frequencies = listOf(1L, 3, 6, 7, 6, 3, 1)
+
+data class Player(val pos: Long, val score: Long) {
+    fun move(n: Int): Player {
+        val newPos = (pos - 1 + n) % 10 + 1
+        return Player(
+            newPos,
+            score + newPos
+        )
     }
 
     fun split(): Histogram<Player> =
         mutableHistogramOf<Player>().also { hist ->
             (3..9)
-                .map { n ->
-                    copy().apply { move(n) }
-                }
-                .zip(listOf(1L, 3, 6, 7, 6, 3, 1))
+                .map(this::move)
+                .zip(split_frequencies)
                 .forEach { (p, n) ->
                     hist.count(p, n)
                 }
@@ -53,16 +56,16 @@ data class Die(val sides: Int = 100) {
 }
 
 fun partOne(input: String): Long {
-    val (a, b) = input.toPlayers()
+    var (a, b) = input.toPlayers()
     val die = Die()
     val loser: Player
     while (true) {
-        a.move(die.roll() + die.roll() + die.roll())
+        a = a.move(die.roll() + die.roll() + die.roll())
         if (a.score >= 1000) {
             loser = b
             break
         }
-        b.move(die.roll() + die.roll() + die.roll())
+        b = b.move(die.roll() + die.roll() + die.roll())
         if (b.score >= 1000) {
             loser = a
             break
