@@ -89,7 +89,7 @@ private val days = listOf(
     ::day17_trick_shot,
     ::day18_snailfish,
     ::day20_trench_map,
-    //::day21_dirac_dice,
+    ::day21_dirac_dice,
     /*INJECT:REF*/
     ::ocean_profile,
 )
