@@ -6,7 +6,7 @@ typealias MutableHistogram<E> = MutableMap<E, Long>
 
 /**
  * Adds `times` (one, by default) instances of `item` to the histogram, and
- * returns `items` new total count.
+ * returns `item`'s new total count.
  */
 fun <E> MutableHistogram<E>.count(item: E, times: Long = 1) =
     merge(item, times, Long::plus)!!
@@ -16,6 +16,9 @@ fun <E> MutableHistogram<E>.count(item: E, times: Long = 1) =
  */
 fun <E> MutableHistogram<E>.unobserved(item: E) =
     putIfAbsent(item, 0)
+
+fun <E> histogramOf(vararg items: E): Histogram<E> =
+    mutableHistogramOf(*items)
 
 fun <E> histogramOf(items: Iterable<E>): Histogram<E> =
     mutableHistogramOf(items)
@@ -27,6 +30,9 @@ fun <E> mutableHistogramOf(): MutableHistogram<E> = HashMap()
 
 fun <E> mutableHistogramOf(capacity: Int): MutableHistogram<E> =
     HashMap(capacity)
+
+fun <E> mutableHistogramOf(vararg items: E) =
+    mutableHistogramOf(items.asSequence())
 
 fun <E> mutableHistogramOf(items: Iterable<E>) =
     mutableHistogramOf(items.asSequence())
