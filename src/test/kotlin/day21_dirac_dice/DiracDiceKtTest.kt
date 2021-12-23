@@ -15,10 +15,9 @@ internal class DiracDiceKtTest {
         assertEquals(739785, partOne(WORKED_EXAMPLE))
     }
 
-    @kotlin.test.Ignore // todo: reinstate when ready!
     @Test
     fun partTwo() {
-        assertEquals(0, partTwo(WORKED_EXAMPLE))
+        assertEquals(444356092776315, partTwo(WORKED_EXAMPLE))
     }
 
 }
