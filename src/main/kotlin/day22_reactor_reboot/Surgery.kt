@@ -8,7 +8,7 @@ data class Surgery(
     val fromBoth: List<Cuboid>
 ) {
 
-    val noop = fromBoth.isEmpty()
+    val isNoop = fromBoth.isEmpty()
 
     val all
         get(): List<Cuboid> = mutableListOf<Cuboid>()

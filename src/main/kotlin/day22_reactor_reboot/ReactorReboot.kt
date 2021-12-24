@@ -7,11 +7,15 @@ import geom.Cuboid
  * it's not going to stay that way, however. But whatever. Little looping, a bit
  * of filtering, a smidge of cringe, and done!
  *
- * todo: add notes
+ * Part two is simply "remove the 100x100x100 constraint". This requires a
+ * smarter approach: treating the cuboids as the entity of interest not the
+ * cubes themselves. As cuboids turn on and off, subdivide them as necessary to
+ * track cuboids that are entirely on. Once all the steps are completed, compute
+ * the number of cubes in each lit cuboid and add them up.
  */
 fun main() {
     util.solve(587785, ::partOne)
-//    util.solve(::partTwo)
+    util.solve(1167985679908143, ::partTwo)
 }
 
 sealed class Step(val cuboid: Cuboid)
@@ -31,34 +35,43 @@ fun String.toCuboid(): Cuboid {
 }
 
 // on x=10..12,y=10..12,z=10..12
-fun String.toStep(): Step {
+fun String.toStep(region: Cuboid? = null): Step {
     val parts = split(' ')
-    val c = parts[1].toCuboid()
+    var c = parts[1].toCuboid()
+    if (region != null) {
+        c = c.intersection(region)
+    }
     return if (parts[0] == "on") On(c) else Off(c)
 }
 
 fun partOne(input: String) =
-    HashSet<Cuboid>().also { reactor ->
-        Cuboid(-50L..50, -50L..50, -50L..50).also { region ->
-            input
-                .lines()
-                .map(String::toStep)
-                .forEach { step ->
-                    val box = step.cuboid.intersection(region)
-                    if (box.isEmpty()) return@forEach // NEXT!
-                    for (x in box.x) {
-                        for (y in box.y) {
-                            for (z in box.z) {
-                                val c = Cuboid(x..x, y..y, z..z)
-                                when (step) {
-                                    is On -> reactor.add(c)
-                                    is Off -> reactor.remove(c)
-                                }
-                            }
-                        }
-                    }
-                }
-        }
-    }.size
+    Cuboid(-50L..50, -50L..50, -50L..50).let { region ->
+        solve(input
+            .lines()
+            .map { it.toStep(region) })
+    }
 
-fun partTwo(input: String) = input.trim().length
+private fun solve(steps: List<Step>) =
+    steps
+        .fold(HashSet<Cuboid>()) { reactor, step ->
+            val next = HashSet<Cuboid>(reactor)
+            if (step is On) {
+                next.add(step.cuboid)
+            }
+            reactor.forEach { existing ->
+                val surg = performSurgery(existing, step.cuboid)
+                if (!surg.isNoop) {
+                    next.remove(existing)
+                    next.addAll(surg.fromOne)
+                }
+            }
+            next
+        }
+        .sumOf(Cuboid::size)
+
+fun partTwo(input: String) =
+    solve(
+        input
+            .lines()
+            .map(String::toStep)
+    )
