@@ -9,6 +9,10 @@ fun LongRange.intersects(b: LongRange) =
 fun LongRange.contains(b: LongRange) =
     b.first in first..last && b.last in first..last
 
+val LongRange.size
+    get() =
+        last - first + 1
+
 @Suppress("EmptyRange")
 val EMPTY_RANGE = 0L..-1
 
@@ -30,7 +34,7 @@ data class Cuboid(val dims: List<LongRange>) {
     val size
         get() =
             dims
-                .map { max(0, it.last - it.first + 1) }
+                .map { max(0, it.size) }
                 .fold(1, Long::times)
 
     fun isEmpty() =
@@ -40,6 +44,10 @@ data class Cuboid(val dims: List<LongRange>) {
     val y get() = dims[1]
     val z get() = dims[2]
 
+    val width get() = dims[0].size
+    val height get() = dims[1].size
+    val depth get() = dims[2].size
+
     fun intersects(other: Cuboid) =
         dims
             .zip(other.dims)
@@ -47,12 +55,12 @@ data class Cuboid(val dims: List<LongRange>) {
                 a.intersects(b)
             }
 
-    fun contains(other: Cuboid) =
-        dims
-            .zip(other.dims)
-            .all { (a, b) ->
-                a.contains(b)
-            }
+    fun contains(other: Cuboid): Boolean {
+        for (i in dims.indices) {
+            if (!dims[i].contains(other[i])) return false
+        }
+        return true
+    }
 
     fun intersection(other: Cuboid) =
         Cuboid(
@@ -65,4 +73,5 @@ data class Cuboid(val dims: List<LongRange>) {
                     if (it.last < it.first) EMPTY_RANGE else it
                 }
         )
+
 }
