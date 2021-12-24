@@ -44,6 +44,7 @@ import day17_trick_shot.main as day17_trick_shot
 import day18_snailfish.main as day18_snailfish
 import day20_trench_map.main as day20_trench_map
 import day21_dirac_dice.main as day21_dirac_dice
+import day22_reactor_reboot.main as day22_reactor_reboot
 /*INJECT:IMPORT*/
 import ocean_profile.main as ocean_profile
 
@@ -90,6 +91,7 @@ private val days = listOf(
     ::day18_snailfish,
     ::day20_trench_map,
     ::day21_dirac_dice,
+    ::day22_reactor_reboot,
     /*INJECT:REF*/
     ::ocean_profile,
 )
