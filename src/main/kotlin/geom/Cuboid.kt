@@ -16,29 +16,37 @@ val LongRange.size
 @Suppress("EmptyRange")
 val EMPTY_RANGE = 0L..-1
 
-data class Cuboid(val dims: List<LongRange>) {
+data class Cuboid(val dims: Array<LongRange>) {
+
+    constructor(x: LongRange) :
+            this(arrayOf(x))
 
     constructor(x: LongRange, y: LongRange) :
-            this(listOf(x, y))
+            this(arrayOf(x, y))
 
     constructor(x: LongRange, y: LongRange, z: LongRange) :
-            this(listOf(x, y, z))
-
-    constructor(vararg dims: LongRange) :
-            this(dims.toList())
+            this(arrayOf(x, y, z))
 
     val dimensions get() = dims.size
 
     operator fun get(index: Int) = dims[index]
 
-    val size
-        get() =
-            dims
-                .map { max(0, it.size) }
-                .fold(1, Long::times)
+    val size: Long
+        get() {
+            var product = 1L
+            for (d in dims) {
+                if (d.isEmpty()) return 0
+                product *= d.size
+            }
+            return product
+        }
 
-    fun isEmpty() =
-        dims.any { it.last < it.first }
+    fun isEmpty(): Boolean {
+        for (d in dims) {
+            if (d.isEmpty()) return true
+        }
+        return false
+    }
 
     val x get() = dims[0]
     val y get() = dims[1]
@@ -48,12 +56,12 @@ data class Cuboid(val dims: List<LongRange>) {
     val height get() = dims[1].size
     val depth get() = dims[2].size
 
-    fun intersects(other: Cuboid) =
-        dims
-            .zip(other.dims)
-            .all { (a, b) ->
-                a.intersects(b)
-            }
+    fun intersects(other: Cuboid): Boolean {
+        for (i in dims.indices) {
+            if (!dims[i].intersects(other[i])) return false
+        }
+        return true
+    }
 
     fun contains(other: Cuboid): Boolean {
         for (i in dims.indices) {
@@ -62,16 +70,28 @@ data class Cuboid(val dims: List<LongRange>) {
         return true
     }
 
-    fun intersection(other: Cuboid) =
-        Cuboid(
-            dims
-                .zip(other.dims)
-                .map { (a, b) ->
-                    max(a.first, b.first)..min(a.last, b.last)
-                }
-                .map {
-                    if (it.last < it.first) EMPTY_RANGE else it
-                }
-        )
+    fun intersection(other: Cuboid): Cuboid {
+        val result = arrayOfNulls<LongRange>(dimensions)
+        for (i in dims.indices) {
+            val a = dims[i]
+            val b = other[i]
+            val r = max(a.first, b.first)..min(a.last, b.last)
+            result[i] = if (r.isEmpty()) EMPTY_RANGE else r
+        }
+        @Suppress("UNCHECKED_CAST")
+        return Cuboid(result as Array<LongRange>)
+    }
 
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other !is Cuboid) return false
+
+        if (!dims.contentEquals(other.dims)) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        return dims.contentHashCode()
+    }
 }
