@@ -43,7 +43,7 @@ fun String.toStep(region: Cuboid? = null): Step {
 }
 
 fun partOne(input: String) =
-    Cuboid(-50L..50, -50L..50, -50L..50).let { region ->
+    Cuboid(-50..50L, -50..50L, -50..50L).let { region ->
         solve(input
             .lines()
             .map { it.toStep(region) })

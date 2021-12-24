@@ -14,7 +14,7 @@ val LongRange.size
         last - first + 1
 
 @Suppress("EmptyRange")
-val EMPTY_RANGE = 0L..-1
+val EMPTY_RANGE = 0..-1L
 
 data class Cuboid(val dims: Array<LongRange>) {
 
