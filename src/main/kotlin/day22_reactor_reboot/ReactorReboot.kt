@@ -18,9 +18,7 @@ fun main() {
     util.solve(1167985679908143, ::partTwo)
 }
 
-sealed class Step(val cuboid: Cuboid)
-class On(cuboid: Cuboid) : Step(cuboid)
-class Off(cuboid: Cuboid) : Step(cuboid)
+data class Step(val on: Boolean, val cuboid: Cuboid)
 
 // x=10..12,y=10..12,z=10..12
 fun String.toCuboid(): Cuboid {
@@ -41,7 +39,7 @@ fun String.toStep(region: Cuboid? = null): Step {
     if (region != null) {
         c = c.intersection(region)
     }
-    return if (parts[0] == "on") On(c) else Off(c)
+    return Step(parts[0] == "on", c)
 }
 
 fun partOne(input: String) =
@@ -55,7 +53,7 @@ private fun solve(steps: List<Step>) =
     steps
         .fold(HashSet<Cuboid>()) { reactor, step ->
             val next = HashSet<Cuboid>(reactor)
-            if (step is On) {
+            if (step.on) {
                 next.add(step.cuboid)
             }
             reactor.forEach { existing ->
