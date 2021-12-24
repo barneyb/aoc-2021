@@ -7,80 +7,80 @@ internal class CuboidTest {
 
     @Test
     fun size() {
-        Assertions.assertEquals(1, Cuboid(0L..0).size)
-        Assertions.assertEquals(1, Cuboid(0L..0, 0L..0, 0L..0).size)
-        Assertions.assertEquals(27, Cuboid(0L..2, 0L..2, 0L..2).size)
-        Assertions.assertEquals(0, Cuboid(0L..2, 0L..2, EMPTY_RANGE).size)
+        Assertions.assertEquals(1, Cuboid(0..0L).size)
+        Assertions.assertEquals(1, Cuboid(0..0L, 0..0L, 0..0L).size)
+        Assertions.assertEquals(27, Cuboid(0..2L, 0..2L, 0..2L).size)
+        Assertions.assertEquals(0, Cuboid(0..2L, 0..2L, EMPTY_RANGE).size)
     }
 
     @Test
     fun intersect() {
-        val a = Cuboid(0L..2, 0L..2, 0L..2)
+        val a = Cuboid(0..2L, 0..2L, 0..2L)
         // @formatter:off
         // identical
         Assertions.assertTrue(a.intersects(
-            Cuboid(0L..2, 0L..2, 0L..2)))
+            Cuboid(0..2L, 0..2L, 0..2L)))
         // inside
         Assertions.assertTrue(a.intersects(
-            Cuboid(1L..1, 1L..1, 1L..1)))
+            Cuboid(1..1L, 1..1L, 1..1L)))
         // corner
         Assertions.assertTrue(a.intersects(
-            Cuboid(2L..3, 2L..3, 2L..3)))
+            Cuboid(2..3L, 2..3L, 2..3L)))
         // edge
         Assertions.assertTrue(a.intersects(
-            Cuboid(2L..3, 1L..1, 2L..3)))
+            Cuboid(2..3L, 1..1L, 2..3L)))
         // face
         Assertions.assertTrue(a.intersects(
-            Cuboid(2L..3, 1L..1, 1L..1)))
+            Cuboid(2..3L, 1..1L, 1..1L)))
         // @formatter:on
     }
 
     @Test
     fun contains() {
-        val a = Cuboid(0L..2, 0L..2, 0L..2)
+        val a = Cuboid(0..2L, 0..2L, 0..2L)
         // @formatter:off
         // identical
         Assertions.assertTrue(a.contains(
-            Cuboid(0L..2, 0L..2, 0L..2)))
+            Cuboid(0..2L, 0..2L, 0..2L)))
         // inside
         Assertions.assertTrue(a.contains(
-            Cuboid(1L..1, 1L..1, 1L..1)))
+            Cuboid(1..1L, 1..1L, 1..1L)))
         // corner
         Assertions.assertFalse(a.contains(
-            Cuboid(2L..3, 2L..3, 2L..3)))
+            Cuboid(2..3L, 2..3L, 2..3L)))
         // edge
         Assertions.assertFalse(a.contains(
-            Cuboid(2L..3, 1L..1, 2L..3)))
+            Cuboid(2..3L, 1..1L, 2..3L)))
         // face
         Assertions.assertFalse(a.contains(
-            Cuboid(2L..3, 1L..1, 1L..1)))
+            Cuboid(2..3L, 1..1L, 1..1L)))
         // @formatter:on
     }
 
     @Test
     fun doesntIntersect() {
-        val a = Cuboid(0L..2, 0L..2, 0L..2)
+        val a = Cuboid(0..2L, 0..2L, 0..2L)
         // @formatter:off
         Assertions.assertFalse(a.intersects(
-            Cuboid(3L..4, 1L..4, 0L..4)))
+            Cuboid(3..4L, 1..4L, 0..4L)))
         Assertions.assertFalse(a.intersects(
-            Cuboid(-1L..-1, 1L..4, 0L..4)))
+            Cuboid(-1..-1L, 1..4L, 0..4L)))
         Assertions.assertFalse(a.intersects(
-            Cuboid(2L..4, 3L..4, 0L..4)))
+            Cuboid(2..4L, 3..4L, 0..4L)))
         Assertions.assertFalse(a.intersects(
-            Cuboid(2L..4, -1L..-1, 0L..4)))
+            Cuboid(2..4L, -1..-1L, 0..4L)))
         Assertions.assertFalse(a.intersects(
-            Cuboid(2L..4, 1L..4, 3L..4)))
+            Cuboid(2..4L, 1..4L, 3..4L)))
         Assertions.assertFalse(a.intersects(
-            Cuboid(2L..4, 1L..4, -1L..-1)))
+            Cuboid(2..4L, 1..4L, -1..-1L)))
         // @formatter:on
     }
 
     @Test
     fun intersection() {
-        val a = Cuboid(0L..2, 0L..2, 0L..2)
-        val b = Cuboid(2L..4, 1L..4, 0L..4)
-        val intersection = Cuboid(2L..2, 1L..2, 0L..2)
+        val a = Cuboid(0..2L, 0..2L, 0..2L)
+        val b = Cuboid(2..4L, 1..4L, 0..4L)
+        val intersection = Cuboid(2..2L, 1..2L, 0..2L)
         Assertions.assertEquals(intersection, a.intersection(b))
         Assertions.assertEquals(intersection, b.intersection(a))
     }
