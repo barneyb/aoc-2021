@@ -30,8 +30,9 @@ class Machine() {
     var y: Long = 0
     var z: Long = 0
 
-    private fun parse(program: String): List<Op> {
-        val ops = program.lines()
+    fun parse(program: String) =
+        program.lines()
+            .filter(String::isNotBlank)
             .map {
                 val parts = it.split(' ')
                 val a = parts[1]
@@ -49,24 +50,6 @@ class Machine() {
                     }
                 }
             }.toMutableList()
-//        var i = 1 // 0 is always read
-//        while (i < ops.size) {
-//            val prev = ops[i - 1]
-//            val op = ops[i]
-//            if (op is Add && prev is Mul && prev.isLiteral() && prev.value == 0L) {
-//                ops[i] = Set(op.register, op.arg)
-//                ops.removeAt(--i)
-//            } else if (op is Add && op.isLiteral() && op.value < 0) {
-//                ops[i] = Sub(op.register, (op.value * -1).toString())
-//            } else if (op is Eql && op.isLiteral() && op.value == 0L && prev is Eql && op.register == prev.register) {
-//                ops[i] = Neq(op.register, prev.arg)
-//                ops.removeAt(--i)
-//            } else {
-//                ++i
-//            }
-//        }
-        return ops
-    }
 
     fun execute(program: String) {
         execute(program, emptyList())
@@ -80,10 +63,7 @@ class Machine() {
         var inputPointer = 0
         program.forEach {
             when (it) {
-                is Inp -> {
-                    println(z)
-                    set(it.register, input[inputPointer++])
-                }
+                is Inp -> set(it.register, input[inputPointer++])
                 is Add -> set(it.register, get(it.register) + get(it.arg))
                 is Div -> set(it.register, get(it.register) / get(it.arg))
                 is Mod -> set(it.register, get(it.register) % get(it.arg))
@@ -100,9 +80,6 @@ class Machine() {
                 )
                 else -> throw IllegalArgumentException("Unknown $it")
             }
-//        println("$it => ($w, $x, $y, $z)")
-            //                    println("${get(it.register)} == ${get(it.arg)}?")
-            //                    println("${get(it.register)} == ${get(it.arg)}?")
         }
     }
 

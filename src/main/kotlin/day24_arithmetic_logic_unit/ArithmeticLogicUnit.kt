@@ -8,94 +8,64 @@ fun main() {
     util.solve(11211791111365, ::partTwo)
 }
 
-/*
-inp w
-mul x    0   0   0   0   0   0   0   0   0   0   0   0   0   0
-add x    z   z   z   z   z   z   z   z   z   z   z   z   z   z
-mod x   26  26  26  26  26  26  26  26  26  26  26  26  26  26
-div z    1   1   1  26   1  26  26   1  26   1   1  26  26  26
-add x   11  11  15 -14  10   0  -6  13  -3  13  15  -2  -9  -2
-eql x    w   w   w   w   w   w   w   w   w   w   w   w   w   w
-eql x    0   0   0   0   0   0   0   0   0   0   0   0   0   0
-mul y    0   0   0   0   0   0   0   0   0   0   0   0   0   0
-add y   25  25  25  25  25  25  25  25  25  25  25  25  25  25
-mul y    x   x   x   x   x   x   x   x   x   x   x   x   x   x
-add y    1   1   1   1   1   1   1   1   1   1   1   1   1   1
-mul z    y   y   y   y   y   y   y   y   y   y   y   y   y   y
-mul y    0   0   0   0   0   0   0   0   0   0   0   0   0   0
-add y    w   w   w   w   w   w   w   w   w   w   w   w   w   w
-add y    6  14  13   1   6  13   6   3   8  14   4   7  15   1
-mul y    x   x   x   x   x   x   x   x   x   x   x   x   x   x
-add z    y   y   y   y   y   y   y   y   y   y   y   y   y   y
- */
+typealias Program = List<Op>
 
-fun doRound(z: Long, r: Int, w: Long) =
-    doRound(z, A[r], B[r], C[r], w)
+fun Program.execute(z: Long, w: Long): Long {
+    val m = Machine()
+    m.z = z
+    m.execute(this, listOf(w))
+    return m.z
+}
 
-fun doRound(z: Long, a: Long, b: Long, c: Long, w: Long) =
-    if (z % 26 + b == w)
-        z / a
-    else
-        z / a * 26 + w + c
+typealias Slices = List<Program>
 
-val RE_TOKENIZE = " +".toRegex()
-val A = "1   1   1  26   1  26  26   1  26   1   1  26  26  26"
-    .split(RE_TOKENIZE)
-    .map(String::toLong)
-    .toLongArray()
-val B = "11  11  15 -14  10   0  -6  13  -3  13  15  -2  -9  -2"
-    .split(RE_TOKENIZE)
-    .map(String::toLong)
-    .toLongArray()
-val C = "6  14  13   1   6  13   6   3   8  14   4   7  15   1"
-    .split(RE_TOKENIZE)
-    .map(String::toLong)
-    .toLongArray()
-
-fun searchIn(r: Int, targets: Set<Long>): Set<Long> {
+fun Program.searchIn(targets: Set<Long>): Set<Long> {
     val next = mutableSetOf<Long>()
     for (z in -10_000..10_000L)
-        findWs(z, r, targets, next)
-    inputZByRound[r] = next
+        findWs(z, targets, next)
     return next
 }
 
-private val inputZByRound = mutableMapOf<Int, Set<Long>>()
-
-private fun findWs(
+private fun Program.findWs(
     z: Long,
-    r: Int,
     targets: Set<Long>,
     next: MutableSet<Long>
 ) {
     for (w in 9 downTo 1L) {
-        val v = doRound(z, r, w)
+        val v = execute(z, w)
         if (targets.contains(v)) {
             next.add(z)
-//            println("r=$r, z=$z, w=$w yields $v")
         }
     }
 }
 
-private fun buildInputZByRound() {
+private fun Slices.buildInputZByRound(): Map<Int, Set<Long>> {
+    val inputZByRound = mutableMapOf<Int, Set<Long>>()
     var targets = setOf(0L)
-    for (r in 13 downTo 0) {
+    for (r in (size - 1) downTo 0) {
         if (targets.isEmpty()) {
             println("no targets for round $r")
             break
         }
-        targets = searchIn(r, targets)
+        targets = this[r].searchIn(targets)
+        inputZByRound[r] = targets
     }
+    return inputZByRound
 }
 
 fun partOne(input: String) =
     solve(input, 9 downTo 1L)
 
 fun solve(input: String, digitPriority: Iterable<Long>): Long {
-    // first back-track and find all the per-round output Z that might work
-    buildInputZByRound()
+    // break the problem into per-digit rounds
+    val m = Machine()
+    val slices = m.parse(input)
+        .chunked(18)
 
-    // now go forward and find the largest per-round W that passes the check
+    // back-track and find all the per-round output Z that might work
+    val inputZByRound = slices.buildInputZByRound()
+
+    // go forward and find the largest per-round W that passes the check
     fun walk(r: Int, z: Long, digits: List<Long>): Long {
         if (digits.size == 14) {
             return digits.fold(0L) { agg, n ->
@@ -105,7 +75,7 @@ fun solve(input: String, digitPriority: Iterable<Long>): Long {
         val targets = if (r == 13) setOf(0L)
         else inputZByRound[r + 1]!!
         for (w in digitPriority) {
-            val v = doRound(z, r, w)
+            val v = slices[r].execute(z, w)
             if (targets.contains(v)) {
                 val answer = walk(r + 1, v, digits + w)
                 if (answer > 0) {
