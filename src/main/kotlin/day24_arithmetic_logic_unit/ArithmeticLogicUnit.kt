@@ -1,7 +1,16 @@
 package day24_arithmetic_logic_unit
 
 /**
- * todo: add notes
+ * At first blush, this looks like a "build an interpreter/VM" sort of problem
+ * in the style of Intcode. However, 9^14 numbers to check... This is another
+ * "find the optimal path" (like Chiton #15), but the thing you need to find a
+ * path through is expressed by the input program's _behavior_, not a map you
+ * are provided. The only info you know is that the final Z must be zero, so
+ * pruning the "paths" has to be done backwards. You don't necessarily need an
+ * interpreter either; manually disassembling to identify the algorithm, and
+ * then re-coding in your solution language will work just as well.
+ *
+ * Part two is just inverting the fitness function: find min vs find max.
  */
 fun main() {
     util.solve(51983999947999, ::partOne) // 51993999947999 is too high
