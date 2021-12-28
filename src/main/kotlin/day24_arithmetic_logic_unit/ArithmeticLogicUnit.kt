@@ -4,8 +4,8 @@ package day24_arithmetic_logic_unit
  * todo: add notes
  */
 fun main() {
-    util.solve(51983999947999, ::partOne) // 51993999947999 is too high
-//    util.solve(::partTwo)
+//    util.solve(51983999947999, ::partOne) // 51993999947999 is too high
+    util.solve(11211791111365, ::partTwo)
 }
 
 /*
@@ -97,7 +97,7 @@ fun partOne(program: String): Long {
         }
         val targets = if (r == 13) setOf(0L)
         else inputZByRound[r + 1]!!
-        for (w in 9 downTo 1L) {
+        for (w in 1L..9) {
             val v = doRound(z, r, w)
             if (targets.contains(v)) {
                 val answer = walk(r + 1, v, digits + w)
@@ -111,4 +111,4 @@ fun partOne(program: String): Long {
     return walk(0, 0, emptyList())
 }
 
-fun partTwo(input: String) = input.trim().length
+fun partTwo(input: String) = partOne(input)
