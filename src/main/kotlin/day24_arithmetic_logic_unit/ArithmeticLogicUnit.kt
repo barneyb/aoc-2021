@@ -8,50 +8,36 @@ fun main() {
     util.solve(11211791111365, ::partTwo)
 }
 
-typealias Program = List<Op>
+private typealias Round = List<Op>
 
-fun Program.execute(z: Long, w: Long): Long {
-    val m = Machine()
-    m.z = z
-    m.execute(this, listOf(w))
-    return m.z
-}
+private fun Round.execute(z: Long, w: Long) =
+    Machine().let { m ->
+        m.z = z
+        m.execute(this, listOf(w))
+        m.z
+    }
 
-typealias Slices = List<Program>
+private fun Round.searchIn(targets: Set<Long>): Set<Long> =
+    mutableSetOf<Long>().let { next ->
+        for (z in -10_000..10_000L)
+            for (w in 1..9L)
+                if (targets.contains(execute(z, w)))
+                    next.add(z)
+        next
+    }
 
-fun Program.searchIn(targets: Set<Long>): Set<Long> {
-    val next = mutableSetOf<Long>()
-    for (z in -10_000..10_000L)
-        findWs(z, targets, next)
-    return next
-}
+private typealias Slices = List<Round>
 
-private fun Program.findWs(
-    z: Long,
-    targets: Set<Long>,
-    next: MutableSet<Long>
-) {
-    for (w in 9 downTo 1L) {
-        val v = execute(z, w)
-        if (targets.contains(v)) {
-            next.add(z)
+private fun Slices.buildInputZByRound(): Map<Int, Set<Long>> =
+    mutableMapOf<Int, Set<Long>>().also { byRound ->
+        ((size - 1) downTo 0).fold(setOf(0L)) { targets, r ->
+            if (targets.isEmpty()) {
+                throw IllegalStateException("no targets for round $r")
+            }
+            byRound[r] = this[r].searchIn(targets)
+            byRound[r]!!
         }
     }
-}
-
-private fun Slices.buildInputZByRound(): Map<Int, Set<Long>> {
-    val inputZByRound = mutableMapOf<Int, Set<Long>>()
-    var targets = setOf(0L)
-    for (r in (size - 1) downTo 0) {
-        if (targets.isEmpty()) {
-            println("no targets for round $r")
-            break
-        }
-        targets = this[r].searchIn(targets)
-        inputZByRound[r] = targets
-    }
-    return inputZByRound
-}
 
 fun partOne(input: String) =
     solve(input, 9 downTo 1L)
