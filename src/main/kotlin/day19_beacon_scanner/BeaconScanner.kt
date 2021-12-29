@@ -1,13 +1,15 @@
 package day19_beacon_scanner
 
 import geom3d.Point
+import histogram.histogramOf
+import java.util.*
 import kotlin.math.abs
 
 /**
  * todo: add notes
  */
 fun main() {
-    util.solve(::partOne) // 394 is too low
+    util.solve(::partOne) // 394 is too low, 514 is too high
     util.solve(::partTwo)
 }
 
@@ -77,36 +79,67 @@ fun String.toScanners(): List<Scanner> {
     return result
 }
 
+private fun <E> SortedSet<E>.plus(other: Iterable<E>) =
+    TreeSet(this).apply { addAll(other) }
+
+typealias Summary = Map<Int, SortedSet<Int>>
+typealias Overlap = Triple<Int, Int, Summary>
+
 fun partOne(input: String): Int {
     val scanners = input.toScanners()
-    var totalBeacons = 0
+    val overlaps: Queue<Overlap> = ArrayDeque()
     for ((i, a) in scanners.withIndex()) {
-        totalBeacons += a.beaconCount
         for ((j, b) in scanners.withIndex().drop(i + 1)) {
-            val summary = mutableMapOf<Beacon, Set<Beacon>>()
-            b.deltas.forEach { delta ->
+            val summary = mutableMapOf<Int, SortedSet<Int>>()
+            b.deltas.forEach { n ->
                 val matches = a.deltas
-                    .filter { it.amag == delta.amag }
+                    .filter { m -> m.amag == n.amag }
                 if (matches.isNotEmpty()) {
                     summary.merge(
-                        b.beacons[delta.i],
-                        matches.map { a.beacons[it.j] }.toSet(),
-                        Set<Beacon>::plus
+                        n.i,
+                        matches.map { it.j }.toSortedSet(),
+                        SortedSet<Int>::plus
                     )
                     summary.merge(
-                        b.beacons[delta.j],
-                        matches.map { a.beacons[it.i] }.toSet(),
-                        Set<Beacon>::plus
+                        n.j,
+                        matches.map { it.i }.toSortedSet(),
+                        SortedSet<Int>::plus
                     )
                 }
             }
             if (summary.size >= 12) {
-                println("$i -> $j: ${summary.size}")
-                totalBeacons -= summary.size
+                println(
+                    "$i -> $j: ${summary.size} : ${
+                        histogramOf(
+                            summary.values.map(
+                                Collection<*>::size
+                            )
+                        )
+                    }"
+                )
+                overlaps.add(Triple(i, j, summary))
             }
         }
     }
-    return totalBeacons
+    val locations = mutableMapOf(0 to Point.ORIGIN)
+    while (overlaps.isNotEmpty()) {
+        val (i, j, summary) = overlaps.remove()
+        if (locations.containsKey(i) && locations.containsKey(j)) {
+            // already known - validate
+        } else if (locations.containsKey(i)) {
+            // j is unknown - compute
+            val (m, ns) = summary.entries.first()
+            val a = scanners[i].beacons[ns.first()]
+            val b = scanners[j].beacons[m]
+            val d = 4
+        } else if (locations.containsKey(j)) {
+            // i is unknown - compute
+        } else {
+            // neither is known - requeue
+            overlaps.add(Triple(i, j, summary))
+        }
+    }
+    return -1
 }
 
 fun partTwo(input: String) = input.trim().length
