@@ -46,6 +46,7 @@ import day20_trench_map.main as day20_trench_map
 import day21_dirac_dice.main as day21_dirac_dice
 import day22_reactor_reboot.main as day22_reactor_reboot
 import day24_arithmetic_logic_unit.main as day24_arithmetic_logic_unit
+import day23_amphipod.main as day23_amphipod
 /*INJECT:IMPORT*/
 import ocean_profile.main as ocean_profile
 
@@ -94,6 +95,7 @@ private val days = listOf(
     ::day21_dirac_dice,
     ::day22_reactor_reboot,
     ::day24_arithmetic_logic_unit,
+    //::day23_amphipod,
     /*INJECT:REF*/
     ::ocean_profile,
 )
