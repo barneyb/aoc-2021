@@ -4,14 +4,18 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 
 private val WORKED_EXAMPLE = """
-    input
+    #############
+    #...........#
+    ###B#C#B#D###
+      #A#D#C#A#
+      #########
 """.trimIndent()
 
 internal class AmphipodKtTest {
 
     @Test
     fun partOne() {
-        assertEquals(0, partOne(WORKED_EXAMPLE))
+        assertEquals(12521, partOne(WORKED_EXAMPLE))
     }
 
     @kotlin.test.Ignore // todo: reinstate when ready!
