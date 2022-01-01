@@ -5,7 +5,19 @@ import util.printBoxed
 import java.util.*
 
 /**
- * todo: add notes
+ * Another explore-the-map sort of puzzle, but with many (well, eight) walkers
+ * and a bunch of arcane rules for how they can walk. This means the walk will
+ * be HUGE, as in most states there are four different amphipods which can take
+ * the "next" step and that step may have many possibilities. The maximum number
+ * of steps required to "win" is only sixteen, but the branching structure is
+ * massive. Prioritizing the search by energy (like Chitons #15) is nearly
+ * irrelevant; what matters is avoiding re-walking already walked paths and
+ * avoiding creating of spurious interim paths.
+ *
+ * Part two is more of the same. The search space is larger, as is the frequency
+ * of already-walked paths. And, of course, if you hard-coded the shape of the
+ * map to solve part one - a fairly reasonable choice at that point - you get a
+ * nice slap on the wrist with a ruler.
  */
 fun main() {
     util.solve(18300, ::partOne)
@@ -19,18 +31,26 @@ private fun solve(lines: List<String>): Long {
     val startGrid = lines.toGrid()
     printBoxed(startGrid)
 
-    val queue: Queue<Grid> = PriorityQueue()
+    val queue: Queue<Grid> = ArrayDeque()
     queue.add(startGrid)
     val visited = hashSetOf<Grid>()
     var minEnergy = Long.MAX_VALUE
     var resultGrid: Grid? = null
     var steps = 0
+    var energySkips = 0
+    var dupeSkips = 0
 
     while (queue.isNotEmpty()) {
         ++steps
         val grid = queue.remove()
-        if (grid.totalEnergy >= minEnergy) continue
-        if (!visited.add(grid)) continue
+        if (grid.totalEnergy >= minEnergy) {
+            ++energySkips
+            continue
+        }
+        if (!visited.add(grid)) {
+            ++dupeSkips
+            continue
+        }
         if (grid.complete) {
             resultGrid = grid
             minEnergy = grid.totalEnergy
@@ -46,27 +66,23 @@ private fun solve(lines: List<String>): Long {
             println("${queue.size} to go...")
         }
 
-        fun enqueue(src: Point, dest: Point) {
-            val next = grid.move(src, dest)
-            if (!visited.contains(next)) {
-//                println("move $src -> $dest")
-                queue.add(next)
-            }
+        fun moveAndEnqueue(src: Point, dest: Point) {
+            queue.add(grid.move(src, dest))
         }
 
-        fun moveToHall(start: Point, breed: Cell) {
+        fun moveToHall(start: Point) {
             for (x in (start.x - 1) downTo Grid.HALL_XS.first) {
                 val p = Point(x, Grid.HALL_Y)
                 if (!grid.isOpen(p)) break
                 if (grid.canStopAt(p)) {
-                    enqueue(start, p)
+                    moveAndEnqueue(start, p)
                 }
             }
             for (x in (start.x + 1)..Grid.HALL_XS.last) {
                 val p = Point(x, Grid.HALL_Y)
                 if (!grid.isOpen(p)) break
                 if (grid.canStopAt(p)) {
-                    enqueue(start, p)
+                    moveAndEnqueue(start, p)
                 }
             }
         }
@@ -100,40 +116,27 @@ private fun solve(lines: List<String>): Long {
             if (grid.isHall(start)) {
                 val dest = findDestInRoom(start, breed)
                 if (dest != null) {
-//                    printBoxed(grid)
-//                    println("$breed from $start to $dest")
-                    enqueue(start, dest)
+                    moveAndEnqueue(start, dest)
                 }
             } else if (start.x == breed.homeX) { // home
-                if ((start.y until (grid.height - 1)).any { y ->
-                        grid[Point(start.x, y)].let {
-                            it.isAmphipod() && it != breed
-                        }
+                if ((start.y..(grid.height - 2)).any { y ->
+                        grid[Point(start.x, y)] != breed
                     }) {
                     // blocking another
-//                    printBoxed(grid)
-//                    println("$breed into hall $start (blocking)")
-                    moveToHall(start, breed)
+                    moveToHall(start)
                 }
             } else { // wrong room
-                for (y in (start.y - 1) downTo (Grid.HALL_Y + 1)) {
-                    if (!grid.isOpen(Point(start.x, y))) {
-                        // blocked...
-                        return@forEach
-                    }
+                if (((start.y - 1) downTo (Grid.HALL_Y + 1)).any { y ->
+                        !grid.isOpen(Point(start.x, y))
+                    }) {
+                    // blocked in
+                    return@forEach
                 }
                 val dest = findDestInRoom(start, breed)
                 if (dest != null) {
-//                    printBoxed(grid)
-//                    println("direct $start -> $dest")
-                    val mid = Point(breed.homeX, Grid.HALL_Y)
-                    val next = grid.move(start, mid).move(mid, dest)
-                    next.prev = grid // cull the midpoint move
-                    queue.add(next)
+                    moveAndEnqueue(start, dest)
                 } else {
-//                    printBoxed(grid)
-//                    println("$breed into hall $start")
-                    moveToHall(start, breed)
+                    moveToHall(start)
                 }
             }
         }
@@ -143,16 +146,24 @@ private fun solve(lines: List<String>): Long {
         throw IllegalStateException("failed to find a solution ($steps steps)?!")
     }
 
-    println("in $steps steps: $minEnergy")
-    val stack: Deque<Grid> = ArrayDeque()
-    var curr = resultGrid
-    while (curr != null) {
-        stack.push(curr)
-        curr = curr.prev
-    }
-    stack.forEach {
-        printBoxed(it)
-    }
+    println(
+        """
+            %,7d min energy
+            %,7d steps
+            %,7d energy skips
+            %,7d duplicate skips
+        """.trimIndent()
+            .format(minEnergy, steps, energySkips, dupeSkips)
+    )
+//    val stack: Deque<Grid> = ArrayDeque()
+//    var curr = resultGrid
+//    while (curr != null) {
+//        stack.push(curr)
+//        curr = curr.prev
+//    }
+//    stack.forEach {
+//        printBoxed(it)
+//    }
     return minEnergy
 }
 

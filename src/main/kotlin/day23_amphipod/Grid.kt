@@ -4,13 +4,13 @@ import geom2d.Point
 import geom2d.Rect
 import geom2d.toAsciiArt
 import java.util.*
+import kotlin.math.min
 
 data class Grid(
     val height: Int = 5,
     val totalEnergy: Long = 0,
     val moveCount: Int = 0
-) :
-    Comparable<Grid> {
+) {
 
     companion object {
         const val HALL_Y = 1L
@@ -115,10 +115,14 @@ data class Grid(
         val amphipod = get(src)
         if (!amphipod.isAmphipod())
             throw IllegalArgumentException("Can't move $amphipod from $src; it isn't an amphipod?!")
+        var steps = src.manhattanDistance(dest)
+        if (src.y != HALL_Y && dest.y != HALL_Y) {
+            // room-to-room
+            steps += (min(src.y, dest.y) - HALL_Y) * 2
+        }
         val next = Grid(
             height = height,
-            totalEnergy = totalEnergy +
-                    (amphipod.stepEnergy * src.manhattanDistance(dest)),
+            totalEnergy = totalEnergy + (amphipod.stepEnergy * steps),
             moveCount = moveCount + 1,
         )
         next.grid = grid.copyOf()
@@ -127,9 +131,6 @@ data class Grid(
         next.prev = this
         return next
     }
-
-    override fun compareTo(other: Grid): Int =
-        (other.totalEnergy - totalEnergy).toInt()
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
