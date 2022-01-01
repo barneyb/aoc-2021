@@ -7,8 +7,8 @@ private val WORKED_EXAMPLE = """
     #############
     #...........#
     ###B#C#B#D###
-      #A#D#C#A#
-      #########
+      #A#D#C#A#  
+      #########  
 """.trimIndent()
 
 internal class AmphipodKtTest {
@@ -18,10 +18,9 @@ internal class AmphipodKtTest {
         assertEquals(12521, partOne(WORKED_EXAMPLE))
     }
 
-    @kotlin.test.Ignore // todo: reinstate when ready!
     @Test
     fun partTwo() {
-        assertEquals(0, partTwo(WORKED_EXAMPLE))
+        assertEquals(44169, partTwo(WORKED_EXAMPLE))
     }
 
 }
