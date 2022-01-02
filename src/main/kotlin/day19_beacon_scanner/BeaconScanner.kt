@@ -1,6 +1,6 @@
 package day19_beacon_scanner
 
-import geom3d.Point
+import geom.Vec
 import histogram.histogramOf
 import java.util.*
 import kotlin.math.abs
@@ -13,33 +13,21 @@ fun main() {
     util.solve(::partTwo)
 }
 
-data class Delta(
+class Delta(
     val i: Int,
     val j: Int,
-    val x: Long,
-    val y: Long,
-    val z: Long
+    x: Long,
+    y: Long,
+    z: Long
 ) {
-    val mag = listOf(x, y, z).sorted()
-    val ax = abs(x)
-    val ay = abs(y)
-    val az = abs(z)
-    val amag = listOf(ax, ay, az).sorted()
+    val amag = listOf(abs(x), abs(y), abs(z)).sorted()
 }
 
-class Beacon(x: Long, y: Long, z: Long) : Point(x, y, z), Comparable<Beacon> {
-
-    override fun compareTo(other: Beacon) =
-        (if (x == other.x)
-            if (y == other.y) z - other.z
-            else y - other.y
-        else x - other.x)
-            .let(Long::toInt)
-}
+typealias Beacon = Vec
 
 class Scanner(val id: Int) {
 
-    var beacons: MutableList<Beacon> = mutableListOf()
+    val beacons: MutableList<Beacon> = mutableListOf()
     val beaconCount get() = beacons.size
 
     val deltas: List<Delta> by lazy {
@@ -121,7 +109,7 @@ fun partOne(input: String): Int {
             }
         }
     }
-    val locations = mutableMapOf(0 to Point.ORIGIN)
+    val locations = mutableMapOf(0 to Vec.origin(3))
     while (overlaps.isNotEmpty()) {
         val (i, j, summary) = overlaps.remove()
         if (locations.containsKey(i) && locations.containsKey(j)) {
@@ -136,7 +124,8 @@ fun partOne(input: String): Int {
             // i is unknown - compute
         } else {
             // neither is known - requeue
-            overlaps.add(Triple(i, j, summary))
+            println("don't know $i or $j... abandoning")
+            //overlaps.add(Triple(i, j, summary))
         }
     }
     return -1

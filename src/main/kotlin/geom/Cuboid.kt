@@ -1,22 +1,15 @@
 package geom
 
+import util.contains
+import util.intersects
+import util.size
 import kotlin.math.max
 import kotlin.math.min
-
-fun LongRange.intersects(b: LongRange) =
-    b.first in first..last || b.last in first..last
-
-fun LongRange.contains(b: LongRange) =
-    b.first in first..last && b.last in first..last
-
-val LongRange.size
-    get() =
-        last - first + 1
 
 @Suppress("EmptyRange")
 val EMPTY_RANGE = 0..-1L
 
-data class Cuboid(val dims: Array<LongRange>) {
+class Cuboid(dims: Array<LongRange>) : DimensionalType<LongRange>(dims) {
 
     constructor(x: LongRange) :
             this(arrayOf(x))
@@ -26,10 +19,6 @@ data class Cuboid(val dims: Array<LongRange>) {
 
     constructor(x: LongRange, y: LongRange, z: LongRange) :
             this(arrayOf(x, y, z))
-
-    val dimensions get() = dims.size
-
-    operator fun get(index: Int) = dims[index]
 
     val size: Long
         get() {
@@ -47,10 +36,6 @@ data class Cuboid(val dims: Array<LongRange>) {
         }
         return false
     }
-
-    val x get() = dims[0]
-    val y get() = dims[1]
-    val z get() = dims[2]
 
     val width get() = dims[0].size
     val height get() = dims[1].size
@@ -80,18 +65,5 @@ data class Cuboid(val dims: Array<LongRange>) {
         }
         @Suppress("UNCHECKED_CAST")
         return Cuboid(result as Array<LongRange>)
-    }
-
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other !is Cuboid) return false
-
-        if (!dims.contentEquals(other.dims)) return false
-
-        return true
-    }
-
-    override fun hashCode(): Int {
-        return dims.contentHashCode()
     }
 }
