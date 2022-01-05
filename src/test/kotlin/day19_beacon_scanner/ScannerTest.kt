@@ -44,6 +44,10 @@ internal class ScannerTest {
         assertEquals(Vec(-3, -1, -2), tick())
         assertEquals(Vec(-3, -2, 1), tick())
 
+        assertEquals(Vec(1, 3, 2), tick())
+        repeat(22) { tick() } // same as above...
+        assertEquals(Vec(-2, -3, 1), tick())
+
         // and back to the start
         assertEquals(Vec(1, 2, 3), tick())
     }

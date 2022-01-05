@@ -36,7 +36,7 @@ class Scanner(val id: Int) {
     }
 
     override fun toString(): String =
-        "Scanner #$id (${beaconCount} beacons)"
+        "Scanner #$id @ $location"
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

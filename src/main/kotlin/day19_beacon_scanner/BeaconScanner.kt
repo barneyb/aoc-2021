@@ -37,19 +37,18 @@ fun String.toScanners(): List<Scanner> {
 fun Collection<Scanner>.relativize(): Collection<Scanner> {
     val first = first()
     first.location = Vec.origin(first.beacons[0].dimensions)
+    println("$first - by fiat")
     val queue: Queue<Scanner> = ArrayDeque()
     queue.add(first)
-    val theOthers = drop(1).toMutableSet()
+    val theOthers = drop(1)
     while (queue.isNotEmpty()) {
         val scanA = queue.remove()
-        println("look for ${scanA.id} overlapping w/ ${theOthers.map(Scanner::id)}")
         for (scanB in theOthers) {
             if (scanA == scanB) continue
-            println("  ${scanB.id}...")
-            for (garbage in 1..48) {
+            repeat(48) {
                 val hist = mutableHistogramOf<Vec>() // locations of B
-                for ((idxBeaconA, a) in scanA.beacons.withIndex()) {
-                    for ((idxBeaconB, b) in scanB.beacons.withIndex()) {
+                for (a in scanA.beacons) {
+                    for (b in scanB.beacons) {
                         hist.count(Vec(a.x - b.x, a.y - b.y, a.z - b.z))
                     }
                 }
@@ -62,13 +61,13 @@ fun Collection<Scanner>.relativize(): Collection<Scanner> {
                     when (scanB.location) {
                         null -> {
                             scanB.location = loc
+                            println(scanB)
                             queue.add(scanB)
-                            println("    at $loc!")
                         }
-                        loc -> println("    still at $loc!")
+                        loc -> {}
                         else -> throw IllegalStateException("Scanner ${scanB.id} moved to $loc?!")
                     }
-                    break
+                    return@repeat
                 }
                 scanB.twist()
             }
@@ -83,7 +82,6 @@ fun partOne(input: String): Int {
 
     val allBeacons = HashSet<Vec>()
     scanners.forEach { scanner ->
-        println("${scanner.id.toString().padStart(2)}: ${scanner.location}")
         scanner.beacons.forEach { beacon ->
             allBeacons.add(beacon + scanner.location!!)
         }
@@ -98,8 +96,9 @@ fun partTwo(input: String): Long {
     var max = Long.MIN_VALUE
     for (a in scanners) {
         for (b in scanners) {
-            max =
-                max.coerceAtLeast(a.location!!.manhattanDistance(b.location!!))
+            max = max.coerceAtLeast(
+                a.location!!.manhattanDistance(b.location!!)
+            )
         }
     }
     return max
