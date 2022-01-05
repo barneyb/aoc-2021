@@ -37,4 +37,26 @@ class Vec(dims: Array<Long>) : DimensionalType<Long>(dims), Comparable<Vec> {
         return sum
     }
 
+    private fun combine(other: Vec, op: (Long, Long) -> Long): Vec {
+        val ds = dims.copyOf()
+        for (i in 0 until dimensions) {
+            ds[i] = op(ds[i], other.dims[i])
+        }
+        return Vec(ds)
+    }
+
+    operator fun plus(other: Vec) =
+        combine(other, Long::plus)
+
+    operator fun minus(other: Vec) =
+        combine(other, Long::minus)
+
+    operator fun times(scalar: Long): Vec {
+        val ds = dims.copyOf()
+        for (i in 0 until dimensions) {
+            ds[i] *= scalar
+        }
+        return Vec(ds)
+    }
+
 }

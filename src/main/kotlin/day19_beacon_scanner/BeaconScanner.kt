@@ -1,51 +1,16 @@
 package day19_beacon_scanner
 
 import geom.Vec
-import histogram.histogramOf
+import histogram.count
+import histogram.mutableHistogramOf
 import java.util.*
-import kotlin.math.abs
 
 /**
  * todo: add notes
  */
 fun main() {
-    util.solve(::partOne) // 394 is too low, 514 is too high
-    util.solve(::partTwo)
-}
-
-class Delta(
-    val i: Int,
-    val j: Int,
-    x: Long,
-    y: Long,
-    z: Long
-) {
-    val amag = listOf(abs(x), abs(y), abs(z)).sorted()
-}
-
-typealias Beacon = Vec
-
-class Scanner(val id: Int) {
-
-    val beacons: MutableList<Beacon> = mutableListOf()
-    val beaconCount get() = beacons.size
-
-    val deltas: List<Delta> by lazy {
-        val deltas = mutableListOf<Delta>()
-        for ((i, a) in beacons.withIndex()) {
-            for ((j, b) in beacons.withIndex().drop(i + 1)) {
-                val delta = Delta(i, j, b.x - a.x, b.y - a.y, b.z - a.z)
-                deltas.add(delta)
-            }
-        }
-        deltas
-    }
-
-    fun add(beacon: Beacon) =
-        beacons.add(beacon)
-
-    override fun toString(): String =
-        "Scanner #$id (${beacons.size} beacons)"
+    util.solve(436, ::partOne) // 394 is too low, 514 is too high
+//    util.solve(::partTwo)
 }
 
 fun String.toScanners(): List<Scanner> {
@@ -57,78 +22,68 @@ fun String.toScanners(): List<Scanner> {
             scanner = Scanner(l.substring(12, idx).toInt())
             result.add(scanner)
         } else if (l.isNotBlank()) {
-            val (x, y, z) = l.split(",").map(String::toLong)
-            scanner.add(Beacon(x, y, z))
+            scanner.add(
+                Vec(
+                    l.split(",")
+                        .map(String::toLong)
+                        .toTypedArray()
+                )
+            )
         }
-    }
-    result.forEach {
-        it.beacons.sort()
     }
     return result
 }
 
-private fun <E> SortedSet<E>.plus(other: Iterable<E>) =
-    TreeSet(this).apply { addAll(other) }
-
-typealias Summary = Map<Int, SortedSet<Int>>
-typealias Overlap = Triple<Int, Int, Summary>
-
 fun partOne(input: String): Int {
     val scanners = input.toScanners()
-    val overlaps: Queue<Overlap> = ArrayDeque()
-    for ((i, a) in scanners.withIndex()) {
-        for ((j, b) in scanners.withIndex().drop(i + 1)) {
-            val summary = mutableMapOf<Int, SortedSet<Int>>()
-            b.deltas.forEach { n ->
-                val matches = a.deltas
-                    .filter { m -> m.amag == n.amag }
-                if (matches.isNotEmpty()) {
-                    summary.merge(
-                        n.i,
-                        matches.map { it.j }.toSortedSet(),
-                        SortedSet<Int>::plus
-                    )
-                    summary.merge(
-                        n.j,
-                        matches.map { it.i }.toSortedSet(),
-                        SortedSet<Int>::plus
-                    )
+    scanners[0].location = Vec.origin(scanners[0].beacons[0].dimensions)
+    val queue: Queue<Scanner> = ArrayDeque()
+    queue.add(scanners.first())
+    val theOthers = scanners.drop(1).toMutableSet()
+    while (queue.isNotEmpty()) {
+        val scanA = queue.remove()
+        println("look for ${scanA.id} overlapping w/ ${theOthers.map(Scanner::id)}")
+        for (scanB in theOthers) {
+            if (scanA == scanB) continue
+            println("  ${scanB.id}...")
+            for (garbage in 1..48) {
+                val hist = mutableHistogramOf<Vec>() // locations of B
+                for ((idxBeaconA, a) in scanA.beacons.withIndex()) {
+                    for ((idxBeaconB, b) in scanB.beacons.withIndex()) {
+                        hist.count(Vec(a.x - b.x, a.y - b.y, a.z - b.z))
+                    }
                 }
-            }
-            if (summary.size >= 12) {
-                println(
-                    "$i -> $j: ${summary.size} : ${
-                        histogramOf(
-                            summary.values.map(
-                                Collection<*>::size
-                            )
-                        )
-                    }"
-                )
-                overlaps.add(Triple(i, j, summary))
+                val things = hist.entries
+                    .filter { (k, v) -> v >= 12 }
+                if (things.isNotEmpty()) {
+                    if (things.size > 1)
+                        throw IllegalStateException("scanner ${scanB.id} (rel ${scanA.id}) could be at any of ${things.map { it.key }}")
+                    val loc = things[0].key + scanA.location!!
+                    when (scanB.location) {
+                        null -> {
+                            scanB.location = loc
+                            queue.add(scanB)
+                            println("    at $loc!")
+                        }
+                        loc -> println("    still at $loc!")
+                        else -> throw IllegalStateException("Scanner ${scanB.id} moved to $loc?!")
+                    }
+                    break
+                }
+                scanB.twist()
             }
         }
     }
-    val locations = mutableMapOf(0 to Vec.origin(3))
-    while (overlaps.isNotEmpty()) {
-        val (i, j, summary) = overlaps.remove()
-        if (locations.containsKey(i) && locations.containsKey(j)) {
-            // already known - validate
-        } else if (locations.containsKey(i)) {
-            // j is unknown - compute
-            val (m, ns) = summary.entries.first()
-            val a = scanners[i].beacons[ns.first()]
-            val b = scanners[j].beacons[m]
-            val d = 4
-        } else if (locations.containsKey(j)) {
-            // i is unknown - compute
-        } else {
-            // neither is known - requeue
-            println("don't know $i or $j... abandoning")
-            //overlaps.add(Triple(i, j, summary))
+
+    val allBeacons = HashSet<Vec>()
+    scanners.forEach { scanner ->
+        println("${scanner.id.toString().padStart(2)}: ${scanner.location}")
+        scanner.beacons.forEach { beacon ->
+            allBeacons.add(beacon + scanner.location!!)
         }
     }
-    return -1
+
+    return allBeacons.size
 }
 
 fun partTwo(input: String) = input.trim().length
