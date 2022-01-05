@@ -230,7 +230,11 @@ fun <V> barChart(
     data: Map<V, Long>,
     labelSelector: (V) -> String = { it.toString() },
 ) {
+    if (data.isEmpty())
+        throw IllegalArgumentException("Can't render an empty chart")
     val maxVal = data.values.maxOf { it }
+    val maxLblLen = data.keys.maxOf { labelSelector(it).length }
+    val barLen = 79.0 - maxVal.toString().length - maxLblLen - 10
     Terminal().println(table {
         borderTextStyle = TextColors.gray
         borders = Borders.LEFT_RIGHT
@@ -240,7 +244,7 @@ fun <V> barChart(
         body {
             data.keys.forEach { b ->
                 val n = data.getOrDefault(b, 0)
-                val bar = "█".repeat(ceil(n * 50.0 / maxVal).toInt())
+                val bar = "█".repeat(ceil(n * barLen / maxVal).toInt())
                 row(
                     labelSelector(b).let {
                         if (n == 0L)
