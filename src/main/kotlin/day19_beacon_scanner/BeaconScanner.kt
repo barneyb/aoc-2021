@@ -6,7 +6,19 @@ import histogram.mutableHistogramOf
 import java.util.*
 
 /**
- * todo: add notes
+ * Another graph walk, reminiscent of Jurassic Jigsaw (2020 day 20), but this
+ * time in three dimensions! Based on the example, assume scanner zero's coord
+ * system is The One True System, and reorient/position all the scanners based
+ * on their shared beacons to those coordinates. Finding the shared beacons has
+ * its own pile of fun, as do the coordinate transforms. Goblins and elves? Once
+ * the scanners are all sharing a single system, the beacons are trivially
+ * plotted in that same system, and then count the unique locations. BAM!
+ *
+ * Part two is mindless if you did the "whole" solution to part one. If you
+ * "cheated" and didn't actually assemble a shared coordinate system, time to do
+ * so! Iterate over each pair of scanners and measure is the simple way. There's
+ * a tiny bit of room to avoid checking pairs which both aren't on the border,
+ * but it doesn't save much with only 30-something scanners.
  */
 fun main() {
     util.solve(436, ::partOne) // 394 is too low, 514 is too high
@@ -44,6 +56,7 @@ fun Collection<Scanner>.relativize(): Collection<Scanner> {
     while (queue.isNotEmpty()) {
         val scanA = queue.remove()
         for (scanB in theOthers) {
+            if (scanB.location != null) continue
             if (scanA == scanB) continue
             repeat(48) {
                 val hist = mutableHistogramOf<Vec>() // locations of B
@@ -53,7 +66,7 @@ fun Collection<Scanner>.relativize(): Collection<Scanner> {
                     }
                 }
                 val things = hist.entries
-                    .filter { (k, v) -> v >= 12 }
+                    .filter { (_, v) -> v >= 12 }
                 if (things.isNotEmpty()) {
                     if (things.size > 1)
                         throw IllegalStateException("scanner ${scanB.id} (rel ${scanA.id}) could be at any of ${things.map { it.key }}")
