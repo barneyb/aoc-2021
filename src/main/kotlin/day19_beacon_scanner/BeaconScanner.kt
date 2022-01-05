@@ -10,7 +10,7 @@ import java.util.*
  */
 fun main() {
     util.solve(436, ::partOne) // 394 is too low, 514 is too high
-//    util.solve(::partTwo)
+    util.solve(10918, ::partTwo)
 }
 
 fun String.toScanners(): List<Scanner> {
@@ -34,12 +34,12 @@ fun String.toScanners(): List<Scanner> {
     return result
 }
 
-fun partOne(input: String): Int {
-    val scanners = input.toScanners()
-    scanners[0].location = Vec.origin(scanners[0].beacons[0].dimensions)
+fun Collection<Scanner>.relativize(): Collection<Scanner> {
+    val first = first()
+    first.location = Vec.origin(first.beacons[0].dimensions)
     val queue: Queue<Scanner> = ArrayDeque()
-    queue.add(scanners.first())
-    val theOthers = scanners.drop(1).toMutableSet()
+    queue.add(first)
+    val theOthers = drop(1).toMutableSet()
     while (queue.isNotEmpty()) {
         val scanA = queue.remove()
         println("look for ${scanA.id} overlapping w/ ${theOthers.map(Scanner::id)}")
@@ -74,6 +74,12 @@ fun partOne(input: String): Int {
             }
         }
     }
+    return this
+}
+
+fun partOne(input: String): Int {
+    val scanners = input.toScanners()
+        .relativize()
 
     val allBeacons = HashSet<Vec>()
     scanners.forEach { scanner ->
@@ -86,4 +92,15 @@ fun partOne(input: String): Int {
     return allBeacons.size
 }
 
-fun partTwo(input: String) = input.trim().length
+fun partTwo(input: String): Long {
+    val scanners = input.toScanners()
+        .relativize()
+    var max = Long.MIN_VALUE
+    for (a in scanners) {
+        for (b in scanners) {
+            max =
+                max.coerceAtLeast(a.location!!.manhattanDistance(b.location!!))
+        }
+    }
+    return max
+}
