@@ -92,7 +92,7 @@ private val days = listOf(
     ::day16_packet_decoder,
     ::day17_trick_shot,
     ::day18_snailfish,
-    //::day19_beacon_scanner,
+    ::day19_beacon_scanner,
     ::day20_trench_map,
     ::day21_dirac_dice,
     ::day22_reactor_reboot,
