@@ -4,14 +4,22 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 
 private val WORKED_EXAMPLE = """
-    input
+    v...>>.vv>
+    .vv>>.vv..
+    >>.>v>...v
+    >>v>>.>.v.
+    v>v.vv.v..
+    >.>>..v...
+    .vv..>.>v.
+    v.v..>>v.v
+    ....v..v.>
 """.trimIndent()
 
 internal class SeaCucumberKtTest {
 
     @Test
     fun partOne() {
-        assertEquals(0, partOne(WORKED_EXAMPLE))
+        assertEquals(58, partOne(WORKED_EXAMPLE))
     }
 
     @kotlin.test.Ignore // todo: reinstate when ready!
