@@ -99,7 +99,7 @@ private val days = listOf(
     ::day22_reactor_reboot,
     ::day24_arithmetic_logic_unit,
     ::day23_amphipod,
-    //::day25_sea_cucumber,
+    ::day25_sea_cucumber,
     /*INJECT:REF*/
     ::ocean_profile,
 )
