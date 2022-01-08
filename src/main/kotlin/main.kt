@@ -57,7 +57,7 @@ private val days = listOf(
     ::day00_measure_up,
     ::day01_almost_lisp,
     ::day02_wrap_presents,
-    //::day22_slam_shuffle,
+    ::day22_slam_shuffle,
     ::day01_rocket_equation,
     ::day03_crossed_wires,
     ::day03_spherical_houses,
