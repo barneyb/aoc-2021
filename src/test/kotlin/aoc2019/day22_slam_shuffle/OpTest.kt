@@ -51,6 +51,17 @@ internal class OpTest {
     }
 
     @Test
+    fun negationDecomposes() {
+        fun a(x: Int) =
+            (17 - x - 1) % 17
+
+        fun b(x: Int) =
+            (x * (17 - 1) - 1) % 17
+
+        assertEquals(b(13), a(13))
+    }
+
+    @Test
     fun splitNegate() {
         val sep = listOf(
             NewStack(17),
@@ -63,6 +74,20 @@ internal class OpTest {
     }
 
     @Test
+    fun additionComposes() {
+        fun a(x: Int) =
+            (x + 9) % 17
+
+        fun b(x: Int) =
+            (x + 12) % 17
+
+        fun c(x: Int) =
+            (x + (9 + 12)) % 17
+
+        assertEquals(c(13), b(a(13)))
+    }
+
+    @Test
     fun combineAddAdd() {
         val sep = listOf(
             Cut(17, 9),
@@ -72,6 +97,17 @@ internal class OpTest {
             Cut(17, (9 + 14) % 17),
         )
         assertEquals(sep.forward(5), comb.forward(5))
+    }
+
+    @Test
+    fun multiplicationDistributesOverAddition() {
+        fun a(x: Int) =
+            ((x + 9) * 12) % 17
+
+        fun b(x: Int) =
+            (x * 12 + 9 * 12) % 17
+
+        assertEquals(a(13), b(13))
     }
 
     // this one seems silly, but it allows clusters of Add and Multiply to form
@@ -88,19 +124,19 @@ internal class OpTest {
         assertEquals(sep.forward(5), comb.forward(5))
     }
 
-// this one is doesn't work (order of operations), but whatever.
-//    @Test
-//    fun combineMultiplyAdd() {
-//        val sep = listOf(
-//            Multiply(17, 12),
-//            Add(17, 9),
-//        )
-//        val comb = listOf(
-//            Multiply(17, 12),
-//            Add(17, 9),
-//        )
-//        assertEquals(sep.forward(5), comb.forward(5))
-//    }
+    @Test
+    fun multiplicationComposes() {
+        fun a(x: Int) =
+            (x * 9) % 17
+
+        fun b(x: Int) =
+            (x * 12) % 17
+
+        fun c(x: Int) =
+            (x * (9 * 12)) % 17
+
+        assertEquals(c(13), b(a(13)))
+    }
 
     @Test
     fun combineMultiplyMultiply() {
@@ -131,6 +167,12 @@ internal class OpTest {
             .toOps(17)
         val comb = reduceOps(sep)
         assertEquals(sep.forward(5), comb.forward(5))
+        assertEquals(
+            listOf(
+                Deal(17, 3),
+                Cut(17, -11)
+            ), comb
+        )
     }
 
 }
