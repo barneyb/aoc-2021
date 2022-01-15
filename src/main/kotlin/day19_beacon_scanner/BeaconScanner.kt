@@ -49,7 +49,6 @@ fun String.toScanners(): List<Scanner> {
 fun Collection<Scanner>.relativize(): Collection<Scanner> {
     val first = first()
     first.location = Vec.origin(first.beacons[0].dimensions)
-    println("$first - by fiat")
     val queue: Queue<Scanner> = ArrayDeque()
     queue.add(first)
     val theOthers = drop(1)
@@ -58,7 +57,7 @@ fun Collection<Scanner>.relativize(): Collection<Scanner> {
         for (scanB in theOthers) {
             if (scanB.location != null) continue
             if (scanA == scanB) continue
-            repeat(48) {
+            repeat(24) {
                 val hist = mutableHistogramOf<Vec>() // locations of B
                 for (a in scanA.beacons) {
                     for (b in scanB.beacons) {
@@ -74,7 +73,6 @@ fun Collection<Scanner>.relativize(): Collection<Scanner> {
                     when (scanB.location) {
                         null -> {
                             scanB.location = loc
-                            println(scanB)
                             queue.add(scanB)
                         }
                         loc -> {}
