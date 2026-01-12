@@ -1,4 +1,5 @@
 import com.github.ajalt.mordant.rendering.TextStyles
+import com.github.ajalt.mordant.terminal.ExperimentalTerminalApi
 import com.github.ajalt.mordant.terminal.Terminal
 import util.Stopwatch
 import kotlin.jvm.internal.CallableReference
@@ -106,6 +107,7 @@ private val days = listOf(
     ::ocean_profile,
 )
 
+@OptIn(ExperimentalTerminalApi::class)
 fun main() {
     val watch = Stopwatch()
     days.map {
@@ -115,4 +117,3 @@ fun main() {
     val elapsed = watch.elapsed
     Terminal().println("Total: " + TextStyles.bold("$elapsed"))
 }
-

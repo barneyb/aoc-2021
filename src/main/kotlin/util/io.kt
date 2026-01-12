@@ -6,6 +6,7 @@ import com.github.ajalt.mordant.rendering.TextStyle
 import com.github.ajalt.mordant.rendering.TextStyles
 import com.github.ajalt.mordant.table.Borders
 import com.github.ajalt.mordant.table.table
+import com.github.ajalt.mordant.terminal.ExperimentalTerminalApi
 import com.github.ajalt.mordant.terminal.Terminal
 import histogram.continuousHistogramOf
 import java.io.File
@@ -188,6 +189,7 @@ private fun <T : Any> benchSummary(
     )
 }
 
+@OptIn(ExperimentalTerminalApi::class)
 fun printBoxed(value: Any, borderTextStyle: TextStyle = TextColors.black) {
     Terminal().println(table {
         this.borderTextStyle = borderTextStyle
@@ -226,6 +228,7 @@ fun <T : Any> benchAndHist(
 
 private val ZERO_GRAY = TextColors.gray(fraction = 0.667)
 
+@OptIn(ExperimentalTerminalApi::class)
 fun <V> barChart(
     data: Map<V, Long>,
     labelSelector: (V) -> String = { it.toString() },
