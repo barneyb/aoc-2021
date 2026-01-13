@@ -2,6 +2,7 @@ package aoc2015.day03_spherical_houses
 
 import geom2d.Point
 import geom2d.toDir
+import java.util.stream.Collectors
 import kotlin.streams.toList
 
 fun main() {
@@ -12,7 +13,7 @@ fun main() {
 private fun String.toDirList() = this
     .chars()
     .mapToObj { it.toChar().toDir() }
-    .toList()
+    .collect(Collectors.toList())
 
 fun partOne(input: String): Int {
     val origin = Point.ORIGIN
@@ -43,4 +44,3 @@ fun partTwo(input: String): Int {
         }
     return points.size
 }
-

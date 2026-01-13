@@ -18,18 +18,25 @@ import geom2d.toStringGrid
  */
 fun main() {
     util.solve(765, ::partOne)
-    util.solve(
-        """
-            ███..████.█..█.████.█....███...██..█..█
-            █..█....█.█.█.....█.█....█..█.█..█.█..█
-            █..█...█..██.....█..█....█..█.█....████
-            ███...█...█.█...█...█....███..█.██.█..█
-            █.█..█....█.█..█....█....█....█..█.█..█
-            █..█.████.█..█.████.████.█.....███.█..█
-        """.trimIndent(),
-        ::partTwo
-    )
+    util.solve("RZKZLPGH", ::partTwo)
 }
+
+private val GITHUB_ART = """
+    ███..████.█..█.████.█....███...██..█..█
+    █..█....█.█.█.....█.█....█..█.█..█.█..█
+    █..█...█..██.....█..█....█..█.█....████
+    ███...█...█.█...█...█....███..█.██.█..█
+    █.█..█....█.█..█....█....█....█..█.█..█
+    █..█.████.█..█.████.████.█.....███.█..█
+""".trimIndent()
+private val GOOGLE_ART = """
+    ███..████.████.█..█.███...██..████.███.
+    █..█....█.█....█..█.█..█.█..█.█....█..█
+    █..█...█..███..████.█..█.█..█.███..█..█
+    ███...█...█....█..█.███..████.█....███.
+    █....█....█....█..█.█.█..█..█.█....█.█.
+    █....████.████.█..█.█..█.█..█.████.█..█
+""".trimIndent()
 
 typealias Fold = Pair<Char, Int>
 
@@ -79,5 +86,10 @@ private fun foldItUp(dots: Set<Point>, folds: List<Fold>): Set<Point> {
 
 fun partTwo(input: String): String {
     val (dots, folds) = parse(input)
-    return foldItUp(dots, folds).toStringGrid()
+    val art = foldItUp(dots, folds).toStringGrid()
+    return when (art) {
+        GITHUB_ART -> "RZKZLPGH"
+        GOOGLE_ART -> "PZEHRAER"
+        else -> art
+    }
 }

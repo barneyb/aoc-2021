@@ -27,6 +27,7 @@ private fun Any.toPrettyLabel() =
     }
 
 internal fun saveFile(outFile: File, work: (OutputStream) -> Unit) {
+    if (isAocAll()) return
     val out = outFile.outputStream()
     val watch = Stopwatch()
     work(out)
@@ -41,23 +42,58 @@ internal fun outputFile(source: Any, extension: String = "txt") =
 fun saveTextFile(
     work: (String, PrintWriter) -> Unit,
     extension: String = "txt"
-) =
+) {
+    if (isAocAll()) return
     saveFile(outputFile(work, extension)) { out ->
         val pw = PrintWriter(out)
         work(getInput(work.javaClass), pw)
         pw.close()
     }
+}
+
+fun getAocAllFile(): File? {
+    val fn = System.getProperty("aoc_all_file") ?: return null
+    val f = File(fn)
+    if (f.exists()) return f
+    return null
+}
+
+fun isAocAll(): Boolean {
+    return getAocAllFile() != null
+}
 
 fun getInput(clazz: Class<*>) =
     getInput(clazz.packageName)
 
-fun getInput(packageName: String): String =
-    Thread
-        .currentThread()
-        .contextClassLoader
-        .getResource(packageName.replace('.', '/') + "/input.txt")!!
+fun getInput(packageName: String): String {
+    var path = packageName
+    var year = 2021;
+    var day = 1;
+    if (path.startsWith("aoc")) {
+        year = path.substring(3, 7).toInt();
+        path = path.substring(path.indexOf('.') + 1)
+    }
+    if (path.startsWith("day")) {
+        day = path.substring(3, 5).toInt();
+    }
+    if (day < 1) {
+        return Thread
+            .currentThread()
+            .contextClassLoader
+            .getResource(packageName.replace('.', '/') + "/input.txt")!!
+            .readText()
+            .cleanInput()
+    }
+    val proc = ProcessBuilder("aocd", "" + year, "" + day)
+        .start()
+    if (proc.waitFor() != 0) {
+        throw RuntimeException("Failed to get input from aocd. Is your token expired (or missing)?")
+    }
+    return proc.inputStream
+        .reader()
         .readText()
         .cleanInput()
+}
 
 fun String.cleanInput() =
     this.trim('\n')
@@ -77,7 +113,21 @@ private fun nextAnswerLabel() = when (++answerCount) {
     else -> answerCount.toString()
 }
 
+private var last_expected: Any? = null
+
 fun <T : Any> solve(expected: T, solver: (String) -> T) {
+    val aocAllFile = getAocAllFile()
+    if (aocAllFile != null) {
+        if (last_expected == expected) return
+        last_expected = expected
+        val ans = solver.invoke(
+            aocAllFile.reader()
+                .readText()
+                .cleanInput()
+        )
+        println("[__AOC_ALL_ANSWER__[$ans]]")
+        return
+    }
     val input = getInput(solver.javaClass)
     val (actual: T, elapsed: Duration) = solveAndTime(solver, input)
     val failure = expected != actual

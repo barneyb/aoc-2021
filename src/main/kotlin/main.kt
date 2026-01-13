@@ -2,6 +2,7 @@ import com.github.ajalt.mordant.rendering.TextStyles
 import com.github.ajalt.mordant.terminal.ExperimentalTerminalApi
 import com.github.ajalt.mordant.terminal.Terminal
 import util.Stopwatch
+import util.isAocAll
 import kotlin.jvm.internal.CallableReference
 import aoc2015.day01_almost_lisp.main as day01_almost_lisp
 import aoc2015.day02_wrap_presents.main as day02_wrap_presents
@@ -108,7 +109,19 @@ private val days = listOf(
 )
 
 @OptIn(ExperimentalTerminalApi::class)
-fun main() {
+fun main(args: Array<String>) {
+    if (args.isNotEmpty()) {
+        val it = days.first({ it ->
+            (it as CallableReference).owner
+                .toString()
+                .startsWith("file class " + args[0])
+        })
+        val watch = Stopwatch()
+        it()
+        val elapsed = watch.elapsed
+        println("[__AOC_ALL_NANOS__[${elapsed.inWholeNanoseconds}]]")
+        return
+    }
     val watch = Stopwatch()
     days.map {
         println((it as CallableReference).owner)

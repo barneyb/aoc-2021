@@ -1,5 +1,7 @@
 package day24_arithmetic_logic_unit
 
+import util.isAocAll
+
 /**
  * At first blush, this looks like a "build an interpreter/VM" sort of problem
  * in the style of Intcode. However, 9^14 numbers to check... This is another
@@ -13,6 +15,8 @@ package day24_arithmetic_logic_unit
  * Part two is just inverting the fitness function: find min vs find max.
  */
 fun main() {
+    // the implementation is hand-coded for my github input
+    if (isAocAll()) return
     util.solve(51983999947999, ::partOne) // 51993999947999 is too high
     util.solve(11211791111365, ::partTwo)
 }

@@ -65,9 +65,6 @@ if [ "${YEAR}" != "${THIS_YEAR}" ]; then
 fi
 
 mkdir -p src/main/$res_root/${DAY_DIR}
-if [ ! -f src/main/$res_root/${DAY_DIR}/input.txt ]; then
-    echo "  oh hai  " > src/main/$res_root/${DAY_DIR}/input.txt
-fi
 mkdir -p src/main/$root/${DAY_DIR}
 cat > src/main/$root/${DAY_DIR}/${CAMEL}.kt << EOF
 package ${pkg}${DAY_DIR}
@@ -118,9 +115,6 @@ sed -e "s~/\*INJECT:IMPORT\*/~import ${pkg}${DAY_DIR}.main as ${DAY_DIR}\\n/*INJ
 
 git add src/main/kotlin src/test
 git commit -m "skeleton"
-
-# don't include this in the skeleton commit, but add it so it's ready
-git add src/main/$res_root/${DAY_DIR}/input.txt
 
 if [[ $SCRIPT = .* ]]; then
   rm $SCRIPT

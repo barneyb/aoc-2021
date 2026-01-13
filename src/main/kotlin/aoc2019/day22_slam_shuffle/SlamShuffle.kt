@@ -1,10 +1,12 @@
 package aoc2019.day22_slam_shuffle
 
+import util.isAocAll
 import java.util.*
 
 fun main() {
     util.solve(3036, ::partOne)
-    util.solve(2019, ::partOneReverse)
+    if (!isAocAll())
+        util.solve(2019, ::partOneReverse)
     util.solve(70618172909245, ::partTwoReverse)
 }
 

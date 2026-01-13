@@ -1,0 +1,21 @@
+[build-system]
+requires = ["setuptools >= 61.0"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages]
+find = { }
+
+[project]
+name = "barneyb-aoc-2021"
+description = "My Advent of Code 2021 solvers"
+authors = [
+    { name = "Barney Boisvert", email = "bboisvert@gmail.com" }
+]
+version = "2021.1"
+requires-python = ">= 3.11"
+dependencies = []
+
+[project.entry-points."barneyb_aoc_all.support"]
+kotlin21 = "util.aoc_all_2021:support"
+[project.entry-points."barneyb_aoc_all.solve"]
+kotlin21 = "util.aoc_all_2021:solve"
