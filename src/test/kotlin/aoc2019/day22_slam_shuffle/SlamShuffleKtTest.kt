@@ -1,5 +1,6 @@
 package aoc2019.day22_slam_shuffle
 
+import com.barneyb.aoc.NotInCI
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 
@@ -41,6 +42,7 @@ internal class SlamShuffleKtTest {
     }
 
     @Test
+    @NotInCI
     fun itsARingForReal() {
         val input = util.getInput(javaClass)
         val forward = partOne(input, DECK_SIZE_ONE, 2019, 6789)
@@ -50,6 +52,7 @@ internal class SlamShuffleKtTest {
     }
 
     @Test
+    @NotInCI
     fun smallPartTwo() {
         val input = util.getInput(javaClass)
         // deck size 10007
