@@ -24,7 +24,7 @@ class Mod(register: String, arg: String) : BinOp(register, arg)
 class Eql(register: String, arg: String) : BinOp(register, arg)
 class Neq(register: String, arg: String) : BinOp(register, arg)
 
-class Machine() {
+class Machine {
     var w: Long = 0
     var x: Long = 0
     var y: Long = 0
@@ -49,7 +49,7 @@ class Machine() {
                         else -> throw IllegalArgumentException("Unknown '${parts[0]}' instruction")
                     }
                 }
-            }.toMutableList()
+            }.toList()
 
     fun execute(program: String) {
         execute(program, emptyList())
@@ -124,7 +124,7 @@ class Machine() {
                                 break
                             }
                         }
-                        "${op.register} = ${expr}"
+                        "${op.register} = $expr"
                     }
                     is Eql -> "${op.register} = if (${op.register} == ${op.arg}${if (op.isLiteral()) "L" else ""}) 1 else 0"
                     is Neq -> "${op.register} = if (${op.register} != ${op.arg}${if (op.isLiteral()) "L" else ""}) 1 else 0"

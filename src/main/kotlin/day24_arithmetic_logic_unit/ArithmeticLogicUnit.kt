@@ -1,7 +1,5 @@
 package day24_arithmetic_logic_unit
 
-import util.isAocAll
-
 /**
  * At first blush, this looks like a "build an interpreter/VM" sort of problem
  * in the style of Intcode. However, 9^14 numbers to check... This is another
@@ -15,8 +13,6 @@ import util.isAocAll
  * Part two is just inverting the fitness function: find min vs find max.
  */
 fun main() {
-    // the implementation is hand-coded for my github input
-    if (isAocAll()) return
     util.solve(51983999947999, ::partOne) // 51993999947999 is too high
     util.solve(11211791111365, ::partTwo)
 }
@@ -30,14 +26,22 @@ private fun Round.execute(z: Long, w: Long) =
         m.z
     }
 
-private fun Round.searchIn(targets: Set<Long>): Set<Long> =
-    mutableSetOf<Long>().let { next ->
-        for (z in -10_000..10_000L)
+private fun Round.searchIn(targets: Set<Long>): Set<Long> {
+    val candidates = mutableSetOf<Long>().also { cand ->
+        for (t in targets) {
+            // each round is about a factor of 26, one way or the other
+            cand.addAll((t - 1) / 26..(t + 1) / 26)
+            cand.addAll((t - 1) * 26..(t + 1) * 26)
+        }
+    }
+    return mutableSetOf<Long>().also { next ->
+        for (z in candidates) {
             for (w in 1..9L)
                 if (targets.contains(execute(z, w)))
                     next.add(z)
-        next
+        }
     }
+}
 
 private typealias Slices = List<Round>
 
@@ -71,18 +75,15 @@ fun solve(input: String, digitPriority: Iterable<Long>): Long {
                 agg * 10 + n
             }
         }
-        val targets = if (r == 13) setOf(0L)
+        val targets = if (r == slices.size - 1) setOf(0L)
         else inputZByRound[r + 1]!!
         for (w in digitPriority) {
             val v = slices[r].execute(z, w)
             if (targets.contains(v)) {
-                val answer = walk(r + 1, v, digits + w)
-                if (answer > 0) {
-                    return answer
-                }
+                return walk(r + 1, v, digits + w)
             }
         }
-        return -1
+        throw IllegalStateException("no round $r digit hit a target: $targets")
     }
     return walk(0, 0, emptyList())
 }
